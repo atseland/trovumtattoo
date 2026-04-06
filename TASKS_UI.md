@@ -339,7 +339,7 @@ Opprett et sett med PRD_UI.md-konformante UI-primitiver. Alle eksisterer som ren
 
 ### TASK-UI-004: Skjemaelementer og tomme tilstander
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001, TASK-UI-003
 
 #### Hva skal gjøres

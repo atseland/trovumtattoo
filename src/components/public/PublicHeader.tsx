@@ -1,28 +1,36 @@
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
+import { Btn } from '@/components/ui/Btn'
+
+const navLinks = [
+  { href: '/booking-info', label: 'Booking info' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/aftercare', label: 'Etterpleie' },
+]
 
 export function PublicHeader() {
   return (
-    <header
-      className='sticky top-0 z-40 flex items-center justify-between border-b px-5 py-4'
-      style={{ background: '#0d0c0b', borderColor: '#2a2724' }}
-    >
+    <header className='sticky top-0 z-40 flex items-center justify-between border-b border-rule bg-bg px-pad py-4'>
       <Link href='/'>
         <Logo context='nav' />
       </Link>
-      <Link
-        href='/book'
-        className='rounded px-4 py-2 text-sm font-medium transition-opacity hover:opacity-80'
-        style={{
-          background: '#c9933a',
-          color: '#0d0c0b',
-          minHeight: '48px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+
+      {/* Desktop nav */}
+      <nav className='hidden md:flex items-center gap-6'>
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className='font-sans text-[9.5px] tracking-[0.12em] uppercase text-nav transition-colors duration-[200ms] hover:text-paper'
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+
+      <Btn href='/book' variant='default'>
         Book time
-      </Link>
+      </Btn>
     </header>
   )
 }
