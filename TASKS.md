@@ -1060,7 +1060,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-062: Settings-side og Conta-felter
 
-**Status:** pending
+**Status:** done
 **Fase:** 6
 **Avhenger av:** TASK-053, TASK-031
 

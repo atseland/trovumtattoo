@@ -61,6 +61,11 @@ export default function ProjectDetailPage() {
   const [paymentNote, setPaymentNote] = useState<string>('')
   const [savingDeposit, setSavingDeposit] = useState(false)
 
+  // Conta state
+  const [invoiceReference, setInvoiceReference] = useState<string>('')
+  const [accountingStatus, setAccountingStatus] = useState<string>('')
+  const [savingConta, setSavingConta] = useState(false)
+
   // Sync state from project when it loads (only once)
   const [synced, setSynced] = useState(false)
   if (project && !synced) {
@@ -69,6 +74,8 @@ export default function ProjectDetailPage() {
     setDepositStatus(project.depositStatus ?? 'pending')
     setPaymentLink(project.paymentLink ?? '')
     setPaymentNote(project.paymentNote ?? '')
+    setInvoiceReference(project.invoiceReference ?? '')
+    setAccountingStatus(project.accountingStatus ?? '')
     setSynced(true)
   }
 
@@ -93,6 +100,22 @@ export default function ProjectDetailPage() {
       toast.error('Kunne ikke lagre estimat')
     } finally {
       setSavingEstimate(false)
+    }
+  }
+
+  async function saveConta() {
+    setSavingConta(true)
+    try {
+      await updateProject({
+        id,
+        invoiceReference: invoiceReference || undefined,
+        accountingStatus: accountingStatus || undefined,
+      })
+      toast.success('Conta-data lagret')
+    } catch {
+      toast.error('Kunne ikke lagre')
+    } finally {
+      setSavingConta(false)
     }
   }
 
@@ -261,6 +284,48 @@ export default function ProjectDetailPage() {
             }}
           >
             {savingDeposit ? 'Lagrer…' : 'Lagre depositum'}
+          </button>
+        </div>
+      </div>
+
+      {/* Conta section */}
+      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '24px' }}>
+        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>Conta — regnskap</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Conta-referanse (fakturanummer)</label>
+            <input
+              value={invoiceReference}
+              onChange={(e) => setInvoiceReference(e.target.value)}
+              placeholder='F.eks. 10042'
+              style={inputStyle}
+            />
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', minHeight: '44px' }}>
+            <input
+              type='checkbox'
+              checked={accountingStatus === 'invoiced'}
+              onChange={(e) => setAccountingStatus(e.target.checked ? 'invoiced' : '')}
+              style={{ width: '18px', height: '18px', accentColor: '#c9933a', cursor: 'pointer' }}
+            />
+            <span style={{ color: '#c9b99a', fontSize: '0.9rem' }}>Fakturert i Conta</span>
+          </label>
+          <button
+            onClick={saveConta}
+            disabled={savingConta}
+            style={{
+              background: savingConta ? '#5a4a2a' : '#c9933a',
+              color: '#0d0c0b',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '12px',
+              fontSize: '0.9rem',
+              fontWeight: '500',
+              cursor: savingConta ? 'not-allowed' : 'pointer',
+              minHeight: '48px',
+            }}
+          >
+            {savingConta ? 'Lagrer…' : 'Lagre Conta-data'}
           </button>
         </div>
       </div>
