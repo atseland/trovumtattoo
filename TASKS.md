@@ -401,7 +401,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-021: Admin klientliste — søk og oversikt
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-002, TASK-020
 
