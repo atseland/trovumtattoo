@@ -70,24 +70,34 @@ export const updateStatus = mutation({
 })
 
 export const list = query({
-  args: { status: v.optional(v.string()) },
-  handler: async (ctx, { status }) => {
+  args: {
+    status: v.optional(v.string()),
+    coverUp: v.optional(v.boolean()),
+    touchUp: v.optional(v.boolean()),
+  },
+  handler: async (ctx, { status, coverUp, touchUp }) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
 
+    let rows
     if (status) {
-      return await ctx.db
+      rows = await ctx.db
         .query('inquiries')
         .withIndex('by_status', (q) => q.eq('status', status))
         .order('desc')
         .collect()
+    } else {
+      rows = await ctx.db
+        .query('inquiries')
+        .withIndex('by_createdAt')
+        .order('desc')
+        .collect()
     }
 
-    return await ctx.db
-      .query('inquiries')
-      .withIndex('by_createdAt')
-      .order('desc')
-      .collect()
+    if (coverUp !== undefined) rows = rows.filter((r) => r.coverUp === coverUp)
+    if (touchUp !== undefined) rows = rows.filter((r) => r.touchUp === touchUp)
+
+    return rows
   },
 })
 

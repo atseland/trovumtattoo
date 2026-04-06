@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
-import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell } from 'lucide-react'
+import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell, Search } from 'lucide-react'
 // TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
 
@@ -14,6 +14,7 @@ const navItems = [
   { href: '/admin/mail', label: 'Mail', icon: Mail },
   { href: '/admin/calendar', label: 'Kalender', icon: Calendar },
   { href: '/admin/notifications', label: 'Varsler', icon: Bell },
+  { href: '/admin/search', label: 'Søk', icon: Search },
   { href: '/admin/settings', label: 'Innstillinger', icon: Settings },
 ]
 

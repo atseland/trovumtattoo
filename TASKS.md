@@ -1089,7 +1089,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-063: Søk og filtrering — global søk og avanserte filtre
 
-**Status:** pending
+**Status:** done
 **Fase:** 6
 **Avhenger av:** TASK-025, TASK-021
 
