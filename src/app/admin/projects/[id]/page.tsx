@@ -10,6 +10,7 @@ import { api } from '../../../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { BookingSheet } from '@/components/admin/BookingSheet'
+import { AftercareSheet } from '@/components/admin/AftercareSheet'
 
 const inputStyle: React.CSSProperties = {
   background: '#1c1916',
@@ -49,6 +50,7 @@ export default function ProjectDetailPage() {
   const [estimate, setEstimate] = useState<string>('')
   const [savingEstimate, setSavingEstimate] = useState(false)
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
+  const [aftercareSheetOpen, setAftercareSheetOpen] = useState(false)
 
   // Deposit state
   const [depositAmount, setDepositAmount] = useState<string>('')
@@ -128,6 +130,9 @@ export default function ProjectDetailPage() {
         </button>
         <button onClick={() => setBookingSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
           Opprett booking
+        </button>
+        <button onClick={() => setAftercareSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
+          Send aftercare
         </button>
       </div>
 
@@ -288,6 +293,15 @@ export default function ProjectDetailPage() {
           onOpenChange={setBookingSheetOpen}
           projectId={id}
           mode='create'
+        />
+      )}
+
+      {aftercareSheetOpen && client && (
+        <AftercareSheet
+          open={aftercareSheetOpen}
+          onOpenChange={setAftercareSheetOpen}
+          projectId={id}
+          clientEmail={(client as any).email}
         />
       )}
     </div>

@@ -786,7 +786,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-043: Aftercare-sending — flyt og logging
 
-**Status:** pending
+**Status:** done
 **Fase:** 4
 **Avhenger av:** TASK-042, TASK-033, TASK-024
 
