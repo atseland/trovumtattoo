@@ -91,6 +91,22 @@ export const get = query({
   },
 })
 
+export const getReferenceImages = query({
+  args: { inquiryId: v.id('inquiries') },
+  handler: async (ctx, { inquiryId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    const refs = await ctx.db
+      .query('referenceImages')
+      .withIndex('by_inquiry', (q) => q.eq('inquiryId', inquiryId))
+      .collect()
+
+    const urls = await Promise.all(refs.map((r) => ctx.storage.getUrl(r.storageId)))
+    return urls.filter((u): u is string => u !== null)
+  },
+})
+
 export const addReferenceImages = mutation({
   args: {
     inquiryId: v.id('inquiries'),

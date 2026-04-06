@@ -310,7 +310,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-015: Admin inquiry detail — full visning og bildegalleri
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-014, TASK-009
 
