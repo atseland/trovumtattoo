@@ -31,6 +31,16 @@ export const create = mutation({
       action: 'created',
       createdAt: Date.now(),
     })
+    await ctx.db.insert('notifications', {
+      type: 'new-inquiry',
+      title: 'Ny forespørsel',
+      body: `${args.name} sendte inn en forespørsel`,
+      relatedEntityType: 'inquiry',
+      relatedEntityId: inquiryId,
+      priority: 'high',
+      isRead: false,
+      createdAt: Date.now(),
+    })
     return inquiryId
   },
 })

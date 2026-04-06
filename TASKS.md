@@ -966,7 +966,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-054: Notification triggers — crons og push-sending
 
-**Status:** pending
+**Status:** done
 **Fase:** 5
 **Avhenger av:** TASK-053, TASK-040
 
