@@ -605,7 +605,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-032: Admin mail-innboks — trådliste
 
-**Status:** pending
+**Status:** done
 **Fase:** 3
 **Avhenger av:** TASK-002, TASK-031
 
