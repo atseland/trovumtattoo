@@ -191,7 +191,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-011: Public hjemmeside — hero, intro, portfolio og CTA
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-003
 
