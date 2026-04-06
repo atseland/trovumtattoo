@@ -389,7 +389,7 @@ Opprett et sett med PRD_UI.md-konformante UI-primitiver. Alle eksisterer som ren
 
 ### TASK-UI-010: Public header — logo, navigasjon og CTA
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-003
 
 #### Hva skal gjøres
@@ -417,7 +417,7 @@ Redessign `src/components/public/PublicHeader.tsx` til PRD_UI.md-standard:
 
 ### TASK-UI-011: Public footer
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-010
 
 #### Hva skal gjøres

@@ -8,19 +8,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!userId) redirect('/sign-in')
 
   return (
-    <div className='flex min-h-screen' style={{ background: '#0d0c0b' }}>
+    <div className='flex min-h-screen bg-bg'>
       <AdminNav />
 
       <div className='flex flex-1 flex-col md:overflow-hidden'>
         {/* Sticky header */}
-        <header
-          className='sticky top-0 z-40 flex items-center justify-between border-b px-4 py-3'
-          style={{ background: '#141210', borderColor: '#2a2724', minHeight: '56px' }}
-        >
-          <span className='text-sm font-medium' style={{ color: '#c9b99a' }}>
-            Admin
-          </span>
-          <UserButton appearance={{ variables: { colorPrimary: '#c9933a' } }} />
+        <header className='sticky top-0 z-40 flex items-center justify-between border-b border-rule bg-panel px-4 py-3 min-h-[56px]'>
+          <span className='font-sans text-sm font-medium text-paper'>Admin</span>
+          <UserButton appearance={{ variables: { colorPrimary: 'var(--accent)' } }} />
         </header>
 
         {/* Main content — add bottom padding on mobile for nav bar */}
