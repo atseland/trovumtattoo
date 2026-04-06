@@ -1,4 +1,17 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Etterbehandling | Trovum Tattoo',
+  description:
+    'Komplett guide til etterbehandling av ny tatovering — dag-for-dag instruksjoner for riktig stell og heling.',
+  alternates: { canonical: 'https://trovumtattoo.no/aftercare' },
+  openGraph: {
+    title: 'Etterbehandling | Trovum Tattoo',
+    description: 'Dag-for-dag guide til etterbehandling av tatovering.',
+    url: 'https://trovumtattoo.no/aftercare',
+  },
+}
 
 const steps = [
   {

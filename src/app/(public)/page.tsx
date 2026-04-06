@@ -1,4 +1,32 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+import Script from 'next/script'
+
+export const metadata: Metadata = {
+  title: 'Trovum Tattoo — Håndtegnet tatovering i Oslo',
+  description:
+    'Trovum Tattoo er et tatoveringsstudio i Oslo med fokus på fineline, svart/grå og illustrativt arbeid. Send inn bookingforespørsel i dag.',
+  alternates: { canonical: 'https://trovumtattoo.no' },
+  openGraph: {
+    title: 'Trovum Tattoo — Håndtegnet tatovering i Oslo',
+    description:
+      'Tatoveringsstudio i Oslo med fokus på fineline og tidløs estetikk. Book din tatovering.',
+    url: 'https://trovumtattoo.no',
+  },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Trovum Tattoo',
+  description: 'Tatoveringsstudio i Oslo med fokus på fineline og tidløs estetikk.',
+  url: 'https://trovumtattoo.no',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Oslo',
+    addressCountry: 'NO',
+  },
+}
 
 const placeholderImages = Array.from({ length: 9 }, (_, i) => i + 1)
 
@@ -11,6 +39,11 @@ const steps = [
 export default function PublicHomePage() {
   return (
     <div>
+      <Script
+        id='json-ld-local-business'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className='flex min-h-[80vh] flex-col items-center justify-center px-5 py-20 text-center'>
         <h1

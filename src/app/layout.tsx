@@ -16,6 +16,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://trovumtattoo.no'),
   title: 'Trovum Tattoo',
   description: 'Book din tatovering hos Trovum',
   manifest: '/manifest.json',

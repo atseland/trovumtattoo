@@ -1,4 +1,17 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Slik fungerer bookingen | Trovum Tattoo',
+  description:
+    'Alt du trenger å vite om bookingprosessen hos Trovum Tattoo — fra idé til ferdig tatovering, priser, depositum og hva du bør sende inn.',
+  alternates: { canonical: 'https://trovumtattoo.no/booking-info' },
+  openGraph: {
+    title: 'Slik fungerer bookingen | Trovum Tattoo',
+    description: 'Komplett guide til bookingprosessen hos Trovum Tattoo.',
+    url: 'https://trovumtattoo.no/booking-info',
+  },
+}
 
 const sections = [
   {

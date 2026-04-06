@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   Accordion,
@@ -5,6 +6,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+
+export const metadata: Metadata = {
+  title: 'Vanlige spørsmål | Trovum Tattoo',
+  description:
+    'Svar på de vanligste spørsmålene om booking, priser, depositum, cover-up og etterbehandling hos Trovum Tattoo.',
+  alternates: { canonical: 'https://trovumtattoo.no/faq' },
+  openGraph: {
+    title: 'Vanlige spørsmål | Trovum Tattoo',
+    description: 'Alt du lurer på om booking, priser og prosessen hos Trovum Tattoo.',
+    url: 'https://trovumtattoo.no/faq',
+  },
+}
 
 const faqItems = [
   {

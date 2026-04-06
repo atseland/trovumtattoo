@@ -1028,7 +1028,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-061: SEO metadata-lag — titler, beskrivelser og strukturert data
 
-**Status:** pending
+**Status:** done
 **Fase:** 6
 **Avhenger av:** TASK-060, TASK-011
 
