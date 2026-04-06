@@ -699,7 +699,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-040: Convex booking-funksjoner — CRUD og aktivitetslogg
 
-**Status:** pending
+**Status:** done
 **Fase:** 4
 **Avhenger av:** TASK-020
 
