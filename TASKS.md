@@ -516,7 +516,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-025: Admin dashboard — oversikt og snarveier
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-022, TASK-014
 
