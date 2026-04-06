@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repo Verify"
+  short_description: "Runs the smallest useful verification plan and enforces honest handoff."
+policy:
+  allow_implicit_invocation: true

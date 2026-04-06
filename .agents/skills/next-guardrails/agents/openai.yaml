@@ -1,0 +1,5 @@
+interface:
+  display_name: "Next Guardrails"
+  short_description: "Applies App Router server/client and verification guardrails."
+policy:
+  allow_implicit_invocation: true
