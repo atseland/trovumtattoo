@@ -47,7 +47,7 @@ Eksempel: `feat(inquiries): legg til status-modal og aktivitetslogg`
 
 ## TASK-001: Design system — fonter, CSS-tokens og typografiskala
 
-**Status:** pending
+**Status:** done
 **Fase:** Foundation
 **Avhenger av:** —
 
