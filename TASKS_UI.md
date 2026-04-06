@@ -293,7 +293,7 @@ Oppdater alle eksisterende steder der "Trovum" er skrevet som tekst i serif ital
 
 ### TASK-UI-003: Delte UI-komponenter — knapper, lenker og seksjons-divider
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001
 
 #### Hva skal gjøres
