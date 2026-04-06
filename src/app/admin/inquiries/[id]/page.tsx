@@ -2,11 +2,13 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import { useQuery, useConvexAuth } from 'convex/react'
 // TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
+import { StatusChangeSheet } from '@/components/admin/StatusChangeSheet'
 
 function Field({ label, value }: { label: string; value?: string | boolean | null }) {
   if (value === undefined || value === null || value === '') return null
@@ -23,6 +25,7 @@ function Field({ label, value }: { label: string; value?: string | boolean | nul
 export default function InquiryDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { isAuthenticated } = useConvexAuth()
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   const inquiry = useQuery(
     (api as any).inquiries.get,
@@ -60,9 +63,8 @@ export default function InquiryDetailPage() {
           ← Tilbake
         </Link>
         <div style={{ display: 'flex', gap: '8px' }}>
-          {/* Endre status — modal implementeres i TASK-016 */}
           <button
-            id='endre-status-btn'
+            onClick={() => setSheetOpen(true)}
             style={{
               padding: '8px 16px',
               background: '#c9933a',
@@ -148,6 +150,14 @@ export default function InquiryDetailPage() {
           <ActivityLogTimeline entries={(activityLog ?? []) as any[]} />
         )}
       </div>
+
+      {/* Status change sheet */}
+      <StatusChangeSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        inquiryId={id}
+        currentStatus={inquiry.status}
+      />
     </div>
   )
 }

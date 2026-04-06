@@ -342,7 +342,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-016: Statusendring og aktivitetslogg — modal og skriving
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-015
 
