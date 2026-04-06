@@ -937,7 +937,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-053: Push notification-abonnement — VAPID og subscription lagring
 
-**Status:** pending
+**Status:** done
 **Fase:** 5
 **Avhenger av:** TASK-052
 
