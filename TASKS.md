@@ -848,7 +848,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-050: PWA manifest og ikoner
 
-**Status:** pending
+**Status:** done
 **Fase:** 5
 **Avhenger av:** TASK-001
 

@@ -17,6 +17,16 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: 'Trovum Tattoo',
   description: 'Book din tatovering hos Trovum',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'Trovum',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    apple: '/icons/icon-192.svg',
+  },
+  themeColor: '#0d0c0b',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
