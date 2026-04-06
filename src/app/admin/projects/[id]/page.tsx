@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { api } from '../../../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
+import { BookingSheet } from '@/components/admin/BookingSheet'
 
 const inputStyle: React.CSSProperties = {
   background: '#1c1916',
@@ -41,11 +42,13 @@ export default function ProjectDetailPage() {
     (api as any).activityLog.listByEntity,
     isAuthenticated ? { entityType: 'project', entityId: id } : 'skip'
   )
+  const bookings = useQuery((api as any).bookings.listByProject, isAuthenticated ? { projectId: id } : 'skip')
   const updateProject = useMutation((api as any).projects.update)
 
   // Estimate state
   const [estimate, setEstimate] = useState<string>('')
   const [savingEstimate, setSavingEstimate] = useState(false)
+  const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
 
   // Deposit state
   const [depositAmount, setDepositAmount] = useState<string>('')
@@ -123,7 +126,7 @@ export default function ProjectDetailPage() {
         <button style={{ padding: '8px 16px', background: '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
           Endre status
         </button>
-        <button style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
+        <button onClick={() => setBookingSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
           Opprett booking
         </button>
       </div>
@@ -248,6 +251,28 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
+      {/* Bookings list */}
+      <div style={{ marginBottom: '24px' }}>
+        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '12px' }}>Bookinger</h2>
+        {bookings === undefined ? (
+          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Laster…</p>
+        ) : (bookings as any[]).length === 0 ? (
+          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen bookinger ennå.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {(bookings as any[]).map((b) => (
+              <div key={b._id} style={{ padding: '12px 14px', background: '#1c1916', border: '1px solid #2a2724', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                <span style={{ color: '#c9b99a', fontSize: '0.875rem' }}>
+                  {new Date(b.startAt).toLocaleString('nb-NO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })} –{' '}
+                  {new Date(b.endAt).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: b.status === 'cancelled' ? '#c96b6b' : '#4ab97a' }}>{b.status}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Activity log */}
       <div>
         <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>Aktivitetslogg</h2>
@@ -257,6 +282,14 @@ export default function ProjectDetailPage() {
           <ActivityLogTimeline entries={(activityLog ?? []) as any[]} />
         )}
       </div>
+      {bookingSheetOpen && (
+        <BookingSheet
+          open={bookingSheetOpen}
+          onOpenChange={setBookingSheetOpen}
+          projectId={id}
+          mode='create'
+        />
+      )}
     </div>
   )
 }

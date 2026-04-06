@@ -726,7 +726,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-041: Admin kalender — ukelistevisning
 
-**Status:** pending
+**Status:** done
 **Fase:** 4
 **Avhenger av:** TASK-002, TASK-040
 
@@ -756,7 +756,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-042: Opprett, rediger og avlys booking — sheet-UI
 
-**Status:** pending
+**Status:** done
 **Fase:** 4
 **Avhenger av:** TASK-041, TASK-022
 
