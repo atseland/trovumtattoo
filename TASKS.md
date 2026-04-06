@@ -545,7 +545,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-030: Mail-infrastruktur — konfigurasjon og environment
 
-**Status:** pending
+**Status:** done
 **Fase:** 3
 **Avhenger av:** TASK-002
 
@@ -574,7 +574,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-031: Mail sync action — IMAP-henting og upsert til Convex
 
-**Status:** pending
+**Status:** done
 **Fase:** 3
 **Avhenger av:** TASK-030
 
