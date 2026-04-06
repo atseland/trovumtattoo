@@ -138,7 +138,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-009: Convex file storage helper — bildeopplasting
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-001
 
@@ -164,7 +164,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-010: Convex inquiry functions — CRUD og statusoppdatering
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-009
 
