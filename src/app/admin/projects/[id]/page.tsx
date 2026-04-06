@@ -11,6 +11,7 @@ import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { BookingSheet } from '@/components/admin/BookingSheet'
 import { AftercareSheet } from '@/components/admin/AftercareSheet'
+import { ReviewRequestSheet } from '@/components/admin/ReviewRequestSheet'
 
 const inputStyle: React.CSSProperties = {
   background: '#1c1916',
@@ -51,6 +52,7 @@ export default function ProjectDetailPage() {
   const [savingEstimate, setSavingEstimate] = useState(false)
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
   const [aftercareSheetOpen, setAftercareSheetOpen] = useState(false)
+  const [reviewSheetOpen, setReviewSheetOpen] = useState(false)
 
   // Deposit state
   const [depositAmount, setDepositAmount] = useState<string>('')
@@ -133,6 +135,13 @@ export default function ProjectDetailPage() {
         </button>
         <button onClick={() => setAftercareSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
           Send aftercare
+        </button>
+        <button
+          onClick={() => setReviewSheetOpen(true)}
+          disabled={!!project.reviewRequestedAt}
+          style={{ padding: '8px 16px', background: 'transparent', color: project.reviewRequestedAt ? '#7a6e62' : '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: project.reviewRequestedAt ? 'not-allowed' : 'pointer', fontSize: '0.875rem', minHeight: '40px' }}
+        >
+          {project.reviewRequestedAt ? 'Anmeldelse forespurt' : 'Be om anmeldelse'}
         </button>
       </div>
 
@@ -302,6 +311,16 @@ export default function ProjectDetailPage() {
           onOpenChange={setAftercareSheetOpen}
           projectId={id}
           clientEmail={(client as any).email}
+        />
+      )}
+
+      {reviewSheetOpen && client && (
+        <ReviewRequestSheet
+          open={reviewSheetOpen}
+          onOpenChange={setReviewSheetOpen}
+          projectId={id}
+          clientEmail={(client as any).email}
+          reviewRequestedAt={project.reviewRequestedAt}
         />
       )}
     </div>

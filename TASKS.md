@@ -819,7 +819,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-044: Review request-flyt — sending og logging
 
-**Status:** pending
+**Status:** done
 **Fase:** 4
 **Avhenger av:** TASK-043
 
