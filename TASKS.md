@@ -108,7 +108,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-003: Public layout shell — header og footer
 
-**Status:** pending
+**Status:** done
 **Fase:** Foundation
 **Avhenger av:** TASK-001
 
