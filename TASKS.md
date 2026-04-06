@@ -997,7 +997,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-060: Public innholdssider — FAQ, booking-info, aftercare, personvern
 
-**Status:** pending
+**Status:** done
 **Fase:** 6
 **Avhenger av:** TASK-003
 
