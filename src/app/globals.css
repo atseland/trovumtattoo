@@ -1,69 +1,129 @@
 @import "tailwindcss";
 
-/* Always dark — no prefers-color-scheme */
 :root {
-  --background: #0d0c0b;
-  --foreground: #c9b99a;
+  /* Bakgrunner */
+  --bg:           #0d0b09;
+  --panel:        #161412;
 
-  /* Brand palette */
-  --color-accent: #c9933a;
-  --color-border-subtle: #2a2724;
-  --color-muted: #7a6e62;
-  --color-surface: #141210;
-  --color-surface-raised: #1c1916;
+  /* Tekst */
+  --paper:        #ede9e6;
+  --body:         #b8b0a8;
+  --nav:          #9a948e;
+  --mast-left:    #8a8078;
+  --mast-right:   #7a7068;
+  --index-num:    #6a6058;
+  --footer-label: #685850;
 
-  /* Status colors */
-  --color-status-ny: #6b9dd4;
-  --color-status-ny-bg: #1a2a4a;
-  --color-status-info: #c9b93a;
-  --color-status-info-bg: #2a2a1a;
-  --color-status-konsultasjon: #4ab9b9;
-  --color-status-konsultasjon-bg: #1a2a2a;
-  --color-status-tilbud: #9b7bc9;
-  --color-status-tilbud-bg: #2a1a3a;
-  --color-status-depositum: #c9933a;
-  --color-status-depositum-bg: #2a1e0d;
-  --color-status-booket: #4ab97a;
-  --color-status-booket-bg: #0d2a1a;
-  --color-status-fullfort: #7ab94a;
-  --color-status-fullfort-bg: #1a2a1a;
-  --color-status-avslatt: #c96b6b;
-  --color-status-avslatt-bg: #2a1010;
+  /* Aksent */
+  --accent:       #a09488;
 
-  /* Typography scale */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  --text-6xl: 3.75rem;
+  /* Skillelinjer */
+  --rule:         rgba(237,233,230,0.065);
+  --rule-heavy:   rgba(237,233,230,0.08);
+  --rule-light:   rgba(237,233,230,0.04);
+  --rule-inner:   rgba(237,233,230,0.07);
+
+  /* Spacing */
+  --pad: 20px;
+
+  /* Statusfarger — dempede, varme varianter */
+  --status-new:           rgba(200, 185, 160, 0.15);
+  --status-new-text:      #c8b9a0;
+  --status-info:          rgba(170, 165, 190, 0.12);
+  --status-info-text:     #aaa5be;
+  --status-offer:         rgba(180, 170, 140, 0.12);
+  --status-offer-text:    #b4aa8c;
+  --status-deposit:       rgba(190, 165, 130, 0.14);
+  --status-deposit-text:  #bea582;
+  --status-booked:        rgba(140, 175, 155, 0.12);
+  --status-booked-text:   #8caf9b;
+  --status-done:          rgba(130, 165, 145, 0.14);
+  --status-done-text:     #82a591;
+  --status-rejected:      rgba(175, 140, 135, 0.12);
+  --status-rejected-text: #af8c87;
+}
+
+@media (min-width: 1024px) {
+  :root { --pad: 48px; }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--color-accent);
-  --color-border-subtle: var(--color-border-subtle);
-  --color-muted: var(--color-muted);
-  --color-surface: var(--color-surface);
-  --color-surface-raised: var(--color-surface-raised);
+  /* Farger */
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-paper: var(--paper);
+  --color-body: var(--body);
+  --color-nav: var(--nav);
+  --color-mast-left: var(--mast-left);
+  --color-mast-right: var(--mast-right);
+  --color-index-num: var(--index-num);
+  --color-footer-label: var(--footer-label);
+  --color-accent: var(--accent);
+  --color-rule: var(--rule);
+  --color-rule-heavy: var(--rule-heavy);
+  --color-rule-light: var(--rule-light);
+  --color-rule-inner: var(--rule-inner);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-playfair);
+  /* Statusfarger */
+  --color-status-new: var(--status-new);
+  --color-status-new-text: var(--status-new-text);
+  --color-status-info: var(--status-info);
+  --color-status-info-text: var(--status-info-text);
+  --color-status-offer: var(--status-offer);
+  --color-status-offer-text: var(--status-offer-text);
+  --color-status-deposit: var(--status-deposit);
+  --color-status-deposit-text: var(--status-deposit-text);
+  --color-status-booked: var(--status-booked);
+  --color-status-booked-text: var(--status-booked-text);
+  --color-status-done: var(--status-done);
+  --color-status-done-text: var(--status-done-text);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-rejected-text: var(--status-rejected-text);
+
+  /* Fonter */
+  --font-sans: var(--font-jost);
+  --font-serif: var(--font-garamond);
+  --font-mono: var(--font-plex);
+
+  /* Spacing */
+  --spacing-pad: var(--pad);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  background: var(--bg);
+  color: var(--paper);
+  font-family: var(--font-jost), sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Utility: serif italic for hero and artist identity */
-.font-serif {
-  font-family: var(--font-playfair), Georgia, serif;
+@media (min-width: 1024px) {
+  body {
+    background:
+      radial-gradient(circle at top, rgba(160,148,136,0.06), transparent 38%),
+      linear-gradient(180deg, #13110f 0%, var(--bg) 100%);
+  }
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
