@@ -59,6 +59,7 @@ export default defineSchema({
     accountingStatus: v.optional(v.string()),
     paymentNote: v.optional(v.string()),
     aftercareTemplateId: v.optional(v.id('messageTemplates')),
+    aftercareSentAt: v.optional(v.number()),
     reviewRequestedAt: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),

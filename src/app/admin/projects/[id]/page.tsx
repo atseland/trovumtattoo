@@ -238,7 +238,7 @@ export default function ProjectDetailPage() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Beløp (NOK)</label>
               <input type='number' value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} placeholder='F.eks. 1000' style={inputStyle} />

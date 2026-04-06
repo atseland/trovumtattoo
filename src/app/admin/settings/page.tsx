@@ -74,7 +74,7 @@ export default function SettingsPage() {
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                background: '#4ade80',
+                background: 'var(--color-status-booket)',
                 flexShrink: 0,
               }}
             />

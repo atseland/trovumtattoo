@@ -1,7 +1,7 @@
-import { mutation } from '../_generated/server'
+import { mutation, internalMutation } from '../_generated/server'
 import { v } from 'convex/values'
 
-export const upsertThread = mutation({
+export const upsertThread = internalMutation({
   args: {
     externalThreadId: v.string(),
     subject: v.string(),
@@ -34,7 +34,7 @@ export const upsertThread = mutation({
   },
 })
 
-export const upsertMessage = mutation({
+export const upsertMessage = internalMutation({
   args: {
     threadId: v.id('mailThreads'),
     externalId: v.string(),

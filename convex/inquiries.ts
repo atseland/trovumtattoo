@@ -139,6 +139,9 @@ export const addReferenceImages = mutation({
     ),
   },
   handler: async (ctx, { inquiryId, images }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
     const now = Date.now()
     await Promise.all(
       images.map((img) =>

@@ -1,13 +1,11 @@
 import { action } from '../_generated/server'
-import { api } from '../_generated/api'
+import { internal } from '../_generated/api'
+import { ImapFlow } from 'imapflow'
 import { getMailConfig } from './config'
 
 /**
  * syncMail — Convex action som henter e-post fra IMAP og lagrer i Convex.
  * Krever at MAIL_* miljøvariabler er satt (se convex/mail/config.ts).
- *
- * TODO: Installer imapflow via convex package.json eller npm-knytning.
- * npx convex env set MAIL_USERNAME xxx
  */
 export const syncMail = action({
   args: {},
@@ -20,27 +18,65 @@ export const syncMail = action({
       return { synced: 0, error: (e as Error).message }
     }
 
-    // TODO: Installer imapflow og aktiver koden nedenfor etter `npx convex env set`
-    // import { ImapFlow } from 'imapflow'
-    // const client = new ImapFlow({ host: config.imap.host, port: config.imap.port, secure: config.imap.secure, auth: config.imap.auth, logger: false })
-    // try {
-    //   await client.connect()
-    //   const lock = await client.getMailboxLock('INBOX')
-    //   try {
-    //     const messages = []
-    //     for await (const msg of client.fetch('1:50', { envelope: true, source: true, flags: true })) {
-    //       messages.push(msg)
-    //     }
-    //     for (const msg of messages) {
-    //       const externalId = msg.envelope?.messageId ?? String(msg.seq)
-    //       const threadId = await ctx.runMutation(api.mail.mutations.upsertThread, { ... })
-    //       await ctx.runMutation(api.mail.mutations.upsertMessage, { ... })
-    //     }
-    //   } finally { lock.release() }
-    //   await client.logout()
-    // } catch (e) { console.error('[syncMail]', e) }
+    const client = new ImapFlow({
+      host: config.imap.host,
+      port: config.imap.port,
+      secure: config.imap.secure,
+      auth: config.imap.auth,
+      logger: false as any,
+    })
 
-    console.log('[syncMail] Placeholder — aktiver imapflow-kode etter konfigurasjon')
-    return { synced: 0 }
+    let synced = 0
+
+    try {
+      await client.connect()
+      const lock = await client.getMailboxLock('INBOX')
+
+      try {
+        for await (const msg of client.fetch('1:50', { envelope: true, source: true, flags: true })) {
+          const envelope = msg.envelope
+          if (!envelope) continue
+
+          const externalId = envelope.messageId ?? String(msg.seq)
+          const subject = envelope.subject ?? '(Uten emne)'
+          const from = envelope.from?.[0]?.address ?? 'ukjent'
+          const toAddrs = (envelope.to ?? []).map((a: any) => a.address ?? '').filter(Boolean)
+          const participants = [from, ...toAddrs]
+          const date = envelope.date ? new Date(envelope.date).getTime() : Date.now()
+
+          const threadId = await ctx.runMutation((internal as any).mail.mutations.upsertThread, {
+            externalThreadId: externalId,
+            subject,
+            participants,
+            lastMessageAt: date,
+            unreadCount: msg.flags?.has('\\Seen') ? 0 : 1,
+          })
+
+          await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
+            threadId,
+            externalId,
+            direction: 'inbound',
+            from,
+            to: toAddrs,
+            subject,
+            bodyText: msg.source?.toString() ?? '',
+            receivedAt: date,
+            isRead: msg.flags?.has('\\Seen') ?? false,
+          })
+
+          synced++
+        }
+      } finally {
+        lock.release()
+      }
+
+      await client.logout()
+    } catch (e) {
+      console.error('[syncMail] IMAP-feil:', e)
+      return { synced, error: (e as Error).message }
+    }
+
+    console.log(`[syncMail] Synkronisert ${synced} meldinger`)
+    return { synced }
   },
 })

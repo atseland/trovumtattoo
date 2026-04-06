@@ -1142,3 +1142,403 @@ Gjennomfør en kvalitetsaudit av hele appen. (1) Tom tilstand: sjekk at alle lis
 - [ ] `not-found.tsx` returnerer 404-statuskode og forklarende melding
 - [ ] AdminNav badges (notifikasjoner, nye forespørsler) viser korrekte tall
 - [ ] `pnpm typecheck && pnpm test:run && pnpm build` passerer uten feil eller advarsler
+
+---
+
+## Fase 7 — Auditfikser
+
+Oppgavene i denne fasen er basert på funn fra en kodeaudit av v1. De er sortert slik at fundamentale fixes (schema, auth, internalMutations) kommer før alt som avhenger av dem. Kritiske funn (K) løses først, deretter advarsler (A).
+
+---
+
+## TASK-065: Schema-utvidelse — legg til `aftercareSentAt` i projects-tabellen
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+Legg til det manglende feltet `aftercareSentAt: v.optional(v.number())` i `projects`-tabellen i `convex/schema.ts`. Feltet refereres allerede til i `convex/mail/sendAftercare.ts` (linje 9 og 52–53), men eksisterer ikke i skjemaet — dette er det eneste kritiske schema-avviket i audit K4. Etter at feltet er lagt til i skjemaet, aktiver den kommenterte `projects.update`-kallet i `sendAftercare.ts` slik at aftercare-tidspunkt faktisk lagres.
+
+### Filer
+- **Les:** `convex/schema.ts` — se `projects`-tabellen
+- **Les:** `convex/mail/sendAftercare.ts` — se TODO-kommentarene på linje 9 og 52–53
+- **Modifiser:** `convex/schema.ts` — legg til `aftercareSentAt: v.optional(v.number())` i `projects`-tabellen
+- **Modifiser:** `convex/mail/sendAftercare.ts` — aktiver den kommenterte `projects.update`-linjen (fjern `// ` og `as any`-casten om mulig etter TASK-071)
+
+### Akseptansekriterier
+- [ ] `convex/schema.ts` inneholder `aftercareSentAt: v.optional(v.number())` under `projects`-tabellen
+- [ ] `convex/mail/sendAftercare.ts` sin TODO-kommentar om manglende felt er fjernet
+- [ ] `npx convex dev` synkroniserer uten feil
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-066: Auth-sikring — `internalMutation` for mail- og aktivitetslog-mutasjoner
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+Konverter de tre interne mutasjonene som i dag er eksponert som public `mutation` til `internalMutation`. Dette hindrer at vilkårlige klienter kan skrive til mail-trådene og aktivitetsloggen direkte. De tre mutasjonene er: `upsertThread` og `upsertMessage` i `convex/mail/mutations.ts`, og `insert` i `convex/activityLogMutations.ts`. Alle kallesteder bruker allerede `ctx.runMutation((api as any).X)` fra Convex actions — disse må endres til `ctx.runMutation(internal.X)` etter konverteringen.
+
+### Filer
+- **Les:** `convex/mail/mutations.ts` — `upsertThread` (linje 4) og `upsertMessage` (linje 37)
+- **Les:** `convex/activityLogMutations.ts` — `insert` (linje 4)
+- **Les:** `convex/mail/sendReply.ts` — finn alle kallesteder for `upsertMessage` og `activityLogMutations.insert`
+- **Les:** `convex/mail/sendAftercare.ts` — kallesteder
+- **Les:** `convex/mail/sendReviewRequest.ts` — kallesteder
+- **Les:** `convex/mail/sync.ts` — kallesteder for `upsertThread` og `upsertMessage`
+- **Modifiser:** `convex/mail/mutations.ts` — importer `internalMutation` og bytt ut `mutation` for `upsertThread` og `upsertMessage`
+- **Modifiser:** `convex/activityLogMutations.ts` — importer `internalMutation` og bytt ut `mutation` for `insert`
+- **Modifiser:** Alle Convex actions som kaller disse — bytt `(api as any).mail.mutations.upsertThread/upsertMessage` og `(api as any).activityLogMutations.insert` til `internal.*`-ekvivalenter
+
+### Akseptansekriterier
+- [ ] `upsertThread` og `upsertMessage` er deklarert med `internalMutation` — ikke lenger eksponert i `api`-objektet
+- [ ] `activityLogMutations.insert` er deklarert med `internalMutation`
+- [ ] Alle kallesteder i actions bruker `internal.mail.mutations.upsertThread` osv. (ikke `api as any`)
+- [ ] `npx convex dev` synkroniserer uten feil
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-067: Auth-sikring — legg til auth-sjekk i `addReferenceImages` og `generateUploadUrl`
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+Legg til Clerk-auth-sjekk i de to high-priority-mutasjonene som mangler det. (1) `convex/inquiries.ts` — `addReferenceImages`: denne kalles kun fra admin-panelet etter at en forespørsel er innsendt, så auth-kravet er riktig. (2) `convex/storage.ts` — `generateUploadUrl`: booking-skjemaet (public) trenger å generere upload-URL-er uten auth, men admin-upload av referansebilder bør ikke gå gjennom den samme åpne endepunktet. Løsning: behold den eksisterende `generateUploadUrl` som public (brukes av bookingskjemaet), opprett en ny `generateUploadUrlAuthed` mutation med auth-sjekk som brukes fra admin-panelet for opplasting knyttet til eksisterende inquiries.
+
+Mønster for auth-sjekk (fra TASKS.md Convex-notater):
+```ts
+const identity = await ctx.auth.getUserIdentity()
+if (!identity) throw new Error('Unauthorized')
+```
+
+### Filer
+- **Les:** `convex/inquiries.ts` — `addReferenceImages` (linje 130)
+- **Les:** `convex/storage.ts` — `generateUploadUrl`
+- **Modifiser:** `convex/inquiries.ts` — legg til auth-sjekk øverst i `addReferenceImages` sin handler
+- **Modifiser:** `convex/storage.ts` — legg til `generateUploadUrlAuthed` mutation med auth-sjekk
+- **Modifiser:** Admin-komponent(er) som kaller `generateUploadUrl` fra admin-panelet — bytt til `generateUploadUrlAuthed`
+
+### Akseptansekriterier
+- [ ] `addReferenceImages` kaster `'Unauthorized'` hvis ingen Clerk-session er aktiv
+- [ ] `generateUploadUrlAuthed` eksisterer i `convex/storage.ts` og krever autentisering
+- [ ] Den originale `generateUploadUrl` (uten auth) brukes kun av det public bookingskjemaet
+- [ ] Admin-panel bruker `generateUploadUrlAuthed` for opplasting
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-068: E-postinfrastruktur — installer nodemailer og aktiver SMTP-sending
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** TASK-066, TASK-067
+
+### Hva skal bygges
+Installer `nodemailer` og aktiver de fire SMTP-sendingsfunksjonene som i dag er tomme skall. Alle fire actions følger samme mønster: hent konfig via `getMailConfig()`, bygg opp `nodemailer.createTransport(...)`, kall `transporter.sendMail(...)`, lagre som outbound melding via `ctx.runMutation(internal.mail.mutations.upsertMessage, ...)`. Funksjonene det gjelder er: `sendReply`, `sendAftercare`, `sendReviewRequest` — alle i `convex/mail/`. `sendPush` (web-push) håndteres separat i TASK-069. Legg til `@types/nodemailer` i devDependencies om det trengs.
+
+### Filer
+- **Les:** `convex/mail/sendReply.ts` — se TODO-kommentarene og eksisterende struktur
+- **Les:** `convex/mail/sendAftercare.ts` — se TODO-kommentarene (TASK-065 må være ferdig først)
+- **Les:** `convex/mail/sendReviewRequest.ts` — se TODO-kommentarene
+- **Les:** `convex/mail/config.ts` — se `getMailConfig()` og hvilke env-variabler som brukes
+- **Modifiser:** `package.json` — legg til `nodemailer` som dependency
+- **Modifiser:** `convex/mail/sendReply.ts` — implementer SMTP-sending med nodemailer
+- **Modifiser:** `convex/mail/sendAftercare.ts` — implementer SMTP-sending med nodemailer
+- **Modifiser:** `convex/mail/sendReviewRequest.ts` — implementer SMTP-sending med nodemailer
+
+### Akseptansekriterier
+- [ ] `nodemailer` er installert og tilgjengelig i Convex actions (Node.js runtime)
+- [ ] `sendReply` sender e-post via SMTP og lagrer outbound melding i `mailMessages`
+- [ ] `sendAftercare` sender e-post via SMTP og oppdaterer `project.aftercareSentAt`
+- [ ] `sendReviewRequest` sender e-post via SMTP og oppdaterer `project.reviewRequestedAt`
+- [ ] Alle tre kaster tydelig feil om mail-konfig mangler (eksisterende `getMailConfig()`-kast bevares)
+- [ ] Alle TODO-kommentarer om nodemailer er fjernet
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-069: Push-notifikasjoner — installer web-push og aktiver `sendPush`
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** TASK-066
+
+### Hva skal bygges
+Installer `web-push`-pakken og aktiver `convex/mail/sendPush.ts` som i dag er et tomt skall. Generer VAPID-nøkkelpar (én gang, lagres som Convex-miljøvariabler `VAPID_PUBLIC_KEY` og `VAPID_PRIVATE_KEY`). `sendPush`-actionen skal: lese abonnementer fra `notifications`-tabellen (eller en dedikert `pushSubscriptions`-tabell om den finnes i schema), kalle `webpush.sendNotification(subscription, payload)` for hvert abonnement. Legg til `@types/web-push` i devDependencies. Behold Convex-miljøvariabelnavnene konsistente med eksisterende `config.ts`-mønster.
+
+### Filer
+- **Les:** `convex/mail/sendPush.ts` — eksisterende stub (linje 11 og videre)
+- **Les:** `convex/schema.ts` — se om det finnes `pushSubscriptions`-tabell; om ikke, noter at det mangler og vurder om den skal legges til
+- **Modifiser:** `package.json` — legg til `web-push` som dependency
+- **Modifiser:** `convex/mail/sendPush.ts` — implementer push-sending med `web-push`
+
+### Akseptansekriterier
+- [ ] `web-push` er installert
+- [ ] `sendPush` sender push til minst ett abonnement når det finnes
+- [ ] VAPID-nøkkelpar leses fra Convex env-variabler (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`)
+- [ ] Actionen feiler gracefully (logger, kaster ikke ukontrollert) om ingen abonnementer finnes
+- [ ] TODO-kommentaren om `web-push` mangler er fjernet
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-070: IMAP-synkronisering — installer imapflow og aktiver `sync.ts`
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** TASK-066
+
+### Hva skal bygges
+Installer `imapflow`-pakken og aktiver `convex/mail/sync.ts` sin IMAP-synkroniseringslogikk som i dag er deaktivert. Actionen skal: koble til IMAP-server med `imapflow`, hente uleste meldinger fra INBOX, lagre nye tråder og meldinger via `ctx.runMutation(internal.mail.mutations.upsertThread, ...)` og `ctx.runMutation(internal.mail.mutations.upsertMessage, ...)`, oppdatere `mailAccounts.lastSyncAt`. Cron-jobben i `convex/crons.ts` som kaller `syncMail` bør verifiseres og aktiveres. Legg til `@types/imapflow` (eller sjekk om pakken har innebygde typer).
+
+### Filer
+- **Les:** `convex/mail/sync.ts` — eksisterende stub med deaktivert IMAP-logikk (linje 23)
+- **Les:** `convex/mail/config.ts` — `getMailConfig()` — se hvilke IMAP-felter som er tilgjengelige
+- **Les:** `convex/crons.ts` — verifiser at `syncMail`-cron er definert
+- **Modifiser:** `package.json` — legg til `imapflow` som dependency
+- **Modifiser:** `convex/mail/sync.ts` — implementer IMAP-henting og lagring
+
+### Akseptansekriterier
+- [ ] `imapflow` er installert
+- [ ] `syncMail`-actionen kobler til IMAP, henter uleste meldinger og lagrer dem via `internal.mail.mutations.*`
+- [ ] `mailAccounts.lastSyncAt` oppdateres etter vellykket synkronisering
+- [ ] `convex/crons.ts` har en cron-jobb som kaller `syncMail` med passende intervall (f.eks. hvert 5. minutt)
+- [ ] TODO-kommentaren om `imapflow` mangler er fjernet
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-071: Typesikkerhet — fjern alle `(api as any)`-caster
+
+**Status:** pending
+**Fase:** 7 — Auditfikser
+**Avhenger av:** TASK-066, TASK-067, TASK-068, TASK-069, TASK-070
+
+### Hva skal bygges
+Kjør `npx convex dev` for å regenerere `convex/_generated/api.d.ts` etter alle mutasjonsendringene i TASK-065 til TASK-070. Deretter finn og fjern alle 21 forekomster av `(api as any)` i kodebasen. Bruk riktig `api`-type fra `convex/_generated/api` for queries og mutations, og `internal` fra `convex/_generated/api` for internalMutation-kall. Sjekk at `convex/_generated/api.d.ts` er oppdatert og ikke lenger er modifisert i git-status (den er allerede staged ifølge git-status).
+
+### Filer
+- **Kjør:** `npx convex dev` for å regenerere `convex/_generated/api.d.ts`
+- **Grep:** `(api as any)` i hele `convex/`-mappen og `src/`-mappen — finn alle forekomster
+- **Modifiser:** Alle filer med `(api as any)` — bytt til korrekt typet `api.X.Y` eller `internal.X.Y`
+
+### Akseptansekriterier
+- [ ] `grep -r "(api as any)" convex/ src/` returnerer ingen treff
+- [ ] `convex/_generated/api.d.ts` er synkronisert med alle nye internalMutations og eksponerte mutations
+- [ ] `pnpm typecheck` passerer uten `any`-relaterte type-feil
+- [ ] `pnpm build` passerer
+
+### Verifisering
+```bash
+grep -r "(api as any)" convex/ src/ && echo "FEIL: as-any-caster gjenstår" || echo "OK"
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-072: Error boundaries — `error.tsx` for admin-ruter
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+Opprett `error.tsx`-filer for alle admin-ruter som i dag mangler dem (0 av 20 ruter har error boundary). Prioriter admin-ruter siden de inneholder mest kritisk forretningslogikk. En `error.tsx` i Next.js App Router er en Client Component (`'use client'`) som mottar `error: Error` og `reset: () => void` som props og viser en forklarende feilmelding med en "Prøv igjen"-knapp. Lag én gjenbrukbar komponent `src/components/admin/ErrorFallback.tsx` og bruk den i alle `error.tsx`-filer for å unngå duplisering.
+
+Ruter som skal få `error.tsx`:
+- `src/app/admin/error.tsx` (root — dekker alle subruter som ikke har egne)
+- `src/app/admin/inquiries/error.tsx`
+- `src/app/admin/inquiries/[id]/error.tsx`
+- `src/app/admin/clients/error.tsx`
+- `src/app/admin/clients/[id]/error.tsx`
+- `src/app/admin/projects/[id]/error.tsx`
+- `src/app/admin/calendar/error.tsx`
+- `src/app/admin/mail/error.tsx`
+- `src/app/admin/mail/[threadId]/error.tsx`
+
+### Filer
+- **Opprett:** `src/components/admin/ErrorFallback.tsx` — gjenbrukbar error-komponent med "Prøv igjen"-knapp
+- **Opprett:** `src/app/admin/error.tsx`
+- **Opprett:** `src/app/admin/inquiries/error.tsx`
+- **Opprett:** `src/app/admin/inquiries/[id]/error.tsx`
+- **Opprett:** `src/app/admin/clients/error.tsx`
+- **Opprett:** `src/app/admin/clients/[id]/error.tsx`
+- **Opprett:** `src/app/admin/projects/[id]/error.tsx`
+- **Opprett:** `src/app/admin/calendar/error.tsx`
+- **Opprett:** `src/app/admin/mail/error.tsx`
+- **Opprett:** `src/app/admin/mail/[threadId]/error.tsx`
+
+### Akseptansekriterier
+- [ ] `ErrorFallback`-komponenten er en Client Component med `error` og `reset` props
+- [ ] Alle 9 `error.tsx`-filer er opprettet og bruker `ErrorFallback`
+- [ ] Komponentene viser rutenavn eller kontekst i feilmeldingen (bruk filens innebygde ruteinformasjon)
+- [ ] "Prøv igjen"-knappen kaller `reset()`
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-073: Loading skjeletter — `loading.tsx` for gjenstående admin-ruter
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+Legg til `loading.tsx` for de 11 admin-rutene og 1 public-rute som mangler dem. TASK-064 opprettet allerede `loading.tsx` for `admin/`, `admin/inquiries/` og `admin/clients/` — disse er ferdig. Følgende mangler fremdeles (fra audit A2):
+
+Admin-ruter:
+- `src/app/admin/calendar/loading.tsx`
+- `src/app/admin/mail/loading.tsx`
+- `src/app/admin/mail/[threadId]/loading.tsx`
+- `src/app/admin/clients/[id]/loading.tsx`
+- `src/app/admin/inquiries/[id]/loading.tsx`
+- `src/app/admin/projects/[id]/loading.tsx`
+- `src/app/admin/notifications/loading.tsx`
+- `src/app/admin/templates/loading.tsx`
+- `src/app/admin/search/loading.tsx`
+- `src/app/admin/settings/loading.tsx`
+
+Public:
+- `src/app/(public)/book/loading.tsx`
+
+Hvert skjelett skal speile sidens faktiske layout: detaljsider får ett stort Skeleton-kort, listsider får 3–5 Skeleton-rader. Bruk shadcn `Skeleton`-komponenten konsekvent.
+
+### Filer
+- **Opprett:** `src/app/admin/calendar/loading.tsx`
+- **Opprett:** `src/app/admin/mail/loading.tsx`
+- **Opprett:** `src/app/admin/mail/[threadId]/loading.tsx`
+- **Opprett:** `src/app/admin/clients/[id]/loading.tsx`
+- **Opprett:** `src/app/admin/inquiries/[id]/loading.tsx`
+- **Opprett:** `src/app/admin/projects/[id]/loading.tsx`
+- **Opprett:** `src/app/admin/notifications/loading.tsx`
+- **Opprett:** `src/app/admin/templates/loading.tsx`
+- **Opprett:** `src/app/admin/search/loading.tsx`
+- **Opprett:** `src/app/admin/settings/loading.tsx`
+- **Opprett:** `src/app/(public)/book/loading.tsx`
+
+### Akseptansekriterier
+- [ ] Alle 11 `loading.tsx`-filer er opprettet
+- [ ] Detaljsider (clients/[id], inquiries/[id], projects/[id], mail/[threadId]) viser et header-skjelett + innhold-skjelett
+- [ ] Listsider (calendar, mail, notifications, templates, search, settings) viser 3–5 rader med `<Skeleton>`
+- [ ] `src/app/(public)/book/loading.tsx` viser et skjelett som speiler bookingskjemaets struktur
+- [ ] shadcn `Skeleton`-komponenten brukes konsekvent (ikke egne CSS-animasjoner)
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-074: Design — status-farger som CSS-variabler og viewport-eksport
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+To separate designfiks i én oppgave:
+
+**A — Status-farger (audit A3):** `StatusBadge`-komponenten og to admin-sider bruker 7 hardkodede farger utenfor design-systemets palett. Definer status-farger som CSS custom properties i `globals.css` under `@theme`-blokken, f.eks. `--color-status-ny`, `--color-status-booket` osv. Oppdater `StatusBadge.tsx`, `src/app/admin/page.tsx` (linje 31–34) og `src/app/admin/settings/page.tsx` (linje 77) til å bruke disse variablene via Tailwind-klasser eller direkte `var(--color-status-*)`.
+
+**B — `themeColor` deprecation (audit A1):** 16 sider bruker `themeColor` inne i `metadata`-eksporten. Next.js 16 krever at `themeColor` flyttes til en separat `viewport`-eksport. Legg til `export const viewport: Viewport = { themeColor: '#0d0c0b' }` i alle berørte sider (eller i root layout hvis det er hensiktsmessig), og fjern `themeColor` fra `metadata`-objektene.
+
+### Filer
+- **Les:** `src/app/globals.css` — eksisterende `@theme`-blokk
+- **Les:** `src/components/admin/StatusBadge.tsx` — se hardkodede farger
+- **Les:** `src/app/admin/page.tsx` — linje 31–34
+- **Les:** `src/app/admin/settings/page.tsx` — linje 77
+- **Modifiser:** `src/app/globals.css` — legg til status-fargevariabler under `@theme`
+- **Modifiser:** `src/components/admin/StatusBadge.tsx` — bruk CSS-variabler
+- **Modifiser:** `src/app/admin/page.tsx` — bruk CSS-variabler
+- **Modifiser:** `src/app/admin/settings/page.tsx` — bruk CSS-variabler
+- **Grep og modifiser:** Alle sider med `themeColor` i `metadata` — flytt til `viewport`-eksport
+
+### Akseptansekriterier
+- [ ] `globals.css` inneholder minst 7 status-fargevariabler under `@theme` (én per status i statusmodellen)
+- [ ] `StatusBadge.tsx` refererer til CSS-variabler, ingen hardkodede hex-verdier
+- [ ] `grep -r "themeColor" src/` returnerer ingen treff i `metadata`-objekter
+- [ ] Alle berørte sider eksporterer `viewport` med `themeColor`
+- [ ] `pnpm typecheck && pnpm build` passerer uten Next.js viewport-advarsler
+
+### Verifisering
+```bash
+grep -r "themeColor" src/ --include="*.tsx" --include="*.ts"
+pnpm typecheck && pnpm test:run && pnpm build
+```
+
+---
+
+## TASK-075: Responsive fiks — deposit-grid og kalender-modal
+
+**Status:** done
+**Fase:** 7 — Auditfikser
+**Avhenger av:** —
+
+### Hva skal bygges
+To responsive UI-fiks:
+
+**A — Deposit-grid (audit A4):** `src/app/admin/projects/[id]/page.tsx` på linje 241 bruker `gridTemplateColumns: '1fr 1fr'` som inline-style uten responsive breakpoint. Dette er en 2-kolonnelayout som brekker på smale skjermer. Bytt til Tailwind-klassen `grid-cols-1 md:grid-cols-2` (eller tilsvarende) og fjern inline-stilen.
+
+**B — Kalender-modal (audit A5):** `src/app/admin/calendar/page.tsx` på linje 107 har en custom modal med `maxWidth: 420px` uten padding, som kan overflow på smale mobilskjermer. Bytt ut custom modal-implementasjonen med shadcn `Sheet`-komponenten (side-drawer på mobil) eller sørg for at modal har `w-full max-w-[420px] px-4` slik at den aldri overstiget viewport-bredden.
+
+### Filer
+- **Les:** `src/app/admin/projects/[id]/page.tsx` — linje 241 (deposit-grid)
+- **Les:** `src/app/admin/calendar/page.tsx` — linje 107 (kalender-modal)
+- **Modifiser:** `src/app/admin/projects/[id]/page.tsx` — bytt inline `gridTemplateColumns` til Tailwind-klasser
+- **Modifiser:** `src/app/admin/calendar/page.tsx` — erstatt custom modal med Sheet eller responsive klasser
+
+### Akseptansekriterier
+- [ ] Deposit-seksjonen på prosjektsiden viser én kolonne på viewports under `md` (768px)
+- [ ] Ingen `style={{ gridTemplateColumns: ... }}`-inline-stil gjenstår i prosjektsiden
+- [ ] Kalender-modalen/Sheet-komponenten har padding og overflower ikke på 390px viewport
+- [ ] shadcn Sheet brukes om modal byttes (installer med `pnpm dlx shadcn@latest add sheet` om nødvendig)
+- [ ] `pnpm typecheck && pnpm build` passerer
+
+### Verifisering
+```bash
+pnpm typecheck && pnpm test:run && pnpm build
+```

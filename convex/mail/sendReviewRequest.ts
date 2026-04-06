@@ -1,11 +1,11 @@
 import { action } from '../_generated/server'
-import { api } from '../_generated/api'
+import { api, internal } from '../_generated/api'
 import { v } from 'convex/values'
+import nodemailer from 'nodemailer'
 import { getMailConfig } from './config'
 
 /**
  * sendReviewRequest — Convex action for å sende review request via SMTP.
- * TODO: Installer nodemailer (se sendReply.ts)
  */
 export const sendReviewRequest = action({
   args: {
@@ -16,18 +16,25 @@ export const sendReviewRequest = action({
     body: v.string(),
   },
   handler: async (ctx, { projectId, threadId, to, subject, body }) => {
-    let config: ReturnType<typeof getMailConfig>
-    try {
-      config = getMailConfig()
-    } catch (e) {
-      throw new Error(`Mail ikke konfigurert: ${(e as Error).message}`)
-    }
+    const config = getMailConfig()
 
-    // TODO: Aktiver nodemailer etter installasjon
+    const transporter = nodemailer.createTransport({
+      host: config.smtp.host,
+      port: config.smtp.port,
+      secure: config.smtp.secure,
+      auth: config.smtp.auth,
+    })
+
+    await transporter.sendMail({
+      from: config.from,
+      to,
+      subject,
+      text: body,
+    })
 
     const now = Date.now()
 
-    await ctx.runMutation((api as any).mail.mutations.upsertMessage, {
+    await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
       threadId,
       externalId: `review-request-${now}`,
       direction: 'outbound',
@@ -46,7 +53,7 @@ export const sendReviewRequest = action({
     })
 
     // Logg til activityLog
-    await ctx.runMutation((api as any).activityLogMutations.insert, {
+    await ctx.runMutation((internal as any).activityLogMutations.insert, {
       entityType: 'project',
       entityId: projectId,
       action: 'review_requested',

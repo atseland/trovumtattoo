@@ -104,12 +104,12 @@ export default function CalendarPage() {
 
       {/* Booking sheet — projectId required, skipped from calendar view — use project pages for per-project booking */}
       {bookingSheetOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
           <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '24px', width: '100%', maxWidth: '420px' }}>
             <p style={{ color: '#7a6e62', fontSize: '0.875rem', marginBottom: '16px' }}>
               For å opprette en booking, gå til prosjektsiden og klikk "Opprett booking".
             </p>
-            <button onClick={() => setBookingSheetOpen(false)} style={{ padding: '10px 20px', background: '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            <button onClick={() => setBookingSheetOpen(false)} style={{ padding: '10px 20px', background: '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: 'pointer', minHeight: '48px' }}>
               OK
             </button>
           </div>

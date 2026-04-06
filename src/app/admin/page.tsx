@@ -28,10 +28,10 @@ export default function AdminDashboardPage() {
 
   const cards: SummaryCard[] = summary
     ? [
-        { label: 'Nye forespørsler', value: summary.nyCount, color: '#6b9dd4' },
-        { label: 'Trenger mer info', value: summary.trengermInfoCount, color: '#c9b93a' },
-        { label: 'Venter på depositum', value: summary.venterDepositumCount, color: '#c9933a' },
-        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount, color: '#4ab97a' },
+        { label: 'Nye forespørsler', value: summary.nyCount, color: 'var(--color-status-ny)' },
+        { label: 'Trenger mer info', value: summary.trengermInfoCount, color: 'var(--color-status-info)' },
+        { label: 'Venter på depositum', value: summary.venterDepositumCount, color: 'var(--color-status-depositum)' },
+        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount, color: 'var(--color-status-booket)' },
       ]
     : []
 

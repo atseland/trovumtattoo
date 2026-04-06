@@ -1,12 +1,12 @@
 const statusColors: Record<string, { bg: string; color: string }> = {
-  Ny: { bg: '#1a2a4a', color: '#6b9dd4' },
-  'Trenger mer info': { bg: '#2a2a1a', color: '#c9b93a' },
-  'Klar for konsultasjon': { bg: '#1a2a2a', color: '#4ab9b9' },
-  'Tilbud sendt': { bg: '#2a1a3a', color: '#9b7bc9' },
-  'Venter på depositum': { bg: '#2a1e0d', color: '#c9933a' },
-  Booket: { bg: '#0d2a1a', color: '#4ab97a' },
-  Fullført: { bg: '#1a2a1a', color: '#7ab94a' },
-  Avslått: { bg: '#2a1010', color: '#c96b6b' },
+  Ny: { bg: 'var(--color-status-ny-bg)', color: 'var(--color-status-ny)' },
+  'Trenger mer info': { bg: 'var(--color-status-info-bg)', color: 'var(--color-status-info)' },
+  'Klar for konsultasjon': { bg: 'var(--color-status-konsultasjon-bg)', color: 'var(--color-status-konsultasjon)' },
+  'Tilbud sendt': { bg: 'var(--color-status-tilbud-bg)', color: 'var(--color-status-tilbud)' },
+  'Venter på depositum': { bg: 'var(--color-status-depositum-bg)', color: 'var(--color-status-depositum)' },
+  Booket: { bg: 'var(--color-status-booket-bg)', color: 'var(--color-status-booket)' },
+  Fullført: { bg: 'var(--color-status-fullfort-bg)', color: 'var(--color-status-fullfort)' },
+  Avslått: { bg: 'var(--color-status-avslatt-bg)', color: 'var(--color-status-avslatt)' },
 }
 
 const defaultColors = { bg: '#1c1916', color: '#7a6e62' }

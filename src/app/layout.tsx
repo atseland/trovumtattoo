@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { Toaster } from 'sonner'
@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   icons: {
     apple: '/icons/icon-192.svg',
   },
+}
+
+export const viewport: Viewport = {
   themeColor: '#0d0c0b',
 }
 
