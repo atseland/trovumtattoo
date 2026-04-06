@@ -76,7 +76,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-002: Admin layout shell — navigasjon og header
 
-**Status:** pending
+**Status:** done
 **Fase:** Foundation
 **Avhenger av:** TASK-001
 
