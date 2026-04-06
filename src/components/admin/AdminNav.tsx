@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell, Search } from 'lucide-react'
 import { api } from '../../../convex/_generated/api'
+import { Logo } from '@/components/Logo'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -66,9 +67,7 @@ export function AdminNav() {
         style={{ background: '#141210', borderColor: '#2a2724' }}
       >
         <div className='px-4 py-6'>
-          <span className='font-serif italic text-xl' style={{ color: '#c9b99a' }}>
-            Trovum
-          </span>
+          <Logo context='nav' />
         </div>
         <nav className='flex flex-col gap-1 px-2'>
           {navItems.map((item) => {

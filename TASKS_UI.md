@@ -134,7 +134,7 @@ TASK-UI-001 (design system tokens + fonter)
 
 ### TASK-UI-001: Design system — CSS-tokens, fontstack og globale stiler
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** —
 
 #### Hva skal gjøres

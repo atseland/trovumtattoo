@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from '@/components/Logo'
 
 export function PublicHeader() {
   return (
@@ -6,8 +7,8 @@ export function PublicHeader() {
       className='sticky top-0 z-40 flex items-center justify-between border-b px-5 py-4'
       style={{ background: '#0d0c0b', borderColor: '#2a2724' }}
     >
-      <Link href='/' className='font-serif italic text-xl tracking-wide' style={{ color: '#c9b99a' }}>
-        Trovum
+      <Link href='/'>
+        <Logo context='nav' />
       </Link>
       <Link
         href='/book'
