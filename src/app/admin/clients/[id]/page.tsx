@@ -32,6 +32,7 @@ export default function ClientDetailPage() {
 
   const client = useQuery((api as any).clients.get, isAuthenticated ? { id } : 'skip')
   const projects = useQuery((api as any).projects.listByClient, isAuthenticated && client ? { clientId: id } : 'skip')
+  const mailThreads = useQuery((api as any).mail.queries.listByClient, isAuthenticated ? { clientId: id } : 'skip')
   const updateClient = useMutation((api as any).clients.update)
 
   if (!isAuthenticated || client === undefined) {
@@ -104,6 +105,20 @@ export default function ClientDetailPage() {
           </button>
         </div>
       </div>
+
+      {/* Mail threads */}
+      {mailThreads && (mailThreads as any[]).length > 0 && (
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '12px' }}>Koblede e-posttråder</h2>
+          <div className='flex flex-col gap-2'>
+            {(mailThreads as any[]).map((t) => (
+              <Link key={t._id} href={`/admin/mail/${t._id}`} style={{ padding: '12px 14px', background: '#1c1916', border: '1px solid #2a2724', borderRadius: '6px', textDecoration: 'none', display: 'block' }}>
+                <p style={{ color: '#c9b99a', fontSize: '0.875rem' }}>{t.subject}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Projects */}
       <div>

@@ -7,6 +7,7 @@ import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 // TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
+import { LinkThreadSheet } from '@/components/admin/LinkThreadSheet'
 
 function formatDateTime(ts: number) {
   return new Date(ts).toLocaleString('nb-NO', {
@@ -21,6 +22,7 @@ export default function ThreadPage() {
   const [replyBody, setReplyBody] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [sending, setSending] = useState(false)
+  const [linkSheetOpen, setLinkSheetOpen] = useState(false)
 
   const thread = useQuery((api as any).mail.queries.getThread, isAuthenticated ? { threadId } : 'skip')
   const messages = useQuery((api as any).mail.queries.listMessages, isAuthenticated ? { threadId } : 'skip')
@@ -76,8 +78,7 @@ export default function ThreadPage() {
     <div className='mx-auto max-w-2xl'>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
         <Link href='/admin/mail' style={{ color: '#7a6e62', fontSize: '0.875rem', textDecoration: 'none' }}>← Innboks</Link>
-        {/* Koble til klient/prosjekt implementeres i TASK-034 */}
-        <button style={{ padding: '8px 14px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', minHeight: '36px' }}>
+        <button onClick={() => setLinkSheetOpen(true)} style={{ padding: '8px 14px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', minHeight: '36px' }}>
           Koble til kunde
         </button>
       </div>
@@ -116,6 +117,8 @@ export default function ThreadPage() {
           </div>
         ))}
       </div>
+
+      <LinkThreadSheet open={linkSheetOpen} onOpenChange={setLinkSheetOpen} threadId={threadId} />
 
       {/* Reply composer */}
       <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '16px' }}>

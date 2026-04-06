@@ -666,7 +666,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-034: Koble e-posttråd til klient/prosjekt
 
-**Status:** pending
+**Status:** done
 **Fase:** 3
 **Avhenger av:** TASK-033, TASK-022
 
