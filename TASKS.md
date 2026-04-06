@@ -877,7 +877,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-051: Service worker — app shell caching og offline
 
-**Status:** pending
+**Status:** done
 **Fase:** 5
 **Avhenger av:** TASK-050
 

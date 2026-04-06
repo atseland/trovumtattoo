@@ -5,6 +5,7 @@ import { Toaster } from 'sonner'
 import './globals.css'
 import ConvexClientProvider from '@/components/ConvexClientProvider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <ConvexClientProvider>
               {children}
               <Toaster richColors />
+              <ServiceWorkerRegistration />
             </ConvexClientProvider>
           </ThemeProvider>
         </body>
