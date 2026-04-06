@@ -634,7 +634,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-033: Admin trådvisning og svar — meldings-UI og SMTP
 
-**Status:** pending
+**Status:** done
 **Fase:** 3
 **Avhenger av:** TASK-032, TASK-024
 
