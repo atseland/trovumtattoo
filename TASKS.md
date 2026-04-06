@@ -488,7 +488,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-024: Meldingsmaler — admin CRUD
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-002
 
