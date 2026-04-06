@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { Id } from './_generated/dataModel'
 
 export const create = mutation({
   args: {
@@ -87,5 +88,32 @@ export const get = query({
     if (!identity) throw new Error('Unauthorized')
 
     return await ctx.db.get(id)
+  },
+})
+
+export const addReferenceImages = mutation({
+  args: {
+    inquiryId: v.id('inquiries'),
+    images: v.array(
+      v.object({
+        storageId: v.id('_storage'),
+        url: v.string(),
+        altText: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, { inquiryId, images }) => {
+    const now = Date.now()
+    await Promise.all(
+      images.map((img) =>
+        ctx.db.insert('referenceImages', {
+          inquiryId,
+          storageId: img.storageId,
+          url: img.url,
+          altText: img.altText,
+          uploadedAt: now,
+        })
+      )
+    )
   },
 })

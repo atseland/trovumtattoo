@@ -250,7 +250,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-013: Bookingskjema del 2 — Convex-integrasjon og bildeopplasting
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-012, TASK-010, TASK-009
 

@@ -3,6 +3,10 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { useMutation } from 'convex/react'
+// TODO: fjern cast etter npx convex dev
+import { api } from '../../../../convex/_generated/api'
 import { inquirySchema, type InquiryFormValues } from '@/lib/validators/inquiry'
 
 const inputStyle: React.CSSProperties = {
@@ -42,12 +46,20 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 
 export default function BookPage() {
   const [fileNames, setFileNames] = useState<string[]>([])
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+
+  // TODO: fjern cast etter npx convex dev
+  const createInquiry = useMutation((api as any).inquiries.create)
+  const generateUploadUrl = useMutation((api as any).storage.generateUploadUrl)
+  const addReferenceImages = useMutation((api as any).inquiries.addReferenceImages)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    getValues,
   } = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
     defaultValues: {
@@ -57,11 +69,87 @@ export default function BookPage() {
     },
   })
 
-  async function onSubmit(_data: InquiryFormValues) {
-    // Convex-kobling implementeres i TASK-013
-    await new Promise((r) => setTimeout(r, 500))
+  async function onSubmit(data: InquiryFormValues) {
+    const files = data.referenceImages ? Array.from(data.referenceImages) : []
+
+    // 1. Create the inquiry
+    const inquiryId = await createInquiry({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      instagramHandle: data.instagramHandle || undefined,
+      description: data.description,
+      bodyPlacement: data.bodyPlacement,
+      size: data.size,
+      style: data.style,
+      budget: data.budget || undefined,
+      desiredTiming: data.desiredTiming || undefined,
+      firstTattoo: data.firstTattoo,
+      coverUp: data.coverUp,
+      touchUp: data.touchUp,
+      extraNotes: data.extraNotes || undefined,
+    })
+
+    // 2. Upload reference images
+    if (files.length > 0) {
+      const uploaded: Array<{ storageId: string; url: string }> = []
+
+      for (let i = 0; i < files.length; i++) {
+        setUploadProgress(`Laster opp bilde ${i + 1} av ${files.length}…`)
+        try {
+          const uploadUrl = await generateUploadUrl()
+          const res = await fetch(uploadUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': files[i].type },
+            body: files[i],
+          })
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          const { storageId } = await res.json()
+          uploaded.push({ storageId, url: uploadUrl.split('?')[0] })
+        } catch {
+          toast.error(`Feil ved opplasting av ${files[i].name} — fortsetter uten dette bildet`)
+        }
+      }
+
+      if (uploaded.length > 0) {
+        try {
+          await addReferenceImages({ inquiryId, images: uploaded })
+        } catch {
+          toast.error('Kunne ikke lagre referansebilder — forespørselen er likevel sendt')
+        }
+      }
+    }
+
+    setUploadProgress(null)
     reset()
     setFileNames([])
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <div className='mx-auto max-w-xl px-5 py-20 text-center'>
+        <h2 className='font-serif italic text-3xl' style={{ color: '#c9b99a' }}>Takk for forespørselen!</h2>
+        <p style={{ color: '#7a6e62', marginTop: '12px', lineHeight: '1.6' }}>
+          Vi tar kontakt innen 2 virkedager med estimat og mulige tidspunkter.
+        </p>
+        <button
+          onClick={() => setSubmitted(false)}
+          style={{
+            marginTop: '32px',
+            background: 'transparent',
+            border: '1px solid #2a2724',
+            color: '#c9b99a',
+            borderRadius: '4px',
+            padding: '12px 24px',
+            cursor: 'pointer',
+            minHeight: '48px',
+          }}
+        >
+          Send ny forespørsel
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -171,6 +259,10 @@ export default function BookPage() {
             </ul>
           )}
         </Field>
+
+        {uploadProgress && (
+          <p style={{ color: '#c9933a', fontSize: '0.875rem', marginBottom: '12px' }}>{uploadProgress}</p>
+        )}
 
         <button
           type='submit'
