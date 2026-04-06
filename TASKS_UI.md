@@ -444,7 +444,7 @@ Redesign `src/components/public/PublicFooter.tsx`:
 
 ### TASK-UI-020: Admin layout — navigasjon, header og panel-overflate
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-003, TASK-UI-004
 
 #### Hva skal gjøres

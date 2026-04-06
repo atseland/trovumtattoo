@@ -8,48 +8,16 @@ import { useMutation } from 'convex/react'
 import { api } from '../../../../convex/_generated/api'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { inquirySchema, type InquiryFormValues } from '@/lib/validators/inquiry'
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '12px 14px',
-  fontSize: '1rem',
-  minHeight: '48px',
-  outline: 'none',
-}
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  marginBottom: '6px',
-  fontSize: '0.875rem',
-  color: '#7a6e62',
-}
-
-const errorStyle: React.CSSProperties = {
-  color: '#c9933a',
-  fontSize: '0.75rem',
-  marginTop: '4px',
-}
-
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: '20px' }}>
-      <label style={labelStyle}>{label}</label>
-      {children}
-      {error && <p style={errorStyle}>{error}</p>}
-    </div>
-  )
-}
+import { Eyebrow } from '@/components/ui/Eyebrow'
+import { Btn } from '@/components/ui/Btn'
+import { InputField, TextareaField, SelectField } from '@/components/ui/FormField'
 
 export default function BookPageClient() {
   const [fileNames, setFileNames] = useState<string[]>([])
   const [uploadProgress, setUploadProgress] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
-    const createInquiry = useMutation(api.inquiries.create)
+  const createInquiry = useMutation(api.inquiries.create)
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const addReferenceImages = useMutation(api.inquiries.addReferenceImages)
 
@@ -58,7 +26,6 @@ export default function BookPageClient() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    getValues,
   } = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
     defaultValues: {
@@ -112,7 +79,7 @@ export default function BookPageClient() {
 
       if (uploaded.length > 0) {
         try {
-          await addReferenceImages({ inquiryId, images: uploaded.map(img => ({ ...img, storageId: img.storageId as Id<"_storage"> })) })
+          await addReferenceImages({ inquiryId, images: uploaded.map(img => ({ ...img, storageId: img.storageId as Id<'_storage'> })) })
         } catch {
           toast.error('Kunne ikke lagre referansebilder — forespørselen er likevel sendt')
         }
@@ -127,92 +94,115 @@ export default function BookPageClient() {
 
   if (submitted) {
     return (
-      <div className='mx-auto max-w-xl px-5 py-20 text-center'>
-        <h2 className='font-serif italic text-3xl' style={{ color: '#c9b99a' }}>Takk for forespørselen!</h2>
-        <p style={{ color: '#7a6e62', marginTop: '12px', lineHeight: '1.6' }}>
+      <div className='mx-auto max-w-xl px-pad py-20 text-center'>
+        <h2 className='font-serif italic text-[clamp(28px,5vw,40px)] text-paper leading-[1.1]'>
+          Takk for forespørselen!
+        </h2>
+        <p className='font-sans text-[14px] text-body mt-3 leading-[1.8]'>
           Vi tar kontakt innen 2 virkedager med estimat og mulige tidspunkter.
         </p>
-        <button
-          onClick={() => setSubmitted(false)}
-          style={{
-            marginTop: '32px',
-            background: 'transparent',
-            border: '1px solid #2a2724',
-            color: '#c9b99a',
-            borderRadius: '4px',
-            padding: '12px 24px',
-            cursor: 'pointer',
-            minHeight: '48px',
-          }}
-        >
-          Send ny forespørsel
-        </button>
+        <div className='mt-8 flex justify-center'>
+          <Btn variant='sm' onClick={() => setSubmitted(false)}>
+            Send ny forespørsel
+          </Btn>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className='mx-auto max-w-xl px-5 py-12'>
-      <h1 className='font-serif italic text-3xl' style={{ color: '#c9b99a', marginBottom: '8px' }}>
+    <div className='mx-auto max-w-xl px-pad py-12'>
+      <Eyebrow withLine className='mb-4'>Booking</Eyebrow>
+      <h1 className='font-serif italic text-[clamp(32px,5vw,48px)] text-paper leading-[1.1] tracking-[-0.02em] mb-2'>
         Send bookingforespørsel
       </h1>
-      <p style={{ color: '#7a6e62', fontSize: '0.875rem', marginBottom: '40px' }}>
+      <p className='font-sans text-[14px] text-body mb-10 leading-[1.8]'>
         Fyll ut skjemaet så tar vi kontakt innen 2 virkedager.
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Field label='Fullt navn *' error={errors.name?.message}>
-          <input {...register('name')} style={inputStyle} placeholder='Ola Nordmann' />
-        </Field>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className='flex flex-col gap-5'>
+        <InputField
+          label='Fullt navn *'
+          error={errors.name?.message}
+          placeholder='Ola Nordmann'
+          {...register('name')}
+        />
 
-        <Field label='E-post *' error={errors.email?.message}>
-          <input {...register('email')} type='email' style={inputStyle} placeholder='ola@example.com' />
-        </Field>
+        <InputField
+          label='E-post *'
+          type='email'
+          error={errors.email?.message}
+          placeholder='ola@example.com'
+          {...register('email')}
+        />
 
-        <Field label='Telefonnummer *' error={errors.phone?.message}>
-          <input {...register('phone')} type='tel' style={inputStyle} placeholder='+47 000 00 000' />
-        </Field>
+        <InputField
+          label='Telefonnummer *'
+          type='tel'
+          error={errors.phone?.message}
+          placeholder='+47 000 00 000'
+          {...register('phone')}
+        />
 
-        <Field label='Instagram-handle' error={errors.instagramHandle?.message}>
-          <input {...register('instagramHandle')} style={inputStyle} placeholder='@bruker' />
-        </Field>
+        <InputField
+          label='Instagram-handle'
+          optional
+          error={errors.instagramHandle?.message}
+          placeholder='@bruker'
+          {...register('instagramHandle')}
+        />
 
-        <Field label='Beskriv tattoo-ideen din *' error={errors.description?.message}>
-          <textarea
-            {...register('description')}
-            style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }}
-            placeholder='Fortell om motivet, stemningen, detaljer…'
-          />
-        </Field>
+        <TextareaField
+          label='Beskriv tattoo-ideen din *'
+          error={errors.description?.message}
+          placeholder='Fortell om motivet, stemningen, detaljer…'
+          {...register('description')}
+        />
 
-        <Field label='Plassering på kroppen *' error={errors.bodyPlacement?.message}>
-          <input {...register('bodyPlacement')} style={inputStyle} placeholder='F.eks. underarm, skulder, legg' />
-        </Field>
+        <InputField
+          label='Plassering på kroppen *'
+          error={errors.bodyPlacement?.message}
+          placeholder='F.eks. underarm, skulder, legg'
+          {...register('bodyPlacement')}
+        />
 
-        <Field label='Størrelse *' error={errors.size?.message}>
-          <select {...register('size')} style={inputStyle}>
-            <option value=''>Velg størrelse</option>
-            <option>Liten</option>
-            <option>Middels</option>
-            <option>Stor</option>
-            <option>Veldig stor</option>
-          </select>
-        </Field>
+        <SelectField
+          label='Størrelse *'
+          error={errors.size?.message}
+          {...register('size')}
+        >
+          <option value=''>Velg størrelse</option>
+          <option>Liten</option>
+          <option>Middels</option>
+          <option>Stor</option>
+          <option>Veldig stor</option>
+        </SelectField>
 
-        <Field label='Ønsket stil *' error={errors.style?.message}>
-          <input {...register('style')} style={inputStyle} placeholder='F.eks. fine-line, blackwork, realistisk' />
-        </Field>
+        <InputField
+          label='Ønsket stil *'
+          error={errors.style?.message}
+          placeholder='F.eks. fine-line, blackwork, realistisk'
+          {...register('style')}
+        />
 
-        <Field label='Budsjett' error={errors.budget?.message}>
-          <input {...register('budget')} style={inputStyle} placeholder='F.eks. 2 000–5 000 kr' />
-        </Field>
+        <InputField
+          label='Budsjett'
+          optional
+          error={errors.budget?.message}
+          placeholder='F.eks. 2 000–5 000 kr'
+          {...register('budget')}
+        />
 
-        <Field label='Ønsket tidsrom' error={errors.desiredTiming?.message}>
-          <input {...register('desiredTiming')} style={inputStyle} placeholder='F.eks. sommer 2025, fleksibel' />
-        </Field>
+        <InputField
+          label='Ønsket tidsrom'
+          optional
+          error={errors.desiredTiming?.message}
+          placeholder='F.eks. sommer 2025, fleksibel'
+          {...register('desiredTiming')}
+        />
 
         {/* Checkboxes */}
-        <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div className='flex flex-col gap-3'>
           {(
             [
               { name: 'firstTattoo', label: 'Dette er min første tatovering' },
@@ -220,68 +210,74 @@ export default function BookPageClient() {
               { name: 'touchUp', label: 'Dette er en touch-up' },
             ] as const
           ).map(({ name, label }) => (
-            <label key={name} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', minHeight: '48px', color: '#c9b99a', fontSize: '0.9rem' }}>
+            <label
+              key={name}
+              className='flex items-center gap-3 cursor-pointer font-sans text-[14px] text-body min-h-[44px]'
+            >
               <input
                 {...register(name)}
                 type='checkbox'
-                style={{ width: '20px', height: '20px', accentColor: '#c9933a', flexShrink: 0 }}
+                className='w-5 h-5 shrink-0 accent-accent'
               />
               {label}
             </label>
           ))}
         </div>
 
-        <Field label='Ekstra kommentarer' error={errors.extraNotes?.message}>
-          <textarea
-            {...register('extraNotes')}
-            style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
-            placeholder='Noe annet vi bør vite?'
-          />
-        </Field>
+        <TextareaField
+          label='Ekstra kommentarer'
+          optional
+          error={errors.extraNotes?.message}
+          placeholder='Noe annet vi bør vite?'
+          className='min-h-[80px]'
+          {...register('extraNotes')}
+        />
 
-        <Field label='Referansebilder (maks 10)' error={errors.referenceImages?.message}>
-          <input
-            {...register('referenceImages', {
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                const files = Array.from(e.target.files ?? [])
-                setFileNames(files.map((f) => f.name))
-              },
-            })}
-            type='file'
-            accept='image/jpeg,image/png,image/webp'
-            multiple
-            style={{ ...inputStyle, cursor: 'pointer' }}
-          />
-          {fileNames.length > 0 && (
-            <ul style={{ marginTop: '8px', fontSize: '0.75rem', color: '#7a6e62' }}>
-              {fileNames.map((n) => <li key={n}>— {n}</li>)}
-            </ul>
+        {/* File upload */}
+        <div>
+          <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[6px]'>
+            Referansebilder (maks 10)
+            <span className='font-serif italic text-[12px] text-mast-left normal-case tracking-normal ml-[6px]'>valgfritt</span>
+          </label>
+          <div className='min-h-[80px] border border-dashed border-[rgba(237,233,230,0.18)] flex flex-col items-center justify-center p-5 transition-[border-color,background] duration-[200ms] hover:border-[rgba(237,233,230,0.30)] hover:bg-[rgba(237,233,230,0.03)]'>
+            <label className='cursor-pointer font-sans text-[13px] text-mast-left hover:text-nav transition-colors duration-[200ms]'>
+              Klikk for å velge filer
+              <input
+                {...register('referenceImages', {
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    const files = Array.from(e.target.files ?? [])
+                    setFileNames(files.map((f) => f.name))
+                  },
+                })}
+                type='file'
+                accept='image/jpeg,image/png,image/webp'
+                multiple
+                className='sr-only'
+              />
+            </label>
+            {fileNames.length > 0 && (
+              <ul className='mt-2 font-sans text-[12px] text-mast-left text-center'>
+                {fileNames.map((n) => <li key={n}>— {n}</li>)}
+              </ul>
+            )}
+          </div>
+          {errors.referenceImages?.message && (
+            <p className='font-sans text-[12px] mt-1 text-[#af8c87]'>{errors.referenceImages.message}</p>
           )}
-        </Field>
+        </div>
 
         {uploadProgress && (
-          <p style={{ color: '#c9933a', fontSize: '0.875rem', marginBottom: '12px' }}>{uploadProgress}</p>
+          <p className='font-sans text-[13px] text-body'>{uploadProgress}</p>
         )}
 
-        <button
+        <Btn
           type='submit'
+          variant='action-cta'
           disabled={isSubmitting}
-          style={{
-            width: '100%',
-            background: isSubmitting ? '#5a4a2a' : '#c9933a',
-            color: '#0d0c0b',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '14px',
-            fontSize: '1rem',
-            fontWeight: '500',
-            minHeight: '52px',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            transition: 'opacity 0.2s',
-          }}
+          className='mt-2'
         >
           {isSubmitting ? 'Sender…' : 'Send forespørsel'}
-        </button>
+        </Btn>
       </form>
     </div>
   )
