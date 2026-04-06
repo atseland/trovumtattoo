@@ -373,7 +373,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-020: Convex client + project functions — CRUD
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-010
 
