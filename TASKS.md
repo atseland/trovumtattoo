@@ -907,7 +907,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-052: Admin notification center — varslingssentral
 
-**Status:** pending
+**Status:** done
 **Fase:** 5
 **Avhenger av:** TASK-002
 
