@@ -1119,7 +1119,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-064: Sluttpolish — tomme tilstander, skjeletter og feilhåndtering
 
-**Status:** pending
+**Status:** done
 **Fase:** 6
 **Avhenger av:** TASK-063
 
