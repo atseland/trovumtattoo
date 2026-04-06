@@ -1347,7 +1347,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-071: Typesikkerhet — fjern alle `(api as any)`-caster
 
-**Status:** pending
+**Status:** done
 **Fase:** 7 — Auditfikser
 **Avhenger av:** TASK-066, TASK-067, TASK-068, TASK-069, TASK-070
 
