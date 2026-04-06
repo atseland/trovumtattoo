@@ -253,7 +253,7 @@ Dette er grunnmuren alle andre TASK-UI-er bygger på. Gjør dette riktig — ikk
 
 ### TASK-UI-002: Logo-komponent — bildefil i stedet for tekst
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001
 
 #### Hva skal gjøres
