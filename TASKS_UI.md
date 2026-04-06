@@ -660,7 +660,7 @@ Redesign `src/app/(public)/aftercare/page.tsx` (PRD §11.4):
 
 ### TASK-UI-030: Bookingskjema — redesign mot PRD_UI §7.5
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-004, TASK-UI-010
 
 #### Hva skal gjøres
