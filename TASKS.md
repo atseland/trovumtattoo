@@ -280,7 +280,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-014: Admin inquiry-liste — oversikt og filtrering
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-002, TASK-010
 
