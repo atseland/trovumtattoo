@@ -220,7 +220,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-012: Bookingskjema del 1 — skjemastruktur og validering
 
-**Status:** pending
+**Status:** done
 **Fase:** 1
 **Avhenger av:** TASK-003, TASK-001
 
