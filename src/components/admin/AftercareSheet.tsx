@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useQuery, useAction, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -22,7 +22,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  projectId: string
+  projectId: string | Id<"projects">
   clientEmail: string
   threadId?: string
   aftercareSentAt?: number | null
@@ -35,10 +35,10 @@ export function AftercareSheet({ open, onOpenChange, projectId, clientEmail, thr
   const [to, setTo] = useState(clientEmail)
   const [sending, setSending] = useState(false)
 
-  const templates = useQuery((api as any).templates.list, isAuthenticated ? {} : 'skip')
+  const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
   const aftercareTemplates = (templates as any[] | undefined)?.filter((t) => t.type === 'aftercare') ?? []
 
-  const sendAftercare = useAction((api as any).mail.sendAftercare.sendAftercare)
+  const sendAftercare = useAction(api.mail.sendAftercare.sendAftercare)
 
   async function handleSend() {
     if (!body.trim()) { toast.error('Legg til meldingsinnhold'); return }
@@ -46,8 +46,8 @@ export function AftercareSheet({ open, onOpenChange, projectId, clientEmail, thr
     setSending(true)
     try {
       await sendAftercare({
-        projectId,
-        threadId,
+        projectId: projectId as Id<"projects">,
+        threadId: threadId as Id<"mailThreads">,
         to,
         subject: 'Etterbehandling — Trovum Tattoo',
         body,

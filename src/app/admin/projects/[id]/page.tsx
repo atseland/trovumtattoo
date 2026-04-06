@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
+import { Id } from '../../../../../convex/_generated/dataModel'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { BookingSheet } from '@/components/admin/BookingSheet'
@@ -35,17 +35,17 @@ export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { isAuthenticated } = useConvexAuth()
 
-  const project = useQuery((api as any).projects.get, isAuthenticated ? { id } : 'skip')
+  const project = useQuery(api.projects.get, isAuthenticated ? { id: id as Id<"projects"> } : 'skip')
   const client = useQuery(
-    (api as any).clients.get,
+    api.clients.get,
     isAuthenticated && project ? { id: project.clientId } : 'skip'
   )
   const activityLog = useQuery(
-    (api as any).activityLog.listByEntity,
-    isAuthenticated ? { entityType: 'project', entityId: id } : 'skip'
+    api.activityLog.listByEntity,
+    isAuthenticated ? { entityType: 'project', entityId: id as Id<"projects"> } : 'skip'
   )
-  const bookings = useQuery((api as any).bookings.listByProject, isAuthenticated ? { projectId: id } : 'skip')
-  const updateProject = useMutation((api as any).projects.update)
+  const bookings = useQuery(api.bookings.listByProject, isAuthenticated ? { projectId: id as Id<"projects"> } : 'skip')
+  const updateProject = useMutation(api.projects.update)
 
   // Estimate state
   const [estimate, setEstimate] = useState<string>('')
@@ -94,7 +94,7 @@ export default function ProjectDetailPage() {
   async function saveEstimate() {
     setSavingEstimate(true)
     try {
-      await updateProject({ id, estimatedPrice: estimate ? parseFloat(estimate) : undefined })
+      await updateProject({ id: id as Id<"projects">, estimatedPrice: estimate ? parseFloat(estimate) : undefined })
       toast.success('Estimat lagret')
     } catch {
       toast.error('Kunne ikke lagre estimat')
@@ -107,7 +107,7 @@ export default function ProjectDetailPage() {
     setSavingConta(true)
     try {
       await updateProject({
-        id,
+        id: id as Id<"projects">,
         invoiceReference: invoiceReference || undefined,
         accountingStatus: accountingStatus || undefined,
       })
@@ -123,7 +123,7 @@ export default function ProjectDetailPage() {
     setSavingDeposit(true)
     try {
       await updateProject({
-        id,
+        id: id as Id<"projects">,
         depositAmount: depositAmount ? parseFloat(depositAmount) : undefined,
         depositStatus: depositStatus || undefined,
         paymentLink: paymentLink || undefined,
@@ -365,7 +365,7 @@ export default function ProjectDetailPage() {
         <BookingSheet
           open={bookingSheetOpen}
           onOpenChange={setBookingSheetOpen}
-          projectId={id}
+          projectId={id as Id<"projects">}
           mode='create'
         />
       )}
@@ -374,7 +374,7 @@ export default function ProjectDetailPage() {
         <AftercareSheet
           open={aftercareSheetOpen}
           onOpenChange={setAftercareSheetOpen}
-          projectId={id}
+          projectId={id as Id<"projects">}
           clientEmail={(client as any).email}
         />
       )}
@@ -383,7 +383,7 @@ export default function ProjectDetailPage() {
         <ReviewRequestSheet
           open={reviewSheetOpen}
           onOpenChange={setReviewSheetOpen}
-          projectId={id}
+          projectId={id as Id<"projects">}
           clientEmail={(client as any).email}
           reviewRequestedAt={project.reviewRequestedAt}
         />

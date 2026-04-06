@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 
@@ -24,7 +23,7 @@ interface SummaryCard {
 
 export default function AdminDashboardPage() {
   const { isAuthenticated } = useConvexAuth()
-  const summary = useQuery((api as any).dashboard.getSummary, isAuthenticated ? {} : 'skip')
+  const summary = useQuery(api.dashboard.getSummary, isAuthenticated ? {} : 'skip')
 
   const cards: SummaryCard[] = summary
     ? [

@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const ALL_STATUSES = [
   'Ny',
@@ -33,7 +33,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  inquiryId: string
+  inquiryId: string | Id<"inquiries">
   currentStatus: string
 }
 
@@ -42,8 +42,7 @@ export function StatusChangeSheet({ open, onOpenChange, inquiryId, currentStatus
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
 
-  // TODO: fjern cast etter npx convex dev
-  const updateStatus = useMutation((api as any).inquiries.updateStatus)
+    const updateStatus = useMutation(api.inquiries.updateStatus)
 
   async function handleSave() {
     if (selectedStatus === currentStatus && !note) {
@@ -52,7 +51,7 @@ export function StatusChangeSheet({ open, onOpenChange, inquiryId, currentStatus
     }
     setSaving(true)
     try {
-      await updateStatus({ id: inquiryId, status: selectedStatus, note: note || undefined })
+      await updateStatus({ id: inquiryId as Id<"inquiries">, status: selectedStatus, note: note || undefined })
       toast.success('Status oppdatert')
       setNote('')
       onOpenChange(false)

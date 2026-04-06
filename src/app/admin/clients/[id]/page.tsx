@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
+import { Id } from '../../../../../convex/_generated/dataModel'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 
 function formatDate(ts: number) {
@@ -30,10 +30,10 @@ export default function ClientDetailPage() {
   const [notes, setNotes] = useState<string | null>(null)
   const [savingNotes, setSavingNotes] = useState(false)
 
-  const client = useQuery((api as any).clients.get, isAuthenticated ? { id } : 'skip')
-  const projects = useQuery((api as any).projects.listByClient, isAuthenticated && client ? { clientId: id } : 'skip')
-  const mailThreads = useQuery((api as any).mail.queries.listByClient, isAuthenticated ? { clientId: id } : 'skip')
-  const updateClient = useMutation((api as any).clients.update)
+  const client = useQuery(api.clients.get, isAuthenticated ? { id: id as Id<"clients"> } : 'skip')
+  const projects = useQuery(api.projects.listByClient, isAuthenticated && client ? { clientId: id as Id<"clients"> } : 'skip')
+  const mailThreads = useQuery(api.mail.queries.listByClient, isAuthenticated ? { clientId: id as Id<"clients"> } : 'skip')
+  const updateClient = useMutation(api.clients.update)
 
   if (!isAuthenticated || client === undefined) {
     return <p style={{ color: '#7a6e62', padding: '20px' }}>Laster…</p>
@@ -52,7 +52,7 @@ export default function ClientDetailPage() {
   async function saveNotes() {
     setSavingNotes(true)
     try {
-      await updateClient({ id, notes: currentNotes || undefined })
+      await updateClient({ id: id as Id<"clients">, notes: currentNotes || undefined })
       toast.success('Notater lagret')
     } catch {
       toast.error('Kunne ikke lagre notater')

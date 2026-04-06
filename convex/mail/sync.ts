@@ -46,7 +46,7 @@ export const syncMail = action({
           const participants = [from, ...toAddrs]
           const date = envelope.date ? new Date(envelope.date).getTime() : Date.now()
 
-          const threadId = await ctx.runMutation((internal as any).mail.mutations.upsertThread, {
+          const threadId = await ctx.runMutation(internal.mail.mutations.upsertThread, {
             externalThreadId: externalId,
             subject,
             participants,
@@ -54,7 +54,7 @@ export const syncMail = action({
             unreadCount: msg.flags?.has('\\Seen') ? 0 : 1,
           })
 
-          await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
+          await ctx.runMutation(internal.mail.mutations.upsertMessage, {
             threadId,
             externalId,
             direction: 'inbound',

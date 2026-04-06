@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
 
 const typeIcon: Record<string, string> = {
@@ -37,9 +36,9 @@ export default function NotificationsPage() {
   const { isAuthenticated } = useConvexAuth()
   const router = useRouter()
 
-  const notifications = useQuery((api as any).notifications.list, isAuthenticated ? {} : 'skip')
-  const markRead = useMutation((api as any).notifications.markRead)
-  const markAllRead = useMutation((api as any).notifications.markAllRead)
+  const notifications = useQuery(api.notifications.list, isAuthenticated ? {} : 'skip')
+  const markRead = useMutation(api.notifications.markRead)
+  const markAllRead = useMutation(api.notifications.markAllRead)
 
   async function handleClick(notification: any) {
     if (!notification.isRead) {

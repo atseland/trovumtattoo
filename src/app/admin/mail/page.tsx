@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
 
 function formatDate(ts: number) {
@@ -18,7 +17,7 @@ export default function MailPage() {
   const [unreadOnly, setUnreadOnly] = useState(false)
 
   const threads = useQuery(
-    (api as any).mail.queries.listThreads,
+    api.mail.queries.listThreads,
     isAuthenticated ? { unreadOnly } : 'skip'
   )
 

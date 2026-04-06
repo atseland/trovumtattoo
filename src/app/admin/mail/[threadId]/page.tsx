@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { useQuery, useMutation, useConvexAuth } from 'convex/react'
+import { useQuery, useMutation, useAction, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
+import { Id } from '../../../../../convex/_generated/dataModel'
 import { LinkThreadSheet } from '@/components/admin/LinkThreadSheet'
 
 function formatDateTime(ts: number) {
@@ -24,16 +24,16 @@ export default function ThreadPage() {
   const [sending, setSending] = useState(false)
   const [linkSheetOpen, setLinkSheetOpen] = useState(false)
 
-  const thread = useQuery((api as any).mail.queries.getThread, isAuthenticated ? { threadId } : 'skip')
-  const messages = useQuery((api as any).mail.queries.listMessages, isAuthenticated ? { threadId } : 'skip')
-  const templates = useQuery((api as any).templates.list, isAuthenticated ? {} : 'skip')
-  const markRead = useMutation((api as any).mail.mutations.markThreadRead)
-  const sendReply = useMutation((api as any).mail.sendReply.sendReply)
+  const thread = useQuery(api.mail.queries.getThread, isAuthenticated ? { threadId: threadId as Id<"mailThreads"> } : 'skip')
+  const messages = useQuery(api.mail.queries.listMessages, isAuthenticated ? { threadId: threadId as Id<"mailThreads"> } : 'skip')
+  const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
+  const markRead = useMutation(api.mail.mutations.markThreadRead)
+  const sendReply = useAction(api.mail.sendReply.sendReply)
 
   // Mark thread as read on open
   useEffect(() => {
     if (isAuthenticated && thread && thread.unreadCount > 0) {
-      markRead({ threadId }).catch(() => {})
+      markRead({ threadId: threadId as Id<"mailThreads"> }).catch(() => {})
     }
   }, [isAuthenticated, thread?._id])
 
@@ -53,7 +53,7 @@ export default function ThreadPage() {
     setSending(true)
     try {
       await sendReply({
-        threadId,
+        threadId: threadId as Id<"mailThreads">,
         to: thread.participants,
         subject: `Re: ${thread.subject}`,
         body: replyBody,
@@ -118,7 +118,7 @@ export default function ThreadPage() {
         ))}
       </div>
 
-      <LinkThreadSheet open={linkSheetOpen} onOpenChange={setLinkSheetOpen} threadId={threadId} />
+      <LinkThreadSheet open={linkSheetOpen} onOpenChange={setLinkSheetOpen} threadId={threadId as Id<"mailThreads">} />
 
       {/* Reply composer */}
       <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '16px' }}>

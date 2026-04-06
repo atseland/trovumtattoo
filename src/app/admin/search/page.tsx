@@ -22,12 +22,12 @@ export default function SearchPage() {
   const hasQuery = debouncedQuery.trim().length >= 2
 
   const clients = useQuery(
-    (api as any).clients.list,
-    isAuthenticated && hasQuery ? { search: debouncedQuery } : 'skip',
+    api.clients.list,
+    isAuthenticated && hasQuery ? { searchQuery: debouncedQuery } : 'skip',
   )
 
   const inquiries = useQuery(
-    (api as any).inquiries.list,
+    api.inquiries.list,
     isAuthenticated && hasQuery ? {} : 'skip',
   )
 

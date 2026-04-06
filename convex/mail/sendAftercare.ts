@@ -37,7 +37,7 @@ export const sendAftercare = action({
     const now = Date.now()
 
     // Lagre som outbound melding
-    await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
+    await ctx.runMutation(internal.mail.mutations.upsertMessage, {
       threadId,
       externalId: `aftercare-${now}`,
       direction: 'outbound',
@@ -50,14 +50,14 @@ export const sendAftercare = action({
     })
 
     // Logg til activityLog
-    await ctx.runMutation((internal as any).activityLogMutations.insert, {
+    await ctx.runMutation(internal.activityLogMutations.insert, {
       entityType: 'project',
       entityId: projectId,
       action: 'aftercare_sent',
       payload: { to, subject },
     })
 
-    await ctx.runMutation((api as any).projects.update, { id: projectId, aftercareSentAt: now })
+    await ctx.runMutation(api.projects.update, { id: projectId, aftercareSentAt: now })
 
     return { sent: true }
   },

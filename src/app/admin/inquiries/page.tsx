@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 
@@ -43,7 +42,7 @@ export default function InquiriesPage() {
   }
 
   const inquiries = useQuery(
-    (api as any).inquiries.list,
+    api.inquiries.list,
     isAuthenticated ? { status: activeFilter, coverUp: coverUpFilter, touchUp: touchUpFilter } : 'skip'
   )
 

@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
 import { BookingSheet } from '@/components/admin/BookingSheet'
 
@@ -24,7 +23,7 @@ export default function CalendarPage() {
   const { isAuthenticated } = useConvexAuth()
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
 
-  const bookings = useQuery((api as any).bookings.listUpcomingWithDetails, isAuthenticated ? {} : 'skip')
+  const bookings = useQuery(api.bookings.listUpcomingWithDetails, isAuthenticated ? {} : 'skip')
 
   // Group by date
   const grouped = new Map<string, any[]>()

@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -22,7 +22,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  threadId: string
+  threadId: string | Id<"mailThreads">
 }
 
 export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
@@ -32,18 +32,18 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
-  const clients = useQuery((api as any).clients.list, isAuthenticated && search ? { searchQuery: search } : isAuthenticated ? { searchQuery: undefined } : 'skip')
-  const projects = useQuery((api as any).projects.listByClient, isAuthenticated && selectedClientId ? { clientId: selectedClientId } : 'skip')
-  const linkThread = useMutation((api as any).mail.mutations.linkThread)
+  const clients = useQuery(api.clients.list, isAuthenticated && search ? { searchQuery: search } : isAuthenticated ? { searchQuery: undefined } : 'skip')
+  const projects = useQuery(api.projects.listByClient, isAuthenticated && selectedClientId ? { clientId: selectedClientId as Id<"clients"> } : 'skip')
+  const linkThread = useMutation(api.mail.mutations.linkThread)
 
   async function handleSave() {
     if (!selectedClientId) { toast.error('Velg en kunde'); return }
     setSaving(true)
     try {
       await linkThread({
-        threadId,
-        linkedClientId: selectedClientId,
-        linkedProjectId: selectedProjectId ?? undefined,
+        threadId: threadId as Id<"mailThreads">,
+        linkedClientId: selectedClientId as Id<"clients">,
+        linkedProjectId: selectedProjectId ? selectedProjectId as Id<"projects"> : undefined,
       })
       toast.success('Tråd koblet')
       onOpenChange(false)

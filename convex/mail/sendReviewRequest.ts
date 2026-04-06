@@ -36,7 +36,7 @@ export const sendReviewRequest = action({
 
     const now = Date.now()
 
-    await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
+    await ctx.runMutation(internal.mail.mutations.upsertMessage, {
       threadId,
       externalId: `review-request-${now}`,
       direction: 'outbound',
@@ -49,13 +49,13 @@ export const sendReviewRequest = action({
     })
 
     // Oppdater reviewRequestedAt på project
-    await ctx.runMutation((api as any).projects.update, {
+    await ctx.runMutation(api.projects.update, {
       id: projectId,
       reviewRequestedAt: now,
     })
 
     // Logg til activityLog
-    await ctx.runMutation((internal as any).activityLogMutations.insert, {
+    await ctx.runMutation(internal.activityLogMutations.insert, {
       entityType: 'project',
       entityId: projectId,
       action: 'review_requested',

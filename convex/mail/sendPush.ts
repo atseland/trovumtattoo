@@ -26,7 +26,7 @@ export const sendPush = action({
       vapidPrivateKey,
     )
 
-    const subscriptions: any[] | null = await ctx.runQuery((api as any).pushSubscriptions.getCurrent, {})
+    const subscriptions: any[] | null = await ctx.runQuery(api.pushSubscriptions.getCurrent, {})
     if (!subscriptions || !Array.isArray(subscriptions)) {
       return { sent: 0 }
     }

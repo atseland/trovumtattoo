@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell, Search } from 'lucide-react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
 
 const navItems = [
@@ -22,7 +21,7 @@ export function AdminNav() {
   const pathname = usePathname()
   const { isAuthenticated } = useConvexAuth()
 
-  const unreadCount = useQuery((api as any).notifications.countUnread, isAuthenticated ? {} : 'skip') ?? 0
+  const unreadCount = useQuery(api.notifications.countUnread, isAuthenticated ? {} : 'skip') ?? 0
 
   function isActive(item: (typeof navItems)[0]) {
     if (item.exact) return pathname === item.href

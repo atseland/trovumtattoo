@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -22,7 +22,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  projectId: string
+  projectId: string | Id<"projects">
   existingBookingId?: string
   existingStartAt?: number
   existingEndAt?: number
@@ -51,9 +51,9 @@ export function BookingSheet({
   const [saving, setSaving] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(false)
 
-  const createBooking = useMutation((api as any).bookings.create)
-  const updateBooking = useMutation((api as any).bookings.update)
-  const cancelBooking = useMutation((api as any).bookings.cancel)
+  const createBooking = useMutation(api.bookings.create)
+  const updateBooking = useMutation(api.bookings.update)
+  const cancelBooking = useMutation(api.bookings.cancel)
 
   async function handleSave() {
     if (!startAt || !endAt) { toast.error('Velg start- og sluttid'); return }
@@ -64,14 +64,14 @@ export function BookingSheet({
     setSaving(true)
     try {
       if (mode === 'create') {
-        await createBooking({ projectId, startAt: start, endAt: end, notes: notes || undefined })
+        await createBooking({ projectId: projectId as Id<"projects">, startAt: start, endAt: end, notes: notes || undefined })
         toast.success('Booking opprettet')
       } else if (mode === 'edit' && existingBookingId) {
-        await updateBooking({ id: existingBookingId, startAt: start, endAt: end, notes: notes || undefined })
+        await updateBooking({ id: existingBookingId as Id<"bookings">, startAt: start, endAt: end, notes: notes || undefined })
         toast.success('Booking oppdatert')
       } else if (mode === 'rebook' && existingBookingId) {
-        await updateBooking({ id: existingBookingId, status: 'rescheduled' })
-        await createBooking({ projectId, startAt: start, endAt: end, notes: notes || undefined })
+        await updateBooking({ id: existingBookingId as Id<"bookings">, status: 'rescheduled' })
+        await createBooking({ projectId: projectId as Id<"projects">, startAt: start, endAt: end, notes: notes || undefined })
         toast.success('Booking ombooket')
       }
       onOpenChange(false)
@@ -87,7 +87,7 @@ export function BookingSheet({
     if (!existingBookingId) return
     setSaving(true)
     try {
-      await cancelBooking({ id: existingBookingId })
+      await cancelBooking({ id: existingBookingId as Id<"bookings"> })
       toast.success('Booking avlyst')
       onOpenChange(false)
       onSuccess?.()

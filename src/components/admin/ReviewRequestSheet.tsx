@@ -5,8 +5,8 @@ import { useQuery, useConvexAuth } from 'convex/react'
 import { useAction } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -23,7 +23,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  projectId: string
+  projectId: string | Id<"projects">
   clientEmail: string
   threadId?: string
   reviewRequestedAt?: number | null
@@ -36,10 +36,10 @@ export function ReviewRequestSheet({ open, onOpenChange, projectId, clientEmail,
   const [to, setTo] = useState(clientEmail)
   const [sending, setSending] = useState(false)
 
-  const templates = useQuery((api as any).templates.list, isAuthenticated ? {} : 'skip')
+  const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
   const reviewTemplates = (templates as any[] | undefined)?.filter((t) => t.type === 'review-request') ?? []
 
-  const sendReviewRequest = useAction((api as any).mail.sendReviewRequest.sendReviewRequest)
+  const sendReviewRequest = useAction(api.mail.sendReviewRequest.sendReviewRequest)
 
   async function handleSend() {
     if (!body.trim()) { toast.error('Legg til meldingsinnhold'); return }
@@ -47,8 +47,8 @@ export function ReviewRequestSheet({ open, onOpenChange, projectId, clientEmail,
     setSending(true)
     try {
       await sendReviewRequest({
-        projectId,
-        threadId,
+        projectId: projectId as Id<"projects">,
+        threadId: threadId as Id<"mailThreads">,
         to,
         subject: 'Vil du gi oss en anmeldelse? — Trovum Tattoo',
         body,

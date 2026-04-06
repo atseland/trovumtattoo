@@ -56,6 +56,7 @@ export const update = mutation({
     invoiceReference: v.optional(v.string()),
     accountingStatus: v.optional(v.string()),
     paymentNote: v.optional(v.string()),
+    aftercareSentAt: v.optional(v.number()),
     reviewRequestedAt: v.optional(v.number()),
   },
   handler: async (ctx, { id, status, ...fields }) => {

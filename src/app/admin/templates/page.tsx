@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
+import { Id } from '../../../../convex/_generated/dataModel'
 
 const TEMPLATE_TYPES: { value: string; label: string }[] = [
   { value: 'received', label: 'Mottatt forespørsel' },
@@ -49,17 +49,17 @@ export default function TemplatesPage() {
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
 
-  const templates = useQuery((api as any).templates.list, isAuthenticated ? {} : 'skip')
-  const createTemplate = useMutation((api as any).templates.create)
-  const updateTemplate = useMutation((api as any).templates.update)
-  const removeTemplate = useMutation((api as any).templates.remove)
+  const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
+  const createTemplate = useMutation(api.templates.create)
+  const updateTemplate = useMutation(api.templates.update)
+  const removeTemplate = useMutation(api.templates.remove)
 
   async function handleSave() {
     if (!form.title || !form.content) { toast.error('Tittel og innhold er påkrevd'); return }
     setSaving(true)
     try {
       if (form.id) {
-        await updateTemplate({ id: form.id, title: form.title, content: form.content })
+        await updateTemplate({ id: form.id as Id<"messageTemplates">, title: form.title, content: form.content })
       } else {
         await createTemplate({ type: form.type, title: form.title, content: form.content })
       }
@@ -73,7 +73,7 @@ export default function TemplatesPage() {
   async function handleDelete(id: string) {
     setDeleting(id)
     try {
-      await removeTemplate({ id })
+      await removeTemplate({ id: id as Id<"messageTemplates"> })
       toast.success('Mal slettet')
     } catch { toast.error('Kunne ikke slette mal') }
     finally { setDeleting(null) }

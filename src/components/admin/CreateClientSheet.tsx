@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -23,7 +23,7 @@ const inputStyle: React.CSSProperties = {
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  inquiryId: string
+  inquiryId: string | Id<"inquiries">
   defaultName?: string
   defaultEmail?: string
   defaultPhone?: string
@@ -38,8 +38,8 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
   const [instagram, setInstagram] = useState(defaultInstagram)
   const [saving, setSaving] = useState(false)
 
-  const createClient = useMutation((api as any).clients.create)
-  const createProject = useMutation((api as any).projects.create)
+  const createClient = useMutation(api.clients.create)
+  const createProject = useMutation(api.projects.create)
 
   async function handleCreate() {
     if (!name || !email) {
@@ -56,7 +56,7 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
       })
       const projectId = await createProject({
         clientId,
-        inquiryId,
+        inquiryId: inquiryId as Id<"inquiries">,
       })
       toast.success('Klient og prosjekt opprettet')
       onOpenChange(false)

@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useMutation } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
+import { Id } from '../../../../convex/_generated/dataModel'
 import { inquirySchema, type InquiryFormValues } from '@/lib/validators/inquiry'
 
 const inputStyle: React.CSSProperties = {
@@ -49,10 +49,9 @@ export default function BookPage() {
   const [uploadProgress, setUploadProgress] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
-  // TODO: fjern cast etter npx convex dev
-  const createInquiry = useMutation((api as any).inquiries.create)
-  const generateUploadUrl = useMutation((api as any).storage.generateUploadUrl)
-  const addReferenceImages = useMutation((api as any).inquiries.addReferenceImages)
+    const createInquiry = useMutation(api.inquiries.create)
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
+  const addReferenceImages = useMutation(api.inquiries.addReferenceImages)
 
   const {
     register,
@@ -113,7 +112,7 @@ export default function BookPage() {
 
       if (uploaded.length > 0) {
         try {
-          await addReferenceImages({ inquiryId, images: uploaded })
+          await addReferenceImages({ inquiryId, images: uploaded.map(img => ({ ...img, storageId: img.storageId as Id<"_storage"> })) })
         } catch {
           toast.error('Kunne ikke lagre referansebilder — forespørselen er likevel sendt')
         }

@@ -16,8 +16,8 @@ export function PushSubscriptionManager() {
   const { isAuthenticated } = useConvexAuth()
   const [loading, setLoading] = useState(false)
 
-  const subscriptions = useQuery((api as any).pushSubscriptions.getCurrent, isAuthenticated ? {} : 'skip')
-  const saveSub = useMutation((api as any).pushSubscriptions.save)
+  const subscriptions = useQuery(api.pushSubscriptions.getCurrent, isAuthenticated ? {} : 'skip')
+  const saveSub = useMutation(api.pushSubscriptions.save)
 
   const isSubscribed = Array.isArray(subscriptions) && subscriptions.length > 0
 

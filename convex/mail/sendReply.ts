@@ -39,7 +39,7 @@ export const sendReply = action({
     const now = Date.now()
 
     // Lagre som outbound melding
-    await ctx.runMutation((internal as any).mail.mutations.upsertMessage, {
+    await ctx.runMutation(internal.mail.mutations.upsertMessage, {
       threadId,
       externalId: `outbound-${now}`,
       direction: 'outbound',
@@ -52,7 +52,7 @@ export const sendReply = action({
     })
 
     // Oppdater tråd
-    await ctx.runMutation((internal as any).mail.mutations.upsertThread, {
+    await ctx.runMutation(internal.mail.mutations.upsertThread, {
       externalThreadId: threadId,
       subject,
       participants: to,

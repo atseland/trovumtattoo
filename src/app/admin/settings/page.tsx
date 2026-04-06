@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, useConvexAuth } from 'convex/react'
+import { useQuery, useAction, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { PushSubscriptionManager } from '@/components/admin/PushSubscriptionManager'
 import { api } from '../../../../convex/_generated/api'
@@ -17,11 +17,11 @@ export default function SettingsPage() {
   const { isAuthenticated } = useConvexAuth()
 
   const mailAccounts = useQuery(
-    (api as any).mail.queries.listThreads,
-    isAuthenticated ? { limit: 0 } : 'skip',
+    api.mail.queries.listThreads,
+    isAuthenticated ? {} : 'skip',
   )
 
-  const syncMail = useMutation((api as any).mail.sync.syncMail)
+  const syncMail = useAction(api.mail.sync.syncMail)
 
   async function handleForcSync() {
     try {

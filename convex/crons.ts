@@ -8,29 +8,28 @@ const crons = cronJobs()
 crons.interval(
   'sync-mail',
   { minutes: 5 },
-  // TODO: fjern cast etter npx convex dev
-  (api as any).mail.sync.syncMail
+  api.mail.sync.syncMail
 )
 
 // Sjekk forfalt depositum daglig kl. 09:00 UTC
 crons.daily(
   'check-deposit-overdue',
   { hourUTC: 9, minuteUTC: 0 },
-  (internal as any).notificationTriggers.checkDepositOverdue,
+  internal.notificationTriggers.checkDepositOverdue,
 )
 
 // Sjekk bookinger i morgen daglig kl. 08:00 UTC
 crons.daily(
   'check-booking-tomorrow',
   { hourUTC: 8, minuteUTC: 0 },
-  (internal as any).notificationTriggers.checkBookingTomorrow,
+  internal.notificationTriggers.checkBookingTomorrow,
 )
 
 // Sjekk bookinger i dag daglig kl. 07:00 UTC
 crons.daily(
   'check-booking-today',
   { hourUTC: 7, minuteUTC: 0 },
-  (internal as any).notificationTriggers.checkBookingToday,
+  internal.notificationTriggers.checkBookingToday,
 )
 
 export default crons

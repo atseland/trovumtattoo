@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../../convex/_generated/api'
+import { Id } from '../../../../../convex/_generated/dataModel'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { StatusChangeSheet } from '@/components/admin/StatusChangeSheet'
@@ -30,18 +30,18 @@ export default function InquiryDetailPage() {
   const [clientSheetOpen, setClientSheetOpen] = useState(false)
 
   const inquiry = useQuery(
-    (api as any).inquiries.get,
-    isAuthenticated ? { id } : 'skip'
+    api.inquiries.get,
+    isAuthenticated ? { id: id as Id<"inquiries"> } : 'skip'
   )
 
   const referenceImages = useQuery(
-    (api as any).inquiries.getReferenceImages,
-    isAuthenticated && inquiry ? { inquiryId: id } : 'skip'
+    api.inquiries.getReferenceImages,
+    isAuthenticated && inquiry ? { inquiryId: id as Id<"inquiries"> } : 'skip'
   )
 
   const activityLog = useQuery(
-    (api as any).activityLog.listByEntity,
-    isAuthenticated ? { entityType: 'inquiry', entityId: id } : 'skip'
+    api.activityLog.listByEntity,
+    isAuthenticated ? { entityType: 'inquiry', entityId: id as Id<"inquiries"> } : 'skip'
   )
 
   if (!isAuthenticated || inquiry === undefined) {
@@ -157,7 +157,7 @@ export default function InquiryDetailPage() {
       <StatusChangeSheet
         open={sheetOpen}
         onOpenChange={setSheetOpen}
-        inquiryId={id}
+        inquiryId={id as Id<"inquiries">}
         currentStatus={inquiry.status}
       />
 
@@ -165,7 +165,7 @@ export default function InquiryDetailPage() {
       <CreateClientSheet
         open={clientSheetOpen}
         onOpenChange={setClientSheetOpen}
-        inquiryId={id}
+        inquiryId={id as Id<"inquiries">}
         defaultName={inquiry.name}
         defaultEmail={inquiry.email}
         defaultPhone={inquiry.phone}

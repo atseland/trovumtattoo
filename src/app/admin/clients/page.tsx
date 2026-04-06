@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
-// TODO: fjern cast etter npx convex dev
 import { api } from '../../../../convex/_generated/api'
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -29,7 +28,7 @@ export default function ClientsPage() {
   const debouncedSearch = useDebounce(search, 300)
 
   const clients = useQuery(
-    (api as any).clients.list,
+    api.clients.list,
     isAuthenticated ? { searchQuery: debouncedSearch || undefined } : 'skip'
   )
 
