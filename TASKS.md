@@ -428,7 +428,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-022: Admin klient- og prosjektdetalj — visning og kobling
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-021, TASK-015
 

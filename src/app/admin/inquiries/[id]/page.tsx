@@ -9,6 +9,7 @@ import { api } from '../../../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { StatusChangeSheet } from '@/components/admin/StatusChangeSheet'
+import { CreateClientSheet } from '@/components/admin/CreateClientSheet'
 
 function Field({ label, value }: { label: string; value?: string | boolean | null }) {
   if (value === undefined || value === null || value === '') return null
@@ -26,6 +27,7 @@ export default function InquiryDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { isAuthenticated } = useConvexAuth()
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [clientSheetOpen, setClientSheetOpen] = useState(false)
 
   const inquiry = useQuery(
     (api as any).inquiries.get,
@@ -78,8 +80,8 @@ export default function InquiryDetailPage() {
           >
             Endre status
           </button>
-          {/* Opprett klient — implementeres i TASK-020 */}
           <button
+            onClick={() => setClientSheetOpen(true)}
             style={{
               padding: '8px 16px',
               background: 'transparent',
@@ -157,6 +159,17 @@ export default function InquiryDetailPage() {
         onOpenChange={setSheetOpen}
         inquiryId={id}
         currentStatus={inquiry.status}
+      />
+
+      {/* Create client sheet */}
+      <CreateClientSheet
+        open={clientSheetOpen}
+        onOpenChange={setClientSheetOpen}
+        inquiryId={id}
+        defaultName={inquiry.name}
+        defaultEmail={inquiry.email}
+        defaultPhone={inquiry.phone}
+        defaultInstagram={inquiry.instagramHandle}
       />
     </div>
   )
