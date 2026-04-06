@@ -460,7 +460,7 @@ pnpm typecheck && pnpm test:run && pnpm build
 
 ## TASK-023: Estimat og depositum — redigeringsgrensesnitt
 
-**Status:** pending
+**Status:** done
 **Fase:** 2
 **Avhenger av:** TASK-022
 
