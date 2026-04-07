@@ -12,6 +12,11 @@ export const metadata: Metadata = {
     title: 'Etterbehandling | Trovum Tattoo',
     description: 'Dag-for-dag guide til etterbehandling av tatovering.',
     url: 'https://trovumtattoo.no/aftercare',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['https://trovumtattoo.no/og-image.jpg'],
   },
 }
 

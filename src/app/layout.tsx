@@ -40,6 +40,13 @@ export const metadata: Metadata = {
     icon: { url: '/logo.png', type: 'image/png' },
     apple: '/icons/icon-192.svg',
   },
+  openGraph: {
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-image.jpg'],
+  },
 }
 
 export const viewport: Viewport = {
