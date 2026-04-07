@@ -1,23 +1,12 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Vanlige spørsmål | Trovum Tattoo',
-  description:
-    'Svar på de vanligste spørsmålene om booking, priser, depositum, cover-up og etterbehandling hos Trovum Tattoo.',
-  alternates: { canonical: 'https://trovumtattoo.no/faq' },
-  openGraph: {
-    title: 'Vanlige spørsmål | Trovum Tattoo',
-    description: 'Alt du lurer på om booking, priser og prosessen hos Trovum Tattoo.',
-    url: 'https://trovumtattoo.no/faq',
-  },
-}
+import type { Metadata } from 'next'
+import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { LinkI } from '@/components/ui/LinkI'
+import { Eyebrow } from '@/components/ui/Eyebrow'
+import { Rule } from '@/components/ui/Rule'
+import { Btn } from '@/components/ui/Btn'
 
 const faqItems = [
   {
@@ -28,7 +17,7 @@ const faqItems = [
   {
     question: 'Hva bør jeg sende inn?',
     answer:
-      'Jo mer detaljer du gir, jo lettere er det å gi deg et godt tilbud. Send gjerne referansebilder av stilen du liker, bilder av plasseringen på kroppen, og beskriv motivet så nøyaktig som mulig. Det er ikke nødvendig å ha en ferdig idé — vi kan utvikle konseptet sammen.',
+      'Jo mer detaljer du gir, jo lettere er det å gi deg et godt tilbud. Send gjerne referansebilder av stilen du liker, bilder av plasseringen på kroppen, og beskriv motivet så nøyaktig som mulig. Det er ikke nødvendig å ha en ferdig idé — vi kan utvikle konseptet sammen gjennom dialog.',
   },
   {
     question: 'Tar du cover-up?',
@@ -38,7 +27,7 @@ const faqItems = [
   {
     question: 'Hva koster en tatovering?',
     answer:
-      'Prisen avhenger av størrelse, kompleksitet og plassering. Enkle, små design starter fra 1500 kr. Større prosjekter prises etter time eller som en total pris for hele jobben. Du får alltid et estimat før vi avtaler noe.',
+      'Prisen avhenger av størrelse, kompleksitet og plassering. Enkle, små design starter fra 1000 kr. Større prosjekter prises etter time eller som en total pris for hele jobben. Du får alltid et estimat før vi avtaler noe.',
   },
   {
     question: 'Hvordan fungerer depositum?',
@@ -57,84 +46,60 @@ const faqItems = [
   },
 ]
 
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className='border-b border-rule'>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className='flex w-full items-center justify-between gap-4 py-4 text-left font-sans text-[14px] text-paper min-h-[52px] transition-colors duration-[200ms] hover:text-accent'
+        aria-expanded={open}
+      >
+        <span>{question}</span>
+        <ChevronDown
+          size={16}
+          strokeWidth={1.5}
+          className='shrink-0 text-nav transition-transform duration-[200ms]'
+          style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
+      </button>
+      {open && (
+        <div className='pb-4 font-sans text-[13px] text-body leading-[1.8] max-w-[48ch]'>
+          {answer}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function FaqPage() {
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '48px 20px' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <Link
-          href='/'
-          style={{ color: '#7a6e62', fontSize: '0.8rem', textDecoration: 'none' }}
-        >
-          ← Tilbake til forsiden
-        </Link>
+    <div className='mx-auto max-w-2xl px-pad py-12'>
+      <div className='mb-6'>
+        <LinkI href='/'>← Tilbake</LinkI>
       </div>
 
-      <h1
-        className='font-serif italic'
-        style={{ color: '#c9b99a', fontSize: '2rem', marginBottom: '8px' }}
-      >
+      <Eyebrow withLine className='mb-4'>FAQ</Eyebrow>
+      <h1 className='font-serif italic text-[clamp(32px,5vw,48px)] text-paper leading-[1.1] tracking-[-0.02em] mb-2'>
         Vanlige spørsmål
       </h1>
-      <p style={{ color: '#7a6e62', marginBottom: '40px', fontSize: '0.9rem' }}>
+      <p className='font-sans text-[14px] text-body mb-10 leading-[1.8]'>
         Alt du lurer på om prosessen, priser og praktisk informasjon.
       </p>
 
-      <Accordion type='single' collapsible className='w-full' style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div className='border-t border-rule'>
         {faqItems.map((item, i) => (
-          <AccordionItem
-            key={i}
-            value={`item-${i}`}
-            style={{
-              border: '1px solid #2a2724',
-              borderRadius: '6px',
-              background: '#141210',
-              padding: '0 4px',
-            }}
-          >
-            <AccordionTrigger
-              style={{
-                color: '#c9b99a',
-                fontSize: '0.95rem',
-                fontWeight: '500',
-                textAlign: 'left',
-                padding: '16px 12px',
-              }}
-            >
-              {item.question}
-            </AccordionTrigger>
-            <AccordionContent
-              style={{
-                color: '#7a6e62',
-                fontSize: '0.875rem',
-                lineHeight: '1.7',
-                padding: '0 12px 16px',
-              }}
-            >
-              {item.answer}
-            </AccordionContent>
-          </AccordionItem>
+          <FaqItem key={i} question={item.question} answer={item.answer} />
         ))}
-      </Accordion>
+      </div>
 
-      <div style={{ marginTop: '48px', padding: '24px', background: '#141210', border: '1px solid #2a2724', borderRadius: '8px' }}>
-        <p style={{ color: '#c9b99a', fontSize: '0.9rem', marginBottom: '12px' }}>
-          Fant du ikke svar på det du lurte på?
-        </p>
-        <Link
-          href='/book'
-          style={{
-            display: 'inline-block',
-            padding: '12px 24px',
-            background: '#c9933a',
-            color: '#0d0c0b',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontWeight: '600',
-            fontSize: '0.875rem',
-          }}
-        >
+      <Rule className='my-10' />
+
+      <div className='flex flex-col gap-4'>
+        <p className='font-sans text-[14px] text-body'>Fant du ikke svar på det du lurte på?</p>
+        <Btn href='/book' variant='action-primary' className='max-w-xs'>
           Send en forespørsel
-        </Link>
+        </Btn>
       </div>
     </div>
   )

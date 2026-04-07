@@ -509,7 +509,7 @@ Redesign admin-layouten (`src/app/admin/layout.tsx`) og `src/components/admin/Ad
 
 ### TASK-UI-050: Public hjemmeside — hero, portfolio og CTA
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-010, TASK-UI-011, TASK-UI-003
 
 #### Hva skal gjøres
