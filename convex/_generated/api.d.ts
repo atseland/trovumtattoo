@@ -16,6 +16,7 @@ import type * as crons from "../crons.js";
 import type * as dashboard from "../dashboard.js";
 import type * as inquiries from "../inquiries.js";
 import type * as lib_validate from "../lib/validate.js";
+import type * as mail_account from "../mail/account.js";
 import type * as mail_config from "../mail/config.js";
 import type * as mail_mutations from "../mail/mutations.js";
 import type * as mail_queries from "../mail/queries.js";
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   dashboard: typeof dashboard;
   inquiries: typeof inquiries;
   "lib/validate": typeof lib_validate;
+  "mail/account": typeof mail_account;
   "mail/config": typeof mail_config;
   "mail/mutations": typeof mail_mutations;
   "mail/queries": typeof mail_queries;

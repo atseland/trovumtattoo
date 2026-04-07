@@ -4,7 +4,7 @@ import { action } from '../_generated/server'
 import { api, internal } from '../_generated/api'
 import { v } from 'convex/values'
 import nodemailer from 'nodemailer'
-import { getMailConfig } from './config'
+import { getMailConfig, type MailConfig } from './config'
 
 /**
  * sendReviewRequest — Convex action for å sende review request via SMTP.
@@ -24,7 +24,8 @@ export const sendReviewRequest = action({
     if (subject.length > 500) throw new Error('Subject too long')
     if (body.length > 100_000) throw new Error('Body too long')
 
-    const config = getMailConfig()
+    const dbConfig = await ctx.runQuery(internal.mail.account.getConfig, {})
+    const config: MailConfig = dbConfig ?? getMailConfig()
 
     const transporter = nodemailer.createTransport({
       host: config.smtp.host,

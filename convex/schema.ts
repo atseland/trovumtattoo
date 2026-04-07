@@ -93,7 +93,12 @@ export default defineSchema({
     emailAddress: v.string(),
     provider: v.string(), // 'imap-smtp'
     username: v.string(),
-    encryptedCredentialRef: v.string(),
+    password: v.string(),
+    fromName: v.string(),
+    hostImap: v.optional(v.string()),
+    portImap: v.optional(v.number()),
+    hostSmtp: v.optional(v.string()),
+    portSmtp: v.optional(v.number()),
     isActive: v.boolean(),
     lastSyncAt: v.optional(v.number()),
   }).index('by_emailAddress', ['emailAddress']),

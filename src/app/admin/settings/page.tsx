@@ -3,6 +3,7 @@
 import { useAction } from 'convex/react'
 import { toast } from 'sonner'
 import { PushSubscriptionManager } from '@/components/admin/PushSubscriptionManager'
+import { MailAccountForm } from '@/components/admin/MailAccountForm'
 import { api } from '../../../../convex/_generated/api'
 import { Rule } from '@/components/ui/Rule'
 import { Btn } from '@/components/ui/Btn'
@@ -37,16 +38,9 @@ export default function SettingsPage() {
       {/* Mail account */}
       <section>
         <Eyebrow withLine className='mb-4'>Mail-konto</Eyebrow>
-        <div className='bg-panel border border-rule px-5 py-5 flex flex-col gap-4'>
-          <div className='flex items-center gap-3'>
-            <span
-              className='inline-block w-[8px] h-[8px] shrink-0'
-              style={{ background: 'var(--status-booked)', borderRadius: '50%' }}
-            />
-            <span className='font-sans text-[14px] text-paper'>IMAP/SMTP konfigurert</span>
-          </div>
-          <p className='font-sans text-[12px] text-mast-left'>Sist synkronisert: —</p>
-          <div>
+        <div className='bg-panel border border-rule px-5 py-5 flex flex-col gap-5'>
+          <MailAccountForm />
+          <div className='border-t border-rule pt-4'>
             <Btn variant='sm' onClick={handleForceSync}>Tving synkronisering</Btn>
           </div>
         </div>

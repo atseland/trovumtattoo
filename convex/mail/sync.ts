@@ -3,7 +3,7 @@
 import { action } from '../_generated/server'
 import { internal } from '../_generated/api'
 import { ImapFlow } from 'imapflow'
-import { getMailConfig } from './config'
+import { getMailConfig, type MailConfig } from './config'
 
 /**
  * syncMail — Convex action som henter e-post fra IMAP og lagrer i Convex.
@@ -12,9 +12,10 @@ import { getMailConfig } from './config'
 export const syncMail = action({
   args: {},
   handler: async (ctx) => {
-    let config: ReturnType<typeof getMailConfig>
+    let config: MailConfig
     try {
-      config = getMailConfig()
+      const dbConfig = await ctx.runQuery(internal.mail.account.getConfig, {})
+      config = dbConfig ?? getMailConfig()
     } catch (e) {
       console.error('[syncMail] Manglende mail-konfigurasjon:', (e as Error).message)
       return { synced: 0, error: (e as Error).message }
@@ -79,6 +80,7 @@ export const syncMail = action({
       return { synced, error: (e as Error).message }
     }
 
+    await ctx.runMutation(internal.mail.account.updateLastSync, {})
     console.log(`[syncMail] Synkronisert ${synced} meldinger`)
     return { synced }
   },
