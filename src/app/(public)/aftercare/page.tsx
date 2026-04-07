@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { LinkI } from '@/components/ui/LinkI'
+import { Eyebrow } from '@/components/ui/Eyebrow'
+import { Rule } from '@/components/ui/Rule'
 
 export const metadata: Metadata = {
   title: 'Etterbehandling | Trovum Tattoo',
@@ -10,13 +12,18 @@ export const metadata: Metadata = {
     title: 'Etterbehandling | Trovum Tattoo',
     description: 'Dag-for-dag guide til etterbehandling av tatovering.',
     url: 'https://trovumtattoo.no/aftercare',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['https://trovumtattoo.no/og-image.jpg'],
   },
 }
 
 const steps = [
   {
-    day: 'Dag 1',
-    title: 'Rett etter tatoveringen',
+    day: '01',
+    title: 'Dag 1 — rett etter tatoveringen',
     instructions: [
       'Hold plastfolien på i 2–4 timer (eller til du er hjemme)',
       'Fjern folien forsiktig og skyll tatoveringen med lunkent vann og en mild, parfymefri såpe',
@@ -26,8 +33,8 @@ const steps = [
     ],
   },
   {
-    day: 'Dag 2–4',
-    title: 'Første helingsuke',
+    day: '02',
+    title: 'Dag 2–4 — første helingsuke',
     instructions: [
       'Vask tatoveringen 2–3 ganger daglig med mild såpe',
       'Påfør fuktighetskrem etter vask — et tynt, ikke-klebrig lag',
@@ -37,19 +44,19 @@ const steps = [
     ],
   },
   {
-    day: 'Dag 5–14',
-    title: 'Skallingsfase',
+    day: '03',
+    title: 'Dag 5–14 — skallingsfase',
     instructions: [
       'Tatoveringen vil begynne å skalle — dette er normalt',
       'Ikke riv av skall — la dem falle av naturlig',
       'Fortsett å fukte tatoveringen, men ikke overdriv',
       'Unngå bading i basseng, badstue og langvarig dusj i denne perioden',
-      'Hold tatoveringen beskyttet fra solen — bruk løse klær eller plast (ikke krem ennå)',
+      'Hold tatoveringen beskyttet fra solen — bruk løse klær',
     ],
   },
   {
-    day: 'Uke 3–6',
-    title: 'Dyp heling',
+    day: '04',
+    title: 'Uke 3–6 — dyp heling',
     instructions: [
       'Tatoveringen kan se matt eller uklar ut — dette normaliserer seg',
       'Du kan nå bruke solkrem (SPF 50+) når tatoveringen er utendørs',
@@ -64,107 +71,78 @@ const donts = [
   'Sitte i badstue eller dampbad',
   'Bruke solkrem på fersk tatovering (første 2 uker)',
   'La hunder/katter slikke tatoveringen',
-  'Ta vaksiner i tatovert område under heling',
   'Intensiv trening som gir mye svette de første dagene',
 ]
 
 export default function AftercarePage() {
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '48px 20px' }}>
-      <div style={{ marginBottom: '16px' }}>
-        <Link href='/' style={{ color: '#7a6e62', fontSize: '0.8rem', textDecoration: 'none' }}>
-          ← Tilbake til forsiden
-        </Link>
+    <div className='mx-auto max-w-2xl px-pad py-12'>
+      <div className='mb-6'>
+        <LinkI href='/'>← Tilbake</LinkI>
       </div>
 
-      <h1
-        className='font-serif italic'
-        style={{ color: '#c9b99a', fontSize: '2rem', marginBottom: '8px' }}
-      >
+      <Eyebrow withLine className='mb-4'>Guide</Eyebrow>
+      <h1 className='font-serif italic text-[clamp(32px,5vw,48px)] text-paper leading-[1.1] tracking-[-0.02em] mb-2'>
         Etterbehandling
       </h1>
-      <p style={{ color: '#7a6e62', marginBottom: '40px', fontSize: '0.9rem' }}>
+      <p className='font-sans text-[14px] text-body mb-10 leading-[1.8] max-w-[48ch]'>
         Riktig etterbehandling er avgjørende for at tatoveringen skal hele godt og beholde
         linjerenhet og fargedybde over tid.
       </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', marginBottom: '40px' }}>
+      <div className='flex flex-col gap-0'>
         {steps.map((step, i) => (
-          <div
-            key={i}
-            style={{
-              background: '#141210',
-              border: '1px solid #2a2724',
-              borderRadius: '8px',
-              padding: '20px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <span
-                style={{
-                  background: '#c9933a',
-                  color: '#0d0c0b',
-                  fontSize: '0.7rem',
-                  fontWeight: '700',
-                  padding: '3px 10px',
-                  borderRadius: '999px',
-                  flexShrink: 0,
-                }}
-              >
+          <div key={step.day}>
+            <div className='flex gap-5 py-6'>
+              <span className='shrink-0 font-mono text-[8px] tracking-[0.24em] uppercase text-index-num pt-1'>
                 {step.day}
               </span>
-              <h2 style={{ color: '#c9b99a', fontSize: '0.95rem', fontWeight: '600' }}>
-                {step.title}
-              </h2>
+              <div>
+                <h2 className='font-sans font-medium text-[14px] text-paper mb-3'>{step.title}</h2>
+                <ul className='flex flex-col gap-2'>
+                  {step.instructions.map((instruction, j) => (
+                    <li key={j} className='flex gap-3 font-sans text-[13px] text-body leading-[1.8]'>
+                      <span className='text-index-num shrink-0 mt-[1px]'>—</span>
+                      {instruction}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '0', listStyle: 'none' }}>
-              {step.instructions.map((instruction, j) => (
-                <li
-                  key={j}
-                  style={{ color: '#7a6e62', fontSize: '0.875rem', lineHeight: '1.6', display: 'flex', gap: '8px' }}
-                >
-                  <span style={{ color: '#c9933a', flexShrink: 0, marginTop: '2px' }}>·</span>
-                  {instruction}
-                </li>
-              ))}
-            </ul>
+            {i < steps.length - 1 && <Rule />}
           </div>
         ))}
       </div>
 
+      <Rule className='my-4' />
+
+      {/* Don'ts highlighted cell */}
       <div
+        className='px-5 py-4 mb-10'
         style={{
-          background: '#1a1008',
-          border: '1px solid #3a2a10',
-          borderRadius: '8px',
-          padding: '20px',
-          marginBottom: '40px',
+          background: 'linear-gradient(180deg, rgba(237,233,230,0.045), rgba(237,233,230,0.02))',
+          borderTop: '1px solid rgba(237,233,230,0.1)',
+          borderBottom: '1px solid rgba(237,233,230,0.1)',
         }}
       >
-        <h2 style={{ color: '#c9933a', fontSize: '0.95rem', fontWeight: '600', marginBottom: '14px' }}>
-          Unngå dette under heling
-        </h2>
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', padding: 0 }}>
+        <h2 className='font-sans font-medium text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Unngå dette under heling</h2>
+        <ul className='flex flex-col gap-2'>
           {donts.map((item, i) => (
-            <li key={i} style={{ color: '#7a6e62', fontSize: '0.875rem', display: 'flex', gap: '8px', lineHeight: '1.6' }}>
-              <span style={{ color: '#c9933a', flexShrink: 0 }}>✗</span>
+            <li key={i} className='flex gap-3 font-sans text-[13px] text-body leading-[1.8]'>
+              <span className='text-index-num shrink-0'>×</span>
               {item}
             </li>
           ))}
         </ul>
       </div>
 
-      <div style={{ padding: '16px 0', borderTop: '1px solid #2a2724' }}>
-        <p style={{ color: '#7a6e62', fontSize: '0.8rem', lineHeight: '1.7' }}>
-          Har du spørsmål om helingsforløpet eller opplever noe unormalt? Send en melding —
-          jeg hjelper deg gjerne.
+      <Rule />
+
+      <div className='pt-2'>
+        <p className='font-sans text-[13px] text-body leading-[1.8] mb-3'>
+          Har du spørsmål om helingsforløpet eller opplever noe unormalt? Send en melding — jeg hjelper deg gjerne.
         </p>
-        <Link
-          href='/faq'
-          style={{ color: '#c9933a', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-block', marginTop: '8px' }}
-        >
-          Se vanlige spørsmål →
-        </Link>
+        <LinkI href='/faq'>Se vanlige spørsmål →</LinkI>
       </div>
     </div>
   )

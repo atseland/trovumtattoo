@@ -1,29 +1,26 @@
-const statusColors: Record<string, { bg: string; color: string }> = {
-  Ny: { bg: 'var(--color-status-ny-bg)', color: 'var(--color-status-ny)' },
-  'Trenger mer info': { bg: 'var(--color-status-info-bg)', color: 'var(--color-status-info)' },
-  'Klar for konsultasjon': { bg: 'var(--color-status-konsultasjon-bg)', color: 'var(--color-status-konsultasjon)' },
-  'Tilbud sendt': { bg: 'var(--color-status-tilbud-bg)', color: 'var(--color-status-tilbud)' },
-  'Venter på depositum': { bg: 'var(--color-status-depositum-bg)', color: 'var(--color-status-depositum)' },
-  Booket: { bg: 'var(--color-status-booket-bg)', color: 'var(--color-status-booket)' },
-  Fullført: { bg: 'var(--color-status-fullfort-bg)', color: 'var(--color-status-fullfort)' },
-  Avslått: { bg: 'var(--color-status-avslatt-bg)', color: 'var(--color-status-avslatt)' },
+const statusConfig: Record<string, { bg: string; color: string }> = {
+  Ny: { bg: 'var(--status-new)', color: 'var(--status-new-text)' },
+  'Trenger mer info': { bg: 'var(--status-info)', color: 'var(--status-info-text)' },
+  'Klar for konsultasjon': { bg: 'var(--status-info)', color: 'var(--status-info-text)' },
+  'Tilbud sendt': { bg: 'var(--status-offer)', color: 'var(--status-offer-text)' },
+  'Venter på depositum': { bg: 'var(--status-deposit)', color: 'var(--status-deposit-text)' },
+  Booket: { bg: 'var(--status-booked)', color: 'var(--status-booked-text)' },
+  Fullført: { bg: 'var(--status-done)', color: 'var(--status-done-text)' },
+  Avslått: { bg: 'var(--status-rejected)', color: 'var(--status-rejected-text)' },
 }
 
-const defaultColors = { bg: '#1c1916', color: '#7a6e62' }
+const defaultConfig = { bg: 'var(--status-new)', color: 'var(--status-new-text)' }
 
 export function StatusBadge({ status }: { status: string }) {
-  const colors = statusColors[status] ?? defaultColors
+  const config = statusConfig[status] ?? defaultConfig
   return (
     <span
+      className='inline-flex items-center font-sans text-[9px] tracking-[0.12em] uppercase whitespace-nowrap'
       style={{
-        background: colors.bg,
-        color: colors.color,
-        fontSize: '0.75rem',
-        fontWeight: '500',
-        padding: '3px 10px',
-        borderRadius: '999px',
-        display: 'inline-block',
-        whiteSpace: 'nowrap',
+        background: config.bg,
+        color: config.color,
+        padding: '4px 10px',
+        borderRadius: '2px',
       }}
     >
       {status}

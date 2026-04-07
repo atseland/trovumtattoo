@@ -2,59 +2,23 @@ import Link from 'next/link'
 
 export default function PublicNotFound() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '60vh',
-        gap: '16px',
-        textAlign: 'center',
-        padding: '40px 20px',
-      }}
-    >
-      <h1
-        className='font-serif italic'
-        style={{ color: '#c9b99a', fontSize: '3rem', lineHeight: 1.1 }}
-      >
-        404
-      </h1>
-      <p style={{ color: '#7a6e62', fontSize: '1rem', maxWidth: '360px', lineHeight: '1.6' }}>
+    <div className='flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-5 py-10'>
+      <h1 className='font-serif italic text-[clamp(64px,12vw,120px)] text-nav leading-[1]'>404</h1>
+      <p className='font-sans text-[14px] text-body max-w-[36ch] leading-[1.8]'>
         Siden du leter etter finnes ikke. Den kan ha blitt fjernet eller adressen er feil.
       </p>
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
+      <div className='flex gap-3 flex-wrap justify-center mt-2'>
         <Link
           href='/'
-          style={{
-            display: 'inline-block',
-            padding: '12px 24px',
-            background: '#c9933a',
-            color: '#0d0c0b',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontWeight: '600',
-            fontSize: '0.875rem',
-            minHeight: '48px',
-            lineHeight: '24px',
-          }}
+          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-6 border border-rule text-nav hover:text-paper hover:border-[rgba(237,233,230,0.38)] hover:bg-[rgba(237,233,230,0.04)] transition-colors duration-[200ms] no-underline inline-flex items-center'
+          style={{ background: 'transparent' }}
         >
           Tilbake til forsiden
         </Link>
         <Link
           href='/book'
-          style={{
-            display: 'inline-block',
-            padding: '12px 24px',
-            background: 'transparent',
-            color: '#c9b99a',
-            border: '1px solid #2a2724',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontSize: '0.875rem',
-            minHeight: '48px',
-            lineHeight: '24px',
-          }}
+          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-6 border border-rule text-nav hover:text-paper hover:border-[rgba(237,233,230,0.38)] hover:bg-[rgba(237,233,230,0.04)] transition-colors duration-[200ms] no-underline inline-flex items-center'
+          style={{ background: 'transparent' }}
         >
           Book tatovering
         </Link>

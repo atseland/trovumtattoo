@@ -8,12 +8,20 @@ import { toast } from 'sonner'
 import { api } from '../../../../../convex/_generated/api'
 import { Id } from '../../../../../convex/_generated/dataModel'
 import { LinkThreadSheet } from '@/components/admin/LinkThreadSheet'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Rule } from '@/components/ui/Rule'
+import { Btn } from '@/components/ui/Btn'
 
 function formatDateTime(ts: number) {
   return new Date(ts).toLocaleString('nb-NO', {
     day: '2-digit', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   })
+}
+
+const ghostInput: React.CSSProperties = {
+  background: 'rgba(237,233,230,0.03)',
+  border: '1px solid rgba(237,233,230,0.14)',
 }
 
 export default function ThreadPage() {
@@ -30,23 +38,11 @@ export default function ThreadPage() {
   const markRead = useMutation(api.mail.mutations.markThreadRead)
   const sendReply = useAction(api.mail.sendReply.sendReply)
 
-  // Mark thread as read on open
   useEffect(() => {
     if (isAuthenticated && thread && thread.unreadCount > 0) {
       markRead({ threadId: threadId as Id<"mailThreads"> }).catch(() => {})
     }
   }, [isAuthenticated, thread?._id])
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    background: '#1c1916',
-    border: '1px solid #2a2724',
-    borderRadius: '4px',
-    color: '#c9b99a',
-    padding: '10px 14px',
-    fontSize: '0.9rem',
-    outline: 'none',
-  }
 
   async function handleSend() {
     if (!replyBody.trim() || !thread) return
@@ -68,50 +64,70 @@ export default function ThreadPage() {
   }
 
   if (!isAuthenticated || thread === undefined) {
-    return <p style={{ color: '#7a6e62', padding: '20px' }}>Laster…</p>
+    return (
+      <div className='max-w-2xl flex flex-col gap-3'>
+        <Skeleton className='h-[44px] w-[160px]' />
+        <Skeleton className='h-[40px]' />
+        <Skeleton className='h-[100px]' />
+        <Skeleton className='h-[100px]' />
+      </div>
+    )
   }
+
   if (!thread) {
-    return <div style={{ padding: '20px' }}><p style={{ color: '#c96b6b' }}>Tråd ikke funnet.</p></div>
+    return (
+      <div className='max-w-2xl'>
+        <p className='font-sans text-[13px] text-[#af8c87]'>Tråd ikke funnet.</p>
+      </div>
+    )
   }
 
   return (
-    <div className='mx-auto max-w-2xl'>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-        <Link href='/admin/mail' style={{ color: '#7a6e62', fontSize: '0.875rem', textDecoration: 'none' }}>← Innboks</Link>
-        <button onClick={() => setLinkSheetOpen(true)} style={{ padding: '8px 14px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', minHeight: '36px' }}>
-          Koble til kunde
-        </button>
+    <div className='max-w-2xl'>
+      <div className='flex items-center justify-between flex-wrap gap-3 mb-5'>
+        <Link href='/admin/mail' className='font-sans text-[13px] text-nav hover:text-paper transition-colors duration-[200ms] no-underline'>
+          ← Innboks
+        </Link>
+        <Btn variant='sm' onClick={() => setLinkSheetOpen(true)}>Koble til kunde</Btn>
       </div>
 
-      <h1 style={{ color: '#c9b99a', fontSize: '1.1rem', fontWeight: '600', marginBottom: '4px' }}>{thread.subject}</h1>
-      <p style={{ color: '#7a6e62', fontSize: '0.8rem', marginBottom: '24px' }}>{thread.participants.join(', ')}</p>
+      <h1 className='font-serif italic text-[clamp(18px,2.5vw,24px)] text-paper leading-[1.1] tracking-[-0.02em] mb-1'>
+        {thread.subject}
+      </h1>
+      <p className='font-sans text-[12px] text-mast-left mb-6'>{thread.participants.join(', ')}</p>
+
+      <Rule className='mb-6' />
 
       {/* Messages */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+      <div className='flex flex-col gap-3 mb-7'>
         {messages === undefined ? (
-          <p style={{ color: '#7a6e62' }}>Laster…</p>
+          <div className='flex flex-col gap-2'>
+            {[1, 2].map(i => <Skeleton key={i} className='h-[80px]' />)}
+          </div>
         ) : (messages as any[]).map((msg) => (
           <div
             key={msg._id}
+            className='px-4 py-4 border'
             style={{
-              padding: '14px 16px',
-              background: msg.direction === 'outbound' ? '#0d1a0d' : '#141210',
-              border: '1px solid',
-              borderColor: msg.direction === 'outbound' ? '#1a2a1a' : '#2a2724',
-              borderRadius: '8px',
+              background: msg.direction === 'outbound'
+                ? 'rgba(160,148,136,0.05)'
+                : 'rgba(237,233,230,0.02)',
+              borderColor: msg.direction === 'outbound'
+                ? 'rgba(160,148,136,0.18)'
+                : 'rgba(237,233,230,0.065)',
               alignSelf: msg.direction === 'outbound' ? 'flex-end' : 'flex-start',
               maxWidth: '90%',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
-              <span style={{ color: msg.direction === 'outbound' ? '#4ab97a' : '#7a6e62', fontSize: '0.75rem' }}>
+            <div className='flex justify-between gap-3 mb-2 flex-wrap'>
+              <span className='font-sans text-[11px] tracking-[0.1em] uppercase text-nav'>
                 {msg.direction === 'outbound' ? 'Du' : msg.from}
               </span>
-              <span style={{ color: '#7a6e62', fontSize: '0.7rem' }}>
+              <span className='font-sans text-[11px] text-mast-left'>
                 {formatDateTime(msg.sentAt ?? msg.receivedAt ?? 0)}
               </span>
             </div>
-            <p style={{ color: '#c9b99a', fontSize: '0.875rem', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+            <p className='font-sans text-[13px] text-body leading-[1.7] whitespace-pre-wrap'>
               {msg.bodyText}
             </p>
           </div>
@@ -121,12 +137,11 @@ export default function ThreadPage() {
       <LinkThreadSheet open={linkSheetOpen} onOpenChange={setLinkSheetOpen} threadId={threadId as Id<"mailThreads">} />
 
       {/* Reply composer */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '16px' }}>
-        <h2 style={{ color: '#c9b99a', fontSize: '0.9rem', marginBottom: '12px' }}>Svar</h2>
+      <div className='bg-panel border border-rule px-5 py-5'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Svar</h2>
 
-        {/* Template picker */}
         {templates && (templates as any[]).length > 0 && (
-          <div style={{ marginBottom: '10px' }}>
+          <div className='mb-3 relative'>
             <select
               value={selectedTemplate}
               onChange={(e) => {
@@ -134,39 +149,52 @@ export default function ThreadPage() {
                 const tpl = (templates as any[]).find((t) => t._id === e.target.value)
                 if (tpl) setReplyBody(tpl.content)
               }}
-              style={{ ...inputStyle, minHeight: '40px', fontSize: '0.85rem' }}
+              className='w-full font-sans text-[13px] text-paper px-4 min-h-[44px] outline-none appearance-none transition-colors duration-[200ms] cursor-pointer'
+              style={ghostInput}
+              onFocus={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+              }}
             >
               <option value=''>Velg mal…</option>
               {(templates as any[]).map((tpl) => (
                 <option key={tpl._id} value={tpl._id}>{tpl.title}</option>
               ))}
             </select>
+            <svg className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none' width='12' height='8' viewBox='0 0 12 8' fill='none'>
+              <path d='M1 1l5 5 5-5' stroke='var(--nav)' strokeWidth='1.5' strokeLinecap='square'/>
+            </svg>
           </div>
         )}
 
         <textarea
           value={replyBody}
           onChange={(e) => setReplyBody(e.target.value)}
-          style={{ ...inputStyle, minHeight: '100px', resize: 'vertical', marginBottom: '10px' }}
           placeholder='Skriv svar…'
+          rows={4}
+          className='w-full font-sans text-[13px] text-paper placeholder:text-mast-left px-4 py-3 outline-none resize-vertical transition-colors duration-[200ms] mb-3'
+          style={ghostInput}
+          onFocus={e => {
+            e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+            e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+          }}
+          onBlur={e => {
+            e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+            e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+          }}
         />
 
-        <button
+        <Btn
+          variant='action-primary'
           onClick={handleSend}
           disabled={sending || !replyBody.trim()}
-          style={{
-            padding: '10px 20px',
-            background: sending || !replyBody.trim() ? '#5a4a2a' : '#c9933a',
-            color: '#0d0c0b',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: sending || !replyBody.trim() ? 'not-allowed' : 'pointer',
-            fontSize: '0.875rem',
-            minHeight: '44px',
-          }}
         >
           {sending ? 'Sender…' : 'Send svar'}
-        </button>
+        </Btn>
       </div>
     </div>
   )

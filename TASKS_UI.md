@@ -134,7 +134,7 @@ TASK-UI-001 (design system tokens + fonter)
 
 ### TASK-UI-001: Design system — CSS-tokens, fontstack og globale stiler
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** —
 
 #### Hva skal gjøres
@@ -253,7 +253,7 @@ Dette er grunnmuren alle andre TASK-UI-er bygger på. Gjør dette riktig — ikk
 
 ### TASK-UI-002: Logo-komponent — bildefil i stedet for tekst
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001
 
 #### Hva skal gjøres
@@ -293,7 +293,7 @@ Oppdater alle eksisterende steder der "Trovum" er skrevet som tekst i serif ital
 
 ### TASK-UI-003: Delte UI-komponenter — knapper, lenker og seksjons-divider
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001
 
 #### Hva skal gjøres
@@ -339,7 +339,7 @@ Opprett et sett med PRD_UI.md-konformante UI-primitiver. Alle eksisterer som ren
 
 ### TASK-UI-004: Skjemaelementer og tomme tilstander
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001, TASK-UI-003
 
 #### Hva skal gjøres
@@ -389,7 +389,7 @@ Opprett et sett med PRD_UI.md-konformante UI-primitiver. Alle eksisterer som ren
 
 ### TASK-UI-010: Public header — logo, navigasjon og CTA
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-003
 
 #### Hva skal gjøres
@@ -417,7 +417,7 @@ Redessign `src/components/public/PublicHeader.tsx` til PRD_UI.md-standard:
 
 ### TASK-UI-011: Public footer
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-010
 
 #### Hva skal gjøres
@@ -444,7 +444,7 @@ Redesign `src/components/public/PublicFooter.tsx`:
 
 ### TASK-UI-020: Admin layout — navigasjon, header og panel-overflate
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-002, TASK-UI-003, TASK-UI-004
 
 #### Hva skal gjøres
@@ -509,7 +509,7 @@ Redesign admin-layouten (`src/app/admin/layout.tsx`) og `src/components/admin/Ad
 
 ### TASK-UI-050: Public hjemmeside — hero, portfolio og CTA
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-010, TASK-UI-011, TASK-UI-003
 
 #### Hva skal gjøres
@@ -573,7 +573,7 @@ Redesign `src/app/(public)/page.tsx` mot PRD_UI.md §3 (typografiskala) og §5 (
 
 ### TASK-UI-051: FAQ-side
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-050
 
 #### Hva skal gjøres
@@ -603,7 +603,7 @@ Redesign `src/app/(public)/faq/page.tsx` (PRD §11.3):
 
 ### TASK-UI-052: Booking-info-side
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-050
 
 #### Hva skal gjøres
@@ -635,7 +635,7 @@ Redesign `src/app/(public)/booking-info/page.tsx` (PRD §11.2):
 
 ### TASK-UI-053: Aftercare-side
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-050
 
 #### Hva skal gjøres
@@ -660,7 +660,7 @@ Redesign `src/app/(public)/aftercare/page.tsx` (PRD §11.4):
 
 ### TASK-UI-030: Bookingskjema — redesign mot PRD_UI §7.5
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-004, TASK-UI-010
 
 #### Hva skal gjøres
@@ -695,7 +695,7 @@ Redesign `src/app/(public)/book/page.tsx` og fjern alle hardkodede inline styles
 
 ### TASK-UI-040: Admin inquiry-liste — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -729,7 +729,7 @@ Redesign `src/app/admin/inquiries/page.tsx`:
 
 ### TASK-UI-041: Admin inquiry detail — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-040
 
 #### Hva skal gjøres
@@ -759,7 +759,7 @@ Redesign `src/app/admin/inquiries/[id]/page.tsx`:
 
 ### TASK-UI-042: Admin dashboard — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -791,7 +791,7 @@ Redesign `src/app/admin/page.tsx`:
 
 ### TASK-UI-043: Admin klientliste — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -816,7 +816,7 @@ Redesign `src/app/admin/clients/page.tsx`:
 
 ### TASK-UI-044: Admin klient- og prosjektdetalj — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-043
 
 #### Hva skal gjøres
@@ -853,7 +853,7 @@ Redesign `src/app/admin/clients/[id]/page.tsx` og `src/app/admin/projects/[id]/p
 
 ### TASK-UI-045: Admin kalender — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -880,7 +880,7 @@ Redesign `src/app/admin/calendar/page.tsx`:
 
 ### TASK-UI-046: Admin mail-innboks og trådvisning — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -915,7 +915,7 @@ Redesign `src/app/admin/mail/page.tsx` og `src/app/admin/mail/[threadId]/page.ts
 
 ### TASK-UI-047: Admin maler — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -940,7 +940,7 @@ Redesign `src/app/admin/templates/page.tsx`:
 
 ### TASK-UI-048: Admin varsler — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020, TASK-UI-004
 
 #### Hva skal gjøres
@@ -969,7 +969,7 @@ Redesign `src/app/admin/notifications/page.tsx`:
 
 ### TASK-UI-049: Admin settings — redesign
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-020
 
 #### Hva skal gjøres
@@ -999,7 +999,7 @@ Redesign `src/app/admin/settings/page.tsx`:
 
 ### TASK-UI-060: OG-metadata og Twitter Card — alle public ruter
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-050
 
 #### Hva skal gjøres
@@ -1031,7 +1031,7 @@ Sørg for at alle public ruter har korrekt `og:image` og Twitter Card (PRD_UI §
 
 ### TASK-UI-061: Strukturert data og favicon
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-060
 
 #### Hva skal gjøres
@@ -1065,7 +1065,7 @@ Oppdater JSON-LD på hjemmesiden og favicon (PRD_UI §13):
 
 ### TASK-UI-070: PWA manifest og offline-side
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-001
 
 #### Hva skal gjøres
@@ -1105,7 +1105,7 @@ Oppdater PWA-konfigurasjon til PRD_UI §14-fasiten:
 
 ### TASK-UI-071: Global animasjon og sluttpolish
 
-**Status:** [ ]
+**Status:** [x]
 **Avhenger av:** TASK-UI-050, TASK-UI-042, TASK-UI-070
 
 #### Hva skal gjøres
