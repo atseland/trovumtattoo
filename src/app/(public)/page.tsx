@@ -71,7 +71,7 @@ export default function PublicHomePage() {
       />
 
       {/* Hero */}
-      <section className='relative flex min-h-[100svh] flex-col justify-center px-pad py-20 overflow-hidden'>
+      <section className='relative flex min-h-[100svh] flex-col justify-start pt-[28svh] md:justify-center md:pt-0 px-pad pb-20 overflow-hidden'>
         {/* Logo watermark */}
         <div className='absolute inset-0 flex items-center justify-center pointer-events-none select-none'>
           <Logo context='hero-watermark' />
@@ -95,27 +95,29 @@ export default function PublicHomePage() {
 
       {/* Artist intro */}
       <section className='px-pad py-16'>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto max-w-3xl'>
           <Eyebrow withLine className='mb-4'>Om tatovøren</Eyebrow>
-          <div className='flex flex-col md:flex-row gap-8 items-start'>
-            <div className='shrink-0'>
+          <div className='flex flex-col md:flex-row gap-8 md:items-start'>
+            <div className='shrink-0 self-center md:self-auto'>
               <Image
                 src='/profilbilde.jpeg'
                 alt='Trovum Tattoo'
-                width={88}
-                height={88}
+                width={96}
+                height={96}
                 className='object-cover'
                 style={{
+                  width: 96,
+                  height: 96,
                   filter: 'grayscale(20%) contrast(1.05)',
                   border: '1px solid var(--rule-heavy)',
                 }}
               />
             </div>
-            <div>
+            <div className='text-center md:text-left'>
               <h2 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-4'>
                 Trovum Tattoo
               </h2>
-              <p className='font-sans text-[13px] md:text-[14px] text-body leading-[1.8] max-w-[48ch]'>
+              <p className='font-sans text-[13px] md:text-[14px] text-body leading-[1.8] max-w-[48ch] mx-auto md:mx-0'>
                 Spesialiserer seg på dark art, blackwork, realism og custom design. Hvert arbeid er tegnet fra bunnen av —
                 skreddersydd til deg og kroppen din. Basert i Sandvika.
               </p>
@@ -151,7 +153,7 @@ export default function PublicHomePage() {
 
       {/* Stilretninger */}
       <section className='px-pad py-16'>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto max-w-3xl'>
           <Eyebrow withLine className='mb-4'>Spesialiseringer</Eyebrow>
           <h2 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-6'>
             Stilretninger
@@ -171,20 +173,20 @@ export default function PublicHomePage() {
 
       {/* Process steps */}
       <section className='px-pad py-16'>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto max-w-3xl'>
           <Eyebrow withLine className='mb-4'>Prosessen</Eyebrow>
           <h2 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-10'>
             Slik fungerer det
           </h2>
-          <div className='flex flex-col gap-8'>
+          <div className='flex flex-col gap-10'>
             {steps.map((step) => (
-              <div key={step.num} className='flex gap-5'>
-                <span className='shrink-0 font-mono text-[8px] tracking-[0.24em] uppercase text-index-num pt-1'>
+              <div key={step.num} className='flex gap-6'>
+                <span className='shrink-0 font-mono text-[11px] tracking-[0.18em] uppercase text-nav pt-[2px] w-6'>
                   {step.num}
                 </span>
                 <div>
-                  <h3 className='font-sans font-medium text-[14px] text-paper mb-1'>{step.title}</h3>
-                  <p className='font-sans text-[13px] text-body leading-[1.8] max-w-[48ch]'>{step.body}</p>
+                  <h3 className='font-sans font-medium text-[14px] text-paper mb-2'>{step.title}</h3>
+                  <p className='font-sans text-[13px] text-body leading-[1.8] max-w-[52ch]'>{step.body}</p>
                 </div>
               </div>
             ))}
