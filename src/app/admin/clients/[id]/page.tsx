@@ -8,20 +8,17 @@ import { toast } from 'sonner'
 import { api } from '../../../../../convex/_generated/api'
 import { Id } from '../../../../../convex/_generated/dataModel'
 import { StatusBadge } from '@/components/admin/StatusBadge'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Rule } from '@/components/ui/Rule'
+import { Btn } from '@/components/ui/Btn'
 
 function formatDate(ts: number) {
   return new Date(ts).toLocaleDateString('nb-NO', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '10px 14px',
-  fontSize: '0.9rem',
-  outline: 'none',
+const ghostInput: React.CSSProperties = {
+  background: 'rgba(237,233,230,0.03)',
+  border: '1px solid rgba(237,233,230,0.14)',
 }
 
 export default function ClientDetailPage() {
@@ -36,13 +33,23 @@ export default function ClientDetailPage() {
   const updateClient = useMutation(api.clients.update)
 
   if (!isAuthenticated || client === undefined) {
-    return <p style={{ color: '#7a6e62', padding: '20px' }}>Laster…</p>
+    return (
+      <div className='max-w-2xl flex flex-col gap-3'>
+        <Skeleton className='h-[44px] w-[160px]' />
+        <Skeleton className='h-[40px]' />
+        <Skeleton className='h-[160px]' />
+        <Skeleton className='h-[100px]' />
+      </div>
+    )
   }
+
   if (!client) {
     return (
-      <div style={{ padding: '20px' }}>
-        <p style={{ color: '#c96b6b' }}>Kunden ble ikke funnet.</p>
-        <Link href='/admin/clients' style={{ color: '#c9933a', fontSize: '0.875rem' }}>← Tilbake</Link>
+      <div className='max-w-2xl'>
+        <p className='font-sans text-[13px] text-[#af8c87] mb-4'>Kunden ble ikke funnet.</p>
+        <Link href='/admin/clients' className='font-sans text-[13px] text-nav hover:text-paper transition-colors duration-[200ms]'>
+          ← Tilbake
+        </Link>
       </div>
     )
   }
@@ -62,58 +69,79 @@ export default function ClientDetailPage() {
   }
 
   return (
-    <div className='mx-auto max-w-2xl'>
-      <Link href='/admin/clients' style={{ color: '#7a6e62', fontSize: '0.875rem', textDecoration: 'none', display: 'block', marginBottom: '20px' }}>
+    <div className='max-w-2xl'>
+      <Link href='/admin/clients' className='font-sans text-[13px] text-nav hover:text-paper transition-colors duration-[200ms] no-underline block mb-5'>
         ← Tilbake
       </Link>
 
-      <h1 style={{ color: '#c9b99a', fontSize: '1.3rem', fontWeight: '600', marginBottom: '20px' }}>{client.name}</h1>
+      <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-6'>
+        {(client as any).name}
+      </h1>
+
+      <Rule className='mb-6' />
 
       {/* Client info */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '24px' }}>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          <p style={{ color: '#7a6e62', fontSize: '0.8rem' }}>E-post: <span style={{ color: '#c9b99a' }}>{client.email}</span></p>
-          {client.phone && <p style={{ color: '#7a6e62', fontSize: '0.8rem' }}>Telefon: <span style={{ color: '#c9b99a' }}>{client.phone}</span></p>}
-          {client.instagramHandle && <p style={{ color: '#7a6e62', fontSize: '0.8rem' }}>Instagram: <span style={{ color: '#c9b99a' }}>{client.instagramHandle}</span></p>}
+      <div className='bg-panel border border-rule px-5 py-5 mb-4'>
+        <div className='flex flex-col gap-3'>
+          <div>
+            <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>E-post</p>
+            <p className='font-sans text-[14px] text-paper'>{(client as any).email}</p>
+          </div>
+          {(client as any).phone && (
+            <div>
+              <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Telefon</p>
+              <p className='font-sans text-[14px] text-paper'>{(client as any).phone}</p>
+            </div>
+          )}
+          {(client as any).instagramHandle && (
+            <div>
+              <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Instagram</p>
+              <p className='font-sans text-[14px] text-paper'>{(client as any).instagramHandle}</p>
+            </div>
+          )}
         </div>
 
-        {/* Notes — inline editable */}
-        <div style={{ marginTop: '20px', borderTop: '1px solid #2a2724', paddingTop: '16px' }}>
-          <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '8px' }}>Notater</label>
+        <Rule className='my-4' />
+
+        {/* Notes */}
+        <div>
+          <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Notater</label>
           <textarea
             value={currentNotes}
             onChange={(e) => setNotes(e.target.value)}
-            style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
             placeholder='Legg til notater om kunden…'
-          />
-          <button
-            onClick={saveNotes}
-            disabled={savingNotes}
-            style={{
-              marginTop: '8px',
-              padding: '8px 16px',
-              background: '#c9933a',
-              color: '#0d0c0b',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: savingNotes ? 'not-allowed' : 'pointer',
-              fontSize: '0.85rem',
-              minHeight: '40px',
+            rows={3}
+            className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 py-3 outline-none resize-vertical transition-colors duration-[200ms]'
+            style={ghostInput}
+            onFocus={e => {
+              e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+              e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
             }}
-          >
-            {savingNotes ? 'Lagrer…' : 'Lagre notater'}
-          </button>
+            onBlur={e => {
+              e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+              e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+            }}
+          />
+          <div className='mt-2'>
+            <Btn variant='sm' onClick={saveNotes} disabled={savingNotes}>
+              {savingNotes ? 'Lagrer…' : 'Lagre notater'}
+            </Btn>
+          </div>
         </div>
       </div>
 
       {/* Mail threads */}
       {mailThreads && (mailThreads as any[]).length > 0 && (
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '12px' }}>Koblede e-posttråder</h2>
+        <div className='mb-6'>
+          <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Koblede e-posttråder</h2>
           <div className='flex flex-col gap-2'>
             {(mailThreads as any[]).map((t) => (
-              <Link key={t._id} href={`/admin/mail/${t._id}`} style={{ padding: '12px 14px', background: '#1c1916', border: '1px solid #2a2724', borderRadius: '6px', textDecoration: 'none', display: 'block' }}>
-                <p style={{ color: '#c9b99a', fontSize: '0.875rem' }}>{t.subject}</p>
+              <Link
+                key={t._id}
+                href={`/admin/mail/${t._id}`}
+                className='block px-4 py-[14px] bg-panel border border-rule font-sans text-[14px] text-paper hover:bg-[rgba(237,233,230,0.02)] transition-colors duration-[200ms] no-underline'
+              >
+                {t.subject}
               </Link>
             ))}
           </div>
@@ -122,31 +150,23 @@ export default function ClientDetailPage() {
 
       {/* Projects */}
       <div>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '12px' }}>Prosjekter</h2>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Prosjekter</h2>
         {projects === undefined ? (
-          <p style={{ color: '#7a6e62' }}>Laster…</p>
-        ) : projects.length === 0 ? (
-          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen prosjekter ennå.</p>
+          <div className='flex flex-col gap-2'>
+            {[1, 2].map(i => <Skeleton key={i} className='h-[52px]' />)}
+          </div>
+        ) : (projects as any[]).length === 0 ? (
+          <p className='font-sans text-[13px] text-mast-left'>Ingen prosjekter ennå.</p>
         ) : (
           <div className='flex flex-col gap-2'>
             {(projects as any[]).map((p) => (
               <Link
                 key={p._id}
                 href={`/admin/projects/${p._id}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '12px 16px',
-                  background: '#1c1916',
-                  border: '1px solid #2a2724',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  gap: '12px',
-                }}
+                className='flex items-center justify-between gap-3 px-4 py-[14px] bg-panel border border-rule min-h-[52px] hover:bg-[rgba(237,233,230,0.02)] transition-colors duration-[200ms] no-underline flex-wrap'
               >
                 <StatusBadge status={p.status} />
-                <span style={{ color: '#7a6e62', fontSize: '0.75rem' }}>{formatDate(p.createdAt)}</span>
+                <span className='font-sans text-[12px] text-mast-left'>{formatDate(p.createdAt)}</span>
               </Link>
             ))}
           </div>

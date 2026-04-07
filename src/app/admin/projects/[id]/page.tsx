@@ -12,23 +12,19 @@ import { ActivityLogTimeline } from '@/components/admin/ActivityLogTimeline'
 import { BookingSheet } from '@/components/admin/BookingSheet'
 import { AftercareSheet } from '@/components/admin/AftercareSheet'
 import { ReviewRequestSheet } from '@/components/admin/ReviewRequestSheet'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Rule } from '@/components/ui/Rule'
+import { Btn } from '@/components/ui/Btn'
 
-const inputStyle: React.CSSProperties = {
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '10px 14px',
-  fontSize: '0.9rem',
-  minHeight: '44px',
-  outline: 'none',
-  width: '100%',
+const ghostInput: React.CSSProperties = {
+  background: 'rgba(237,233,230,0.03)',
+  border: '1px solid rgba(237,233,230,0.14)',
 }
 
-const depositStatusColor: Record<string, string> = {
-  pending: '#c9933a',
-  received: '#4ab97a',
-  waived: '#7a6e62',
+const depositStatusLabel: Record<string, string> = {
+  pending: 'Venter',
+  received: 'Mottatt',
+  waived: 'Frafalt',
 }
 
 export default function ProjectDetailPage() {
@@ -47,26 +43,22 @@ export default function ProjectDetailPage() {
   const bookings = useQuery(api.bookings.listByProject, isAuthenticated ? { projectId: id as Id<"projects"> } : 'skip')
   const updateProject = useMutation(api.projects.update)
 
-  // Estimate state
   const [estimate, setEstimate] = useState<string>('')
   const [savingEstimate, setSavingEstimate] = useState(false)
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
   const [aftercareSheetOpen, setAftercareSheetOpen] = useState(false)
   const [reviewSheetOpen, setReviewSheetOpen] = useState(false)
 
-  // Deposit state
   const [depositAmount, setDepositAmount] = useState<string>('')
   const [depositStatus, setDepositStatus] = useState<string>('pending')
   const [paymentLink, setPaymentLink] = useState<string>('')
   const [paymentNote, setPaymentNote] = useState<string>('')
   const [savingDeposit, setSavingDeposit] = useState(false)
 
-  // Conta state
   const [invoiceReference, setInvoiceReference] = useState<string>('')
   const [accountingStatus, setAccountingStatus] = useState<string>('')
   const [savingConta, setSavingConta] = useState(false)
 
-  // Sync state from project when it loads (only once)
   const [synced, setSynced] = useState(false)
   if (project && !synced) {
     setEstimate(project.estimatedPrice?.toString() ?? '')
@@ -80,13 +72,24 @@ export default function ProjectDetailPage() {
   }
 
   if (!isAuthenticated || project === undefined) {
-    return <p style={{ color: '#7a6e62', padding: '20px' }}>Laster…</p>
+    return (
+      <div className='max-w-2xl flex flex-col gap-3'>
+        <Skeleton className='h-[44px] w-[160px]' />
+        <Skeleton className='h-[40px]' />
+        <Skeleton className='h-[52px]' />
+        <Skeleton className='h-[140px]' />
+        <Skeleton className='h-[180px]' />
+      </div>
+    )
   }
+
   if (!project) {
     return (
-      <div style={{ padding: '20px' }}>
-        <p style={{ color: '#c96b6b' }}>Prosjektet ble ikke funnet.</p>
-        <Link href='/admin/clients' style={{ color: '#c9933a', fontSize: '0.875rem' }}>← Tilbake</Link>
+      <div className='max-w-2xl'>
+        <p className='font-sans text-[13px] text-[#af8c87] mb-4'>Prosjektet ble ikke funnet.</p>
+        <Link href='/admin/clients' className='font-sans text-[13px] text-nav hover:text-paper transition-colors duration-[200ms]'>
+          ← Tilbake
+        </Link>
       </div>
     )
   }
@@ -138,214 +141,245 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className='mx-auto max-w-2xl'>
-      <Link href={`/admin/clients/${project.clientId}`} style={{ color: '#7a6e62', fontSize: '0.875rem', textDecoration: 'none', display: 'block', marginBottom: '20px' }}>
+    <div className='max-w-2xl'>
+      <Link
+        href={`/admin/clients/${project.clientId}`}
+        className='font-sans text-[13px] text-nav hover:text-paper transition-colors duration-[200ms] no-underline block mb-5'
+      >
         ← Tilbake til klient
       </Link>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <h1 style={{ color: '#c9b99a', fontSize: '1.3rem', fontWeight: '600' }}>Prosjekt</h1>
+      <div className='flex items-center gap-3 flex-wrap mb-4'>
+        <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em]'>
+          Prosjekt
+        </h1>
         <StatusBadge status={project.status} />
       </div>
 
       {/* Quick actions */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <button style={{ padding: '8px 16px', background: '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
-          Endre status
-        </button>
-        <button onClick={() => setBookingSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
-          Opprett booking
-        </button>
-        <button onClick={() => setAftercareSheetOpen(true)} style={{ padding: '8px 16px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}>
-          Send aftercare
-        </button>
-        <button
+      <div className='flex flex-wrap gap-2 mb-6'>
+        <Btn variant='sm' onClick={() => setBookingSheetOpen(true)}>Opprett booking</Btn>
+        <Btn variant='sm' onClick={() => setAftercareSheetOpen(true)}>Send aftercare</Btn>
+        <Btn
+          variant='sm'
           onClick={() => setReviewSheetOpen(true)}
           disabled={!!project.reviewRequestedAt}
-          style={{ padding: '8px 16px', background: 'transparent', color: project.reviewRequestedAt ? '#7a6e62' : '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: project.reviewRequestedAt ? 'not-allowed' : 'pointer', fontSize: '0.875rem', minHeight: '40px' }}
         >
           {project.reviewRequestedAt ? 'Anmeldelse forespurt' : 'Be om anmeldelse'}
-        </button>
+        </Btn>
       </div>
+
+      <Rule className='mb-6' />
 
       {/* Client + inquiry links */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '16px', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className='bg-panel border border-rule px-5 py-4 mb-4 flex flex-col gap-3'>
         {client && (
-          <p style={{ color: '#7a6e62', fontSize: '0.85rem' }}>
-            Klient:{' '}
-            <Link href={`/admin/clients/${project.clientId}`} style={{ color: '#c9b99a' }}>
+          <div>
+            <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Klient</p>
+            <Link href={`/admin/clients/${project.clientId}`} className='font-sans text-[14px] text-paper hover:text-accent transition-colors duration-[200ms] no-underline'>
               {(client as any).name}
             </Link>
-          </p>
+          </div>
         )}
         {project.inquiryId && (
-          <p style={{ color: '#7a6e62', fontSize: '0.85rem' }}>
-            Forespørsel:{' '}
-            <Link href={`/admin/inquiries/${project.inquiryId}`} style={{ color: '#c9933a' }}>
+          <div>
+            <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Forespørsel</p>
+            <Link href={`/admin/inquiries/${project.inquiryId}`} className='font-sans text-[14px] text-accent hover:text-paper transition-colors duration-[200ms] no-underline'>
               Vis forespørsel →
             </Link>
-          </p>
+          </div>
         )}
       </div>
 
-      {/* Estimate section */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '20px' }}>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>Estimat</h2>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Beløp (NOK)</label>
+      {/* Estimate */}
+      <div className='bg-panel border border-rule px-5 py-5 mb-4'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>Estimat</h2>
+        <div className='flex gap-3 items-end'>
+          <div className='flex-1'>
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Beløp (NOK)</label>
             <input
               type='number'
               value={estimate}
               onChange={(e) => setEstimate(e.target.value)}
               placeholder='F.eks. 4500'
-              style={inputStyle}
+              className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+              style={ghostInput}
+              onFocus={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+              }}
             />
           </div>
-          <button
-            onClick={saveEstimate}
-            disabled={savingEstimate}
-            style={{
-              padding: '10px 16px',
-              background: savingEstimate ? '#5a4a2a' : '#c9933a',
-              color: '#0d0c0b',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: savingEstimate ? 'not-allowed' : 'pointer',
-              fontSize: '0.875rem',
-              minHeight: '44px',
-              flexShrink: 0,
-            }}
-          >
-            Lagre
-          </button>
+          <Btn variant='sm' onClick={saveEstimate} disabled={savingEstimate}>
+            {savingEstimate ? 'Lagrer…' : 'Lagre'}
+          </Btn>
         </div>
       </div>
 
-      {/* Deposit section */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-          <h2 style={{ color: '#c9b99a', fontSize: '1rem' }}>Depositum</h2>
+      {/* Deposit */}
+      <div className='bg-panel border border-rule px-5 py-5 mb-4'>
+        <div className='flex items-center gap-3 mb-4'>
+          <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Depositum</h2>
           {depositStatus && (
-            <span style={{
-              fontSize: '0.75rem',
-              color: depositStatusColor[depositStatus] ?? '#7a6e62',
-              fontWeight: '500',
-            }}>
-              {depositStatus === 'received' ? '✓ Mottatt' : depositStatus === 'pending' ? '⏳ Venter' : '— Frafalt'}
+            <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
+              {depositStatusLabel[depositStatus] ?? depositStatus}
             </span>
           )}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className='flex flex-col gap-3'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Beløp (NOK)</label>
-              <input type='number' value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} placeholder='F.eks. 1000' style={inputStyle} />
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Beløp (NOK)</label>
+              <input
+                type='number'
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                placeholder='F.eks. 1000'
+                className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+                style={ghostInput}
+                onFocus={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+                }}
+              />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Status</label>
-              <select value={depositStatus} onChange={(e) => setDepositStatus(e.target.value)} style={inputStyle}>
-                <option value='pending'>Venter</option>
-                <option value='received'>Mottatt</option>
-                <option value='waived'>Frafalt</option>
-              </select>
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Status</label>
+              <div className='relative'>
+                <select
+                  value={depositStatus}
+                  onChange={(e) => setDepositStatus(e.target.value)}
+                  className='w-full font-sans text-[14px] text-paper px-4 min-h-[44px] outline-none appearance-none transition-colors duration-[200ms] cursor-pointer'
+                  style={ghostInput}
+                >
+                  <option value='pending'>Venter</option>
+                  <option value='received'>Mottatt</option>
+                  <option value='waived'>Frafalt</option>
+                </select>
+                <svg className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none' width='12' height='8' viewBox='0 0 12 8' fill='none'>
+                  <path d='M1 1l5 5 5-5' stroke='var(--nav)' strokeWidth='1.5' strokeLinecap='square'/>
+                </svg>
+              </div>
             </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Betalingslenke (URL)</label>
-            <input type='url' value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder='https://' style={inputStyle} />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Betalingslenke</label>
+            <input
+              type='url'
+              value={paymentLink}
+              onChange={(e) => setPaymentLink(e.target.value)}
+              placeholder='https://'
+              className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+              style={ghostInput}
+              onFocus={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+              }}
+            />
             {project.paymentLink && (
-              <a href={project.paymentLink} target='_blank' rel='noopener noreferrer' style={{ fontSize: '0.75rem', color: '#c9933a', display: 'block', marginTop: '4px' }}>
+              <a href={project.paymentLink} target='_blank' rel='noopener noreferrer' className='font-sans text-[12px] text-accent hover:text-paper transition-colors duration-[200ms] no-underline block mt-1'>
                 Åpne betalingslenke →
               </a>
             )}
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Betalingsnotat</label>
-            <input value={paymentNote} onChange={(e) => setPaymentNote(e.target.value)} placeholder='F.eks. Vipps-referanse' style={inputStyle} />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Betalingsnotat</label>
+            <input
+              value={paymentNote}
+              onChange={(e) => setPaymentNote(e.target.value)}
+              placeholder='F.eks. Vipps-referanse'
+              className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+              style={ghostInput}
+              onFocus={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+              }}
+            />
           </div>
 
-          <button
-            onClick={saveDeposit}
-            disabled={savingDeposit}
-            style={{
-              background: savingDeposit ? '#5a4a2a' : '#c9933a',
-              color: '#0d0c0b',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '12px',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              cursor: savingDeposit ? 'not-allowed' : 'pointer',
-              minHeight: '48px',
-            }}
-          >
+          <Btn variant='sm' onClick={saveDeposit} disabled={savingDeposit}>
             {savingDeposit ? 'Lagrer…' : 'Lagre depositum'}
-          </button>
+          </Btn>
         </div>
       </div>
 
-      {/* Conta section */}
-      <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '24px' }}>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>Conta — regnskap</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      {/* Conta */}
+      <div className='bg-panel border border-rule px-5 py-5 mb-4'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>Conta — regnskap</h2>
+        <div className='flex flex-col gap-3'>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Conta-referanse (fakturanummer)</label>
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Fakturanummer</label>
             <input
               value={invoiceReference}
               onChange={(e) => setInvoiceReference(e.target.value)}
               placeholder='F.eks. 10042'
-              style={inputStyle}
+              className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+              style={ghostInput}
+              onFocus={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+              }}
+              onBlur={e => {
+                e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+              }}
             />
           </div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', minHeight: '44px' }}>
+          <label className='flex items-center gap-3 cursor-pointer min-h-[44px]'>
             <input
               type='checkbox'
               checked={accountingStatus === 'invoiced'}
               onChange={(e) => setAccountingStatus(e.target.checked ? 'invoiced' : '')}
-              style={{ width: '18px', height: '18px', accentColor: '#c9933a', cursor: 'pointer' }}
+              className='w-[18px] h-[18px] cursor-pointer'
+              style={{ accentColor: 'var(--accent)' }}
             />
-            <span style={{ color: '#c9b99a', fontSize: '0.9rem' }}>Fakturert i Conta</span>
+            <span className='font-sans text-[14px] text-paper'>Fakturert i Conta</span>
           </label>
-          <button
-            onClick={saveConta}
-            disabled={savingConta}
-            style={{
-              background: savingConta ? '#5a4a2a' : '#c9933a',
-              color: '#0d0c0b',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '12px',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              cursor: savingConta ? 'not-allowed' : 'pointer',
-              minHeight: '48px',
-            }}
-          >
+          <Btn variant='sm' onClick={saveConta} disabled={savingConta}>
             {savingConta ? 'Lagrer…' : 'Lagre Conta-data'}
-          </button>
+          </Btn>
         </div>
       </div>
 
-      {/* Bookings list */}
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '12px' }}>Bookinger</h2>
+      <Rule className='mb-6' />
+
+      {/* Bookings */}
+      <div className='mb-6'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Bookinger</h2>
         {bookings === undefined ? (
-          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Laster…</p>
+          <div className='flex flex-col gap-2'>
+            {[1, 2].map(i => <Skeleton key={i} className='h-[52px]' />)}
+          </div>
         ) : (bookings as any[]).length === 0 ? (
-          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen bookinger ennå.</p>
+          <p className='font-sans text-[13px] text-mast-left'>Ingen bookinger ennå.</p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className='flex flex-col gap-2'>
             {(bookings as any[]).map((b) => (
-              <div key={b._id} style={{ padding: '12px 14px', background: '#1c1916', border: '1px solid #2a2724', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                <span style={{ color: '#c9b99a', fontSize: '0.875rem' }}>
+              <div key={b._id} className='flex items-center justify-between flex-wrap gap-2 px-4 py-[14px] bg-panel border border-rule min-h-[52px]'>
+                <span className='font-sans text-[13px] text-paper'>
                   {new Date(b.startAt).toLocaleString('nb-NO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })} –{' '}
                   {new Date(b.endAt).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })}
                 </span>
-                <span style={{ fontSize: '0.75rem', color: b.status === 'cancelled' ? '#c96b6b' : '#4ab97a' }}>{b.status}</span>
+                <span className='font-sans text-[11px] tracking-[0.1em] uppercase text-mast-left'>{b.status}</span>
               </div>
             ))}
           </div>
@@ -354,13 +388,16 @@ export default function ProjectDetailPage() {
 
       {/* Activity log */}
       <div>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>Aktivitetslogg</h2>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>Aktivitetslogg</h2>
         {activityLog === undefined ? (
-          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Laster…</p>
+          <div className='flex flex-col gap-2'>
+            {[1, 2, 3].map(i => <Skeleton key={i} className='h-[40px]' />)}
+          </div>
         ) : (
           <ActivityLogTimeline entries={(activityLog ?? []) as any[]} />
         )}
       </div>
+
       {bookingSheetOpen && (
         <BookingSheet
           open={bookingSheetOpen}
