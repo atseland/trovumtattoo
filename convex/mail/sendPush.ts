@@ -26,15 +26,15 @@ export const sendPush = action({
       vapidPrivateKey,
     )
 
-    const subscriptions: any[] | null = await ctx.runQuery(api.pushSubscriptions.getCurrent, {})
+    const subscriptions = await ctx.runQuery(api.pushSubscriptions.getCurrent, {})
     if (!subscriptions || !Array.isArray(subscriptions)) {
       return { sent: 0 }
     }
 
     const payload = JSON.stringify({ title, body, url })
 
-    const results: PromiseSettledResult<any>[] = await Promise.allSettled(
-      subscriptions.map((sub: any) =>
+    const results = await Promise.allSettled(
+      subscriptions.map((sub) =>
         webpush.sendNotification(
           { endpoint: sub.endpoint, keys: sub.keys },
           payload,
@@ -42,7 +42,7 @@ export const sendPush = action({
       ),
     )
 
-    const sent: number = results.filter((r: PromiseSettledResult<any>) => r.status === 'fulfilled').length
+    const sent: number = results.filter((r) => r.status === 'fulfilled').length
     console.log(`[sendPush] ${sent}/${subscriptions.length} push-varsler sendt`)
     return { sent }
   },

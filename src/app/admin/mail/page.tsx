@@ -64,7 +64,7 @@ export default function MailPage() {
         />
       ) : (
         <div className='flex flex-col gap-2'>
-          {(threads as any[]).map((thread) => (
+          {threads.map((thread) => (
             <Link
               key={thread._id}
               href={`/admin/mail/${thread._id}`}

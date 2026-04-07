@@ -31,7 +31,7 @@ export function ReviewRequestSheet({ open, onOpenChange, projectId, clientEmail,
   const [sending, setSending] = useState(false)
 
   const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
-  const reviewTemplates = (templates as any[] | undefined)?.filter((t) => t.type === 'review-request') ?? []
+  const reviewTemplates = templates?.filter((t) => t.type === 'review-request') ?? []
   const sendReviewRequest = useAction(api.mail.sendReviewRequest.sendReviewRequest)
 
   async function handleSend() {

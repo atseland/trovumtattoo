@@ -177,7 +177,7 @@ export default function ProjectDetailPage() {
           <div>
             <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Klient</p>
             <Link href={`/admin/clients/${project.clientId}`} className='font-sans text-[14px] text-paper hover:text-accent transition-colors duration-[200ms] no-underline'>
-              {(client as any).name}
+              {client.name}
             </Link>
           </div>
         )}
@@ -369,11 +369,11 @@ export default function ProjectDetailPage() {
           <div className='flex flex-col gap-2'>
             {[1, 2].map(i => <Skeleton key={i} className='h-[52px]' />)}
           </div>
-        ) : (bookings as any[]).length === 0 ? (
+        ) : bookings.length === 0 ? (
           <p className='font-sans text-[13px] text-mast-left'>Ingen bookinger ennå.</p>
         ) : (
           <div className='flex flex-col gap-2'>
-            {(bookings as any[]).map((b) => (
+            {bookings.map((b) => (
               <div key={b._id} className='flex items-center justify-between flex-wrap gap-2 px-4 py-[14px] bg-panel border border-rule min-h-[52px]'>
                 <span className='font-sans text-[13px] text-paper'>
                   {new Date(b.startAt).toLocaleString('nb-NO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })} –{' '}
@@ -394,7 +394,7 @@ export default function ProjectDetailPage() {
             {[1, 2, 3].map(i => <Skeleton key={i} className='h-[40px]' />)}
           </div>
         ) : (
-          <ActivityLogTimeline entries={(activityLog ?? []) as any[]} />
+          <ActivityLogTimeline entries={activityLog ?? []} />
         )}
       </div>
 
@@ -412,7 +412,7 @@ export default function ProjectDetailPage() {
           open={aftercareSheetOpen}
           onOpenChange={setAftercareSheetOpen}
           projectId={id as Id<"projects">}
-          clientEmail={(client as any).email}
+          clientEmail={client.email}
         />
       )}
 
@@ -421,7 +421,7 @@ export default function ProjectDetailPage() {
           open={reviewSheetOpen}
           onOpenChange={setReviewSheetOpen}
           projectId={id as Id<"projects">}
-          clientEmail={(client as any).email}
+          clientEmail={client.email}
           reviewRequestedAt={project.reviewRequestedAt}
         />
       )}

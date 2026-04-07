@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '../../../../convex/_generated/api'
+import { Doc } from '../../../../convex/_generated/dataModel'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Btn } from '@/components/ui/Btn'
 import { Bell } from 'lucide-react'
 
-const typeNavigation: Record<string, (n: any) => string | null> = {
+const typeNavigation: Record<string, (n: Doc<"notifications">) => string | null> = {
   'new-inquiry': (n) => n.relatedEntityId ? `/admin/inquiries/${n.relatedEntityId}` : null,
   'new-reply': (n) => n.relatedEntityId ? `/admin/mail/${n.relatedEntityId}` : null,
   'booking-today': () => '/admin/calendar',
@@ -35,7 +36,7 @@ export default function NotificationsPage() {
   const markRead = useMutation(api.notifications.markRead)
   const markAllRead = useMutation(api.notifications.markAllRead)
 
-  async function handleClick(notification: any) {
+  async function handleClick(notification: Doc<"notifications">) {
     if (!notification.isRead) {
       await markRead({ id: notification._id }).catch(() => {})
     }
@@ -53,7 +54,7 @@ export default function NotificationsPage() {
     }
   }
 
-  const unreadCount = (notifications as any[] | undefined)?.filter((n) => !n.isRead).length ?? 0
+  const unreadCount = notifications?.filter((n) => !n.isRead).length ?? 0
 
   return (
     <div className='max-w-2xl'>
@@ -78,7 +79,7 @@ export default function NotificationsPage() {
         <div className='flex flex-col gap-2'>
           {[1, 2, 3, 4].map(i => <Skeleton key={i} className='h-[64px]' />)}
         </div>
-      ) : (notifications as any[]).length === 0 ? (
+      ) : notifications.length === 0 ? (
         <EmptyState
           icon={<Bell size={48} strokeWidth={1.5} />}
           title='Ingen varsler'
@@ -86,7 +87,7 @@ export default function NotificationsPage() {
         />
       ) : (
         <div className='flex flex-col gap-2'>
-          {(notifications as any[]).map((n) => (
+          {notifications.map((n) => (
             <button
               key={n._id}
               onClick={() => handleClick(n)}

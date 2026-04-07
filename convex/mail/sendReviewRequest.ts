@@ -27,12 +27,17 @@ export const sendReviewRequest = action({
       auth: config.smtp.auth,
     })
 
-    await transporter.sendMail({
-      from: config.from,
-      to,
-      subject,
-      text: body,
-    })
+    try {
+      await transporter.sendMail({
+        from: config.from,
+        to,
+        subject,
+        text: body,
+      })
+    } catch (err) {
+      console.error('[sendReviewRequest] SMTP-feil:', err)
+      throw new Error(`Kunne ikke sende review request: ${err instanceof Error ? err.message : String(err)}`)
+    }
 
     const now = Date.now()
 

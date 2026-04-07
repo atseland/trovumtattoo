@@ -1,6 +1,6 @@
 'use client'
 
-import { useAction, useConvexAuth } from 'convex/react'
+import { useAction } from 'convex/react'
 import { toast } from 'sonner'
 import { PushSubscriptionManager } from '@/components/admin/PushSubscriptionManager'
 import { api } from '../../../../convex/_generated/api'
@@ -9,8 +9,6 @@ import { Btn } from '@/components/ui/Btn'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export default function SettingsPage() {
-  const { isAuthenticated } = useConvexAuth()
-
   const syncMail = useAction(api.mail.sync.syncMail)
 
   async function handleForceSync() {

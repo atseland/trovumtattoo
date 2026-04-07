@@ -28,9 +28,10 @@ export default function CalendarPage() {
 
   const bookings = useQuery(api.bookings.listUpcomingWithDetails, isAuthenticated ? {} : 'skip')
 
-  const grouped = new Map<string, any[]>()
+  type Booking = NonNullable<typeof bookings>[number]
+  const grouped = new Map<string, Booking[]>()
   if (bookings) {
-    for (const b of bookings as any[]) {
+    for (const b of bookings) {
       const key = dateKey(b.startAt)
       if (!grouped.has(key)) grouped.set(key, [])
       grouped.get(key)!.push(b)
@@ -54,7 +55,7 @@ export default function CalendarPage() {
             </div>
           ))}
         </div>
-      ) : (bookings as any[]).length === 0 ? (
+      ) : bookings.length === 0 ? (
         <EmptyState
           icon={<CalendarDays size={48} strokeWidth={1.5} />}
           title='Ingen kommende bookinger'
@@ -63,13 +64,13 @@ export default function CalendarPage() {
         />
       ) : (
         <div className='flex flex-col gap-7'>
-          {[...grouped.entries()].map(([, dayBookings]: [string, any[]]) => (
-            <div key={(dayBookings[0] as any).startAt}>
+          {[...grouped.entries()].map(([, dayBookings]) => (
+            <div key={dayBookings[0].startAt}>
               <p className='font-mono text-[8px] tracking-[0.24em] uppercase text-index-num mb-3'>
-                {formatDate((dayBookings[0] as any).startAt)}
+                {formatDate(dayBookings[0].startAt)}
               </p>
               <div className='flex flex-col gap-2'>
-                {(dayBookings as any[]).map((booking) => (
+                {dayBookings.map((booking) => (
                   <Link
                     key={booking._id}
                     href={`/admin/projects/${booking.projectId}`}

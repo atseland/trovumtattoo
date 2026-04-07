@@ -14,6 +14,9 @@ export const generateUploadUrl = mutation({
 export const getImageUrls = query({
   args: { storageIds: v.array(v.id('_storage')) },
   handler: async (ctx, { storageIds }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
     const urls = await Promise.all(
       storageIds.map((id) => ctx.storage.getUrl(id))
     )

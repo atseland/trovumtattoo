@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { api } from '../../../../convex/_generated/api'
 import { Id } from '../../../../convex/_generated/dataModel'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { Rule } from '@/components/ui/Rule'
 import { Btn } from '@/components/ui/Btn'
 
 const TEMPLATE_TYPES: { value: string; label: string }[] = [
@@ -161,7 +160,7 @@ export default function TemplatesPage() {
         <p className='font-sans text-[13px] text-mast-left'>Ingen maler ennå. Klikk «Ny mal» for å opprette.</p>
       ) : (
         <div className='flex flex-col gap-3'>
-          {(templates as any[]).map((tpl) => (
+          {templates.map((tpl) => (
             <div key={tpl._id} className='bg-panel border border-rule px-5 py-4'>
               <div className='flex items-start justify-between gap-3'>
                 <div className='flex-1 min-w-0'>

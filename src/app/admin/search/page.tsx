@@ -40,7 +40,7 @@ export default function SearchPage() {
 
   const filteredInquiries =
     hasQuery && Array.isArray(inquiries)
-      ? (inquiries as any[]).filter(
+      ? inquiries.filter(
           (i) =>
             i.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
             i.email.toLowerCase().includes(debouncedQuery.toLowerCase()),
@@ -84,11 +84,11 @@ export default function SearchPage() {
                 <Skeleton className='h-[52px]' />
                 <Skeleton className='h-[52px]' />
               </div>
-            ) : (clients as any[]).length === 0 ? (
+            ) : clients.length === 0 ? (
               <p className='font-sans text-[13px] text-mast-left'>Ingen kunder funnet.</p>
             ) : (
               <div className='flex flex-col gap-2'>
-                {(clients as any[]).map((c) => (
+                {clients.map((c) => (
                   <Link
                     key={c._id}
                     href={`/admin/clients/${c._id}`}
@@ -115,7 +115,7 @@ export default function SearchPage() {
               <p className='font-sans text-[13px] text-mast-left'>Ingen forespørsler funnet.</p>
             ) : (
               <div className='flex flex-col gap-2'>
-                {filteredInquiries.map((i: any) => (
+                {filteredInquiries.map((i) => (
                   <Link
                     key={i._id}
                     href={`/admin/inquiries/${i._id}`}

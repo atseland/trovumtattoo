@@ -78,7 +78,7 @@ export default function ClientsPage() {
         />
       ) : (
         <div className='flex flex-col gap-2'>
-          {(clients as any[]).map((client) => (
+          {clients.map((client) => (
             <Link
               key={client._id}
               href={`/admin/clients/${client._id}`}

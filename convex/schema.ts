@@ -143,6 +143,12 @@ export default defineSchema({
     .index('by_isRead', ['isRead'])
     .index('by_createdAt', ['createdAt']),
 
+  pushSubscriptions: defineTable({
+    endpoint: v.string(),
+    keys: v.object({ p256dh: v.string(), auth: v.string() }),
+    createdAt: v.number(),
+  }).index('by_endpoint', ['endpoint']),
+
   activityLog: defineTable({
     entityType: v.string(), // 'inquiry' | 'project' | 'client' | 'booking'
     entityId: v.string(),

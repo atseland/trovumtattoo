@@ -27,12 +27,17 @@ export const sendAftercare = action({
       auth: config.smtp.auth,
     })
 
-    await transporter.sendMail({
-      from: config.from,
-      to,
-      subject,
-      text: body,
-    })
+    try {
+      await transporter.sendMail({
+        from: config.from,
+        to,
+        subject,
+        text: body,
+      })
+    } catch (err) {
+      console.error('[sendAftercare] SMTP-feil:', err)
+      throw new Error(`Kunne ikke sende aftercare-e-post: ${err instanceof Error ? err.message : String(err)}`)
+    }
 
     const now = Date.now()
 

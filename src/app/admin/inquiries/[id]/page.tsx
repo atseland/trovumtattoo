@@ -159,7 +159,7 @@ export default function InquiryDetailPage() {
             {[1, 2, 3].map(i => <Skeleton key={i} className='h-[40px]' />)}
           </div>
         ) : (
-          <ActivityLogTimeline entries={(activityLog ?? []) as any[]} />
+          <ActivityLogTimeline entries={activityLog ?? []} />
         )}
       </div>
 

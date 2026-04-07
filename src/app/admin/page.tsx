@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
           <p className='font-sans text-[13px] text-mast-left'>Ingen forespørsler ennå.</p>
         ) : (
           <div className='flex flex-col gap-2'>
-            {(summary.recentInquiries as any[]).map((inq) => (
+            {summary.recentInquiries.map((inq) => (
               <Link
                 key={inq._id}
                 href={`/admin/inquiries/${inq._id}`}

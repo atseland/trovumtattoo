@@ -42,6 +42,7 @@ export default function ThreadPage() {
     if (isAuthenticated && thread && thread.unreadCount > 0) {
       markRead({ threadId: threadId as Id<"mailThreads"> }).catch(() => {})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, thread?._id])
 
   async function handleSend() {
@@ -104,7 +105,7 @@ export default function ThreadPage() {
           <div className='flex flex-col gap-2'>
             {[1, 2].map(i => <Skeleton key={i} className='h-[80px]' />)}
           </div>
-        ) : (messages as any[]).map((msg) => (
+        ) : messages.map((msg) => (
           <div
             key={msg._id}
             className='px-4 py-4 border'
@@ -140,13 +141,13 @@ export default function ThreadPage() {
       <div className='bg-panel border border-rule px-5 py-5'>
         <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Svar</h2>
 
-        {templates && (templates as any[]).length > 0 && (
+        {templates && templates.length > 0 && (
           <div className='mb-3 relative'>
             <select
               value={selectedTemplate}
               onChange={(e) => {
                 setSelectedTemplate(e.target.value)
-                const tpl = (templates as any[]).find((t) => t._id === e.target.value)
+                const tpl = templates.find((t) => t._id === e.target.value)
                 if (tpl) setReplyBody(tpl.content)
               }}
               className='w-full font-sans text-[13px] text-paper px-4 min-h-[44px] outline-none appearance-none transition-colors duration-[200ms] cursor-pointer'
@@ -161,7 +162,7 @@ export default function ThreadPage() {
               }}
             >
               <option value=''>Velg mal…</option>
-              {(templates as any[]).map((tpl) => (
+              {templates.map((tpl) => (
                 <option key={tpl._id} value={tpl._id}>{tpl.title}</option>
               ))}
             </select>

@@ -30,7 +30,7 @@ export function AftercareSheet({ open, onOpenChange, projectId, clientEmail, thr
   const [sending, setSending] = useState(false)
 
   const templates = useQuery(api.templates.list, isAuthenticated ? {} : 'skip')
-  const aftercareTemplates = (templates as any[] | undefined)?.filter((t) => t.type === 'aftercare') ?? []
+  const aftercareTemplates = templates?.filter((t) => t.type === 'aftercare') ?? []
   const sendAftercare = useAction(api.mail.sendAftercare.sendAftercare)
 
   async function handleSend() {

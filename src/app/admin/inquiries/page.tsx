@@ -105,7 +105,7 @@ export default function InquiriesPage() {
         />
       ) : (
         <div className='flex flex-col gap-2'>
-          {(inquiries as any[]).map((inq) => (
+          {inquiries.map((inq) => (
             <Link
               key={inq._id}
               href={`/admin/inquiries/${inq._id}`}

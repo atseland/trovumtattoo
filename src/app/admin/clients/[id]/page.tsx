@@ -75,7 +75,7 @@ export default function ClientDetailPage() {
       </Link>
 
       <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-6'>
-        {(client as any).name}
+        {client.name}
       </h1>
 
       <Rule className='mb-6' />
@@ -85,18 +85,18 @@ export default function ClientDetailPage() {
         <div className='flex flex-col gap-3'>
           <div>
             <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>E-post</p>
-            <p className='font-sans text-[14px] text-paper'>{(client as any).email}</p>
+            <p className='font-sans text-[14px] text-paper'>{client.email}</p>
           </div>
-          {(client as any).phone && (
+          {client.phone && (
             <div>
               <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Telefon</p>
-              <p className='font-sans text-[14px] text-paper'>{(client as any).phone}</p>
+              <p className='font-sans text-[14px] text-paper'>{client.phone}</p>
             </div>
           )}
-          {(client as any).instagramHandle && (
+          {client.instagramHandle && (
             <div>
               <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[3px]'>Instagram</p>
-              <p className='font-sans text-[14px] text-paper'>{(client as any).instagramHandle}</p>
+              <p className='font-sans text-[14px] text-paper'>{client.instagramHandle}</p>
             </div>
           )}
         </div>
@@ -131,11 +131,11 @@ export default function ClientDetailPage() {
       </div>
 
       {/* Mail threads */}
-      {mailThreads && (mailThreads as any[]).length > 0 && (
+      {mailThreads && mailThreads.length > 0 && (
         <div className='mb-6'>
           <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Koblede e-posttråder</h2>
           <div className='flex flex-col gap-2'>
-            {(mailThreads as any[]).map((t) => (
+            {mailThreads.map((t) => (
               <Link
                 key={t._id}
                 href={`/admin/mail/${t._id}`}
@@ -155,11 +155,11 @@ export default function ClientDetailPage() {
           <div className='flex flex-col gap-2'>
             {[1, 2].map(i => <Skeleton key={i} className='h-[52px]' />)}
           </div>
-        ) : (projects as any[]).length === 0 ? (
+        ) : projects.length === 0 ? (
           <p className='font-sans text-[13px] text-mast-left'>Ingen prosjekter ennå.</p>
         ) : (
           <div className='flex flex-col gap-2'>
-            {(projects as any[]).map((p) => (
+            {projects.map((p) => (
               <Link
                 key={p._id}
                 href={`/admin/projects/${p._id}`}

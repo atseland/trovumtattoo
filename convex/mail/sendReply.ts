@@ -27,14 +27,19 @@ export const sendReply = action({
       auth: config.smtp.auth,
     })
 
-    await transporter.sendMail({
-      from: config.from,
-      to: to.join(', '),
-      subject,
-      text: body,
-      inReplyTo,
-      references: inReplyTo,
-    })
+    try {
+      await transporter.sendMail({
+        from: config.from,
+        to: to.join(', '),
+        subject,
+        text: body,
+        inReplyTo,
+        references: inReplyTo,
+      })
+    } catch (err) {
+      console.error('[sendReply] SMTP-feil:', err)
+      throw new Error(`Kunne ikke sende e-post: ${err instanceof Error ? err.message : String(err)}`)
+    }
 
     const now = Date.now()
 

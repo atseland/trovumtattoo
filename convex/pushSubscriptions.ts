@@ -11,16 +11,16 @@ export const save = mutation({
     if (!identity) throw new Error('Unauthorized')
 
     const existing = await ctx.db
-      .query('pushSubscriptions' as any)
-      .filter((q: any) => q.eq(q.field('endpoint'), endpoint))
+      .query('pushSubscriptions')
+      .withIndex('by_endpoint', (q) => q.eq('endpoint', endpoint))
       .first()
 
     if (existing) {
-      await (ctx.db as any).patch(existing._id, { keys, createdAt: Date.now() })
+      await ctx.db.patch(existing._id, { keys, createdAt: Date.now() })
       return existing._id
     }
 
-    return await ctx.db.insert('pushSubscriptions' as any, {
+    return await ctx.db.insert('pushSubscriptions', {
       endpoint,
       keys,
       createdAt: Date.now(),
@@ -34,6 +34,6 @@ export const getCurrent = query({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) return null
 
-    return await ctx.db.query('pushSubscriptions' as any).collect()
+    return await ctx.db.query('pushSubscriptions').collect()
   },
 })

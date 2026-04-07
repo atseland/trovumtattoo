@@ -25,6 +25,7 @@ export const syncMail = action({
       port: config.imap.port,
       secure: config.imap.secure,
       auth: config.imap.auth,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       logger: false as any,
     })
 
@@ -42,7 +43,7 @@ export const syncMail = action({
           const externalId = envelope.messageId ?? String(msg.seq)
           const subject = envelope.subject ?? '(Uten emne)'
           const from = envelope.from?.[0]?.address ?? 'ukjent'
-          const toAddrs = (envelope.to ?? []).map((a: any) => a.address ?? '').filter(Boolean)
+          const toAddrs = (envelope.to ?? []).map((a: { address?: string }) => a.address ?? '').filter(Boolean)
           const participants = [from, ...toAddrs]
           const date = envelope.date ? new Date(envelope.date).getTime() : Date.now()
 

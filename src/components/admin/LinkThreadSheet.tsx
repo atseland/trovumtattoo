@@ -53,11 +53,11 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
             <input value={search} onChange={(e) => { setSearch(e.target.value); setSelectedClientId(null); setSelectedProjectId(null) }} style={ghostInput} placeholder='Navn…' />
           </div>
 
-          {clients && (clients as any[]).length > 0 && (
+          {clients && clients.length > 0 && (
             <div>
               <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Velg kunde</label>
               <div className='flex flex-col gap-2 max-h-[200px] overflow-y-auto'>
-                {(clients as any[]).map((c) => (
+                {clients.map((c) => (
                   <button key={c._id} onClick={() => { setSelectedClientId(c._id); setSelectedProjectId(null) }}
                     className='px-4 py-[10px] border text-left cursor-pointer font-sans text-[13px] transition-colors duration-[200ms]'
                     style={{
@@ -73,11 +73,11 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
             </div>
           )}
 
-          {selectedClientId && projects && (projects as any[]).length > 0 && (
+          {selectedClientId && projects && projects.length > 0 && (
             <div>
               <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Velg prosjekt (valgfritt)</label>
               <div className='flex flex-col gap-2'>
-                {(projects as any[]).map((p) => (
+                {projects.map((p) => (
                   <button key={p._id} onClick={() => setSelectedProjectId(p._id === selectedProjectId ? null : p._id)}
                     className='px-4 py-[10px] border text-left cursor-pointer font-sans text-[13px] transition-colors duration-[200ms]'
                     style={{
