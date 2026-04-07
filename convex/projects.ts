@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { assertNonNegative, assertOptionalStringLength } from './lib/validate'
 
 export const create = mutation({
   args: {
@@ -62,6 +63,13 @@ export const update = mutation({
   handler: async (ctx, { id, status, ...fields }) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
+
+    if (fields.estimatedPrice !== undefined) assertNonNegative(fields.estimatedPrice, 'estimatedPrice')
+    if (fields.depositAmount !== undefined) assertNonNegative(fields.depositAmount, 'depositAmount')
+    assertOptionalStringLength(fields.internalNotes, 'internalNotes', 10_000)
+    assertOptionalStringLength(fields.paymentLink, 'paymentLink', 2_000)
+    assertOptionalStringLength(fields.invoiceReference, 'invoiceReference', 200)
+    assertOptionalStringLength(fields.paymentNote, 'paymentNote', 2_000)
 
     const project = await ctx.db.get(id)
     if (!project) throw new Error('Project not found')

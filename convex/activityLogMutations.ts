@@ -6,7 +6,7 @@ export const insert = internalMutation({
     entityType: v.string(),
     entityId: v.string(),
     action: v.string(),
-    payload: v.optional(v.any()),
+    payload: v.optional(v.record(v.string(), v.union(v.string(), v.number(), v.boolean(), v.null()))),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert('activityLog', {

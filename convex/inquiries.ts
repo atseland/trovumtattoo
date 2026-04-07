@@ -1,5 +1,14 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import {
+  assertStringLength,
+  assertOptionalStringLength,
+  assertEmailFormat,
+} from './lib/validate'
+
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
+const RATE_LIMIT_MAX = 3
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -18,6 +27,30 @@ export const create = mutation({
     extraNotes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Input validation
+    assertStringLength(args.name, 'name', 1, 200)
+    assertEmailFormat(args.email, 'email')
+    assertStringLength(args.phone, 'phone', 3, 30)
+    assertStringLength(args.description, 'description', 1, 10_000)
+    assertStringLength(args.bodyPlacement, 'bodyPlacement', 1, 200)
+    assertStringLength(args.size, 'size', 1, 100)
+    assertStringLength(args.style, 'style', 1, 200)
+    assertOptionalStringLength(args.budget, 'budget', 200)
+    assertOptionalStringLength(args.desiredTiming, 'desiredTiming', 200)
+    assertOptionalStringLength(args.extraNotes, 'extraNotes', 5_000)
+    assertOptionalStringLength(args.instagramHandle, 'instagramHandle', 100)
+
+    // Rate limit: max 3 inquiries from same email in 10 minutes
+    const cutoff = Date.now() - RATE_LIMIT_WINDOW_MS
+    const recent = await ctx.db
+      .query('inquiries')
+      .withIndex('by_createdAt', (q) => q.gte('createdAt', cutoff))
+      .collect()
+    const sameEmail = recent.filter((r) => r.email === args.email)
+    if (sameEmail.length >= RATE_LIMIT_MAX) {
+      throw new Error('For mange forespørsler. Vennligst vent litt.')
+    }
+
     const inquiryId = await ctx.db.insert('inquiries', {
       ...args,
       status: 'Ny',
@@ -61,7 +94,7 @@ export const updateStatus = mutation({
       entityType: 'inquiry',
       entityId: id,
       action: 'status_changed',
-      payload: { from: inquiry.status, to: status, note },
+      payload: { from: inquiry.status, to: status, ...(note ? { note } : {}) },
       createdAt: Date.now(),
     })
   },

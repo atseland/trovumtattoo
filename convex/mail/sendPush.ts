@@ -1,7 +1,7 @@
 "use node"
 
 import { action } from '../_generated/server'
-import { api } from '../_generated/api'
+import { internal } from '../_generated/api'
 import { v } from 'convex/values'
 import webpush from 'web-push'
 
@@ -26,7 +26,7 @@ export const sendPush = action({
       vapidPrivateKey,
     )
 
-    const subscriptions = await ctx.runQuery(api.pushSubscriptions.getCurrent, {})
+    const subscriptions = await ctx.runQuery(internal.pushSubscriptions.getAll, {})
     if (!subscriptions || !Array.isArray(subscriptions)) {
       return { sent: 0 }
     }

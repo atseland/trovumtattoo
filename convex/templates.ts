@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { assertStringLength } from './lib/validate'
 
 export const list = query({
   args: {},
@@ -7,7 +8,8 @@ export const list = query({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
 
-    return await ctx.db.query('messageTemplates').order('asc').collect()
+    const all = await ctx.db.query('messageTemplates').order('asc').collect()
+    return all.filter((t) => !t.isDeleted)
   },
 })
 
@@ -20,6 +22,9 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
+
+    assertStringLength(args.title, 'title', 1, 200)
+    assertStringLength(args.content, 'content', 1, 50_000)
 
     const now = Date.now()
     return await ctx.db.insert('messageTemplates', {
@@ -40,6 +45,9 @@ export const update = mutation({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
 
+    if (fields.title !== undefined) assertStringLength(fields.title, 'title', 1, 200)
+    if (fields.content !== undefined) assertStringLength(fields.content, 'content', 1, 50_000)
+
     const patch: Record<string, unknown> = { updatedAt: Date.now() }
     for (const [k, v] of Object.entries(fields)) {
       if (v !== undefined) patch[k] = v
@@ -54,6 +62,6 @@ export const remove = mutation({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
 
-    await ctx.db.delete(id)
+    await ctx.db.patch(id, { isDeleted: true, updatedAt: Date.now() })
   },
 })

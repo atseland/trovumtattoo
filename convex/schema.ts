@@ -84,6 +84,7 @@ export default defineSchema({
     type: v.string(), // 'received' | 'needs-info' | 'estimate' | 'timeslot' | 'deposit' | 'confirmation' | 'reminder' | 'aftercare' | 'thank-you' | 'review-request'
     title: v.string(),
     content: v.string(),
+    isDeleted: v.optional(v.boolean()),
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index('by_type', ['type']),
@@ -153,7 +154,7 @@ export default defineSchema({
     entityType: v.string(), // 'inquiry' | 'project' | 'client' | 'booking'
     entityId: v.string(),
     action: v.string(),
-    payload: v.optional(v.any()),
+    payload: v.optional(v.record(v.string(), v.union(v.string(), v.number(), v.boolean(), v.null()))),
     createdAt: v.number(),
   })
     .index('by_entity', ['entityType', 'entityId'])

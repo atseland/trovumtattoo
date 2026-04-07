@@ -18,6 +18,12 @@ export const sendReply = action({
     inReplyTo: v.optional(v.string()),
   },
   handler: async (ctx, { threadId, to, subject, body, inReplyTo }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    if (subject.length > 500) throw new Error('Subject too long')
+    if (body.length > 100_000) throw new Error('Body too long')
+
     const config = getMailConfig()
 
     const transporter = nodemailer.createTransport({

@@ -63,6 +63,18 @@ export const update = mutation({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
 
+    // Validate time range if both or either are provided
+    if (fields.startAt !== undefined || fields.endAt !== undefined) {
+      const booking = await ctx.db.get(id)
+      if (!booking) throw new Error('Booking not found')
+      const start = fields.startAt ?? booking.startAt
+      const end = fields.endAt ?? booking.endAt
+      if (start >= end) throw new Error('startAt må være før endAt')
+    }
+    if (fields.notes !== undefined && fields.notes.length > 5_000) {
+      throw new Error('notes cannot exceed 5000 characters')
+    }
+
     const patch: Record<string, unknown> = { updatedAt: Date.now() }
     for (const [k, v] of Object.entries(fields)) {
       if (v !== undefined) patch[k] = v

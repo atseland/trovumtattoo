@@ -1,5 +1,10 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import {
+  assertStringLength,
+  assertOptionalStringLength,
+  assertEmailFormat,
+} from './lib/validate'
 
 export const create = mutation({
   args: {
@@ -12,6 +17,12 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
+
+    assertStringLength(args.name, 'name', 1, 200)
+    assertEmailFormat(args.email, 'email')
+    assertOptionalStringLength(args.phone, 'phone', 30)
+    assertOptionalStringLength(args.instagramHandle, 'instagramHandle', 100)
+    assertOptionalStringLength(args.notes, 'notes', 10_000)
 
     const now = Date.now()
     return await ctx.db.insert('clients', {
@@ -64,6 +75,12 @@ export const update = mutation({
   handler: async (ctx, { id, ...fields }) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
+
+    if (fields.name !== undefined) assertStringLength(fields.name, 'name', 1, 200)
+    if (fields.email !== undefined) assertEmailFormat(fields.email, 'email')
+    assertOptionalStringLength(fields.phone, 'phone', 30)
+    assertOptionalStringLength(fields.instagramHandle, 'instagramHandle', 100)
+    assertOptionalStringLength(fields.notes, 'notes', 10_000)
 
     const patch: Record<string, unknown> = { updatedAt: Date.now() }
     for (const [k, v] of Object.entries(fields)) {
