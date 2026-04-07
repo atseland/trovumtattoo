@@ -4,20 +4,15 @@ import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '../../../../convex/_generated/api'
-
-const typeIcon: Record<string, string> = {
-  'new-inquiry': '📥',
-  'new-reply': '✉️',
-  'deposit-overdue': '⚠️',
-  'booking-tomorrow': '📅',
-  'booking-today': '🔔',
-  'followup-due': '⏰',
-}
+import { Skeleton } from '@/components/ui/Skeleton'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { Btn } from '@/components/ui/Btn'
+import { Bell } from 'lucide-react'
 
 const typeNavigation: Record<string, (n: any) => string | null> = {
   'new-inquiry': (n) => n.relatedEntityId ? `/admin/inquiries/${n.relatedEntityId}` : null,
   'new-reply': (n) => n.relatedEntityId ? `/admin/mail/${n.relatedEntityId}` : null,
-  'booking-today': (n) => n.relatedEntityId ? `/admin/calendar` : null,
+  'booking-today': () => '/admin/calendar',
   'booking-tomorrow': () => '/admin/calendar',
 }
 
@@ -61,63 +56,57 @@ export default function NotificationsPage() {
   const unreadCount = (notifications as any[] | undefined)?.filter((n) => !n.isRead).length ?? 0
 
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <h1 className='text-xl font-medium' style={{ color: '#c9b99a' }}>Varsler</h1>
+    <div className='max-w-2xl'>
+      <div className='flex items-center justify-between flex-wrap gap-3 mb-6'>
+        <div className='flex items-center gap-3'>
+          <h1 className='font-sans font-medium text-[18px] text-paper'>Varsler</h1>
           {unreadCount > 0 && (
-            <span style={{ background: '#c9933a', color: '#0d0c0b', fontSize: '0.75rem', fontWeight: '700', padding: '2px 8px', borderRadius: '999px' }}>
+            <span
+              className='font-sans text-[9px] tracking-[0.08em] uppercase px-[7px] py-[3px]'
+              style={{ background: 'var(--accent)', color: 'var(--bg)', borderRadius: '2px' }}
+            >
               {unreadCount}
             </span>
           )}
         </div>
         {unreadCount > 0 && (
-          <button
-            onClick={handleMarkAll}
-            style={{ padding: '8px 14px', background: 'transparent', color: '#7a6e62', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', minHeight: '36px' }}
-          >
-            Merk alle som lest
-          </button>
+          <Btn variant='sm' onClick={handleMarkAll}>Merk alle som lest</Btn>
         )}
       </div>
 
       {notifications === undefined ? (
-        <p style={{ color: '#7a6e62' }}>Laster…</p>
+        <div className='flex flex-col gap-2'>
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className='h-[64px]' />)}
+        </div>
       ) : (notifications as any[]).length === 0 ? (
-        <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen varsler.</p>
+        <EmptyState
+          icon={<Bell size={48} strokeWidth={1.5} />}
+          title='Ingen varsler'
+          text='Nye varsler dukker opp her.'
+        />
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div className='flex flex-col gap-2'>
           {(notifications as any[]).map((n) => (
             <button
               key={n._id}
               onClick={() => handleClick(n)}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '12px',
-                padding: '14px 16px',
-                background: n.isRead ? '#1c1916' : '#141210',
-                border: '1px solid',
-                borderColor: n.isRead ? '#2a2724' : n.priority === 'high' ? '#3a2a10' : '#2a2724',
-                borderRadius: '6px',
-                textAlign: 'left',
-                cursor: 'pointer',
-                width: '100%',
-                transition: 'opacity 0.15s',
-              }}
+              className='flex items-start gap-3 px-4 py-[14px] bg-panel border border-rule min-h-[64px] text-left w-full transition-colors duration-[200ms] hover:bg-[rgba(237,233,230,0.02)] cursor-pointer'
+              style={!n.isRead ? { borderLeftColor: 'var(--accent)', borderLeftWidth: '2px' } : {}}
             >
-              <span style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: '1px' }}>
-                {typeIcon[n.type] ?? '🔔'}
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
-                  <p style={{ color: n.isRead ? '#7a6e62' : '#c9b99a', fontWeight: n.isRead ? '400' : '600', fontSize: '0.9rem' }}>
+              <div className='flex-1 min-w-0'>
+                <div className='flex justify-between gap-2 flex-wrap mb-1'>
+                  <p className={`font-sans text-[14px] ${n.isRead ? 'text-body' : 'font-medium text-paper'}`}>
                     {n.title}
-                    {!n.isRead && <span style={{ display: 'inline-block', width: '6px', height: '6px', background: '#c9933a', borderRadius: '50%', marginLeft: '8px', verticalAlign: 'middle' }} />}
+                    {!n.isRead && (
+                      <span
+                        className='inline-block w-[6px] h-[6px] ml-2 align-middle'
+                        style={{ background: 'var(--accent)', borderRadius: '50%' }}
+                      />
+                    )}
                   </p>
-                  <span style={{ color: '#7a6e62', fontSize: '0.7rem', flexShrink: 0 }}>{relativeTime(n.createdAt)}</span>
+                  <span className='font-sans text-[11px] text-mast-left shrink-0'>{relativeTime(n.createdAt)}</span>
                 </div>
-                <p style={{ color: '#7a6e62', fontSize: '0.8rem', marginTop: '3px' }}>{n.body}</p>
+                <p className='font-sans text-[12px] text-mast-left'>{n.body}</p>
               </div>
             </button>
           ))}

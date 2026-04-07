@@ -5,6 +5,9 @@ import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '../../../../convex/_generated/api'
 import { Id } from '../../../../convex/_generated/dataModel'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Rule } from '@/components/ui/Rule'
+import { Btn } from '@/components/ui/Btn'
 
 const TEMPLATE_TYPES: { value: string; label: string }[] = [
   { value: 'received', label: 'Mottatt forespørsel' },
@@ -21,16 +24,9 @@ const TEMPLATE_TYPES: { value: string; label: string }[] = [
 
 const typeLabel = (type: string) => TEMPLATE_TYPES.find((t) => t.value === type)?.label ?? type
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '10px 14px',
-  fontSize: '0.9rem',
-  minHeight: '44px',
-  outline: 'none',
+const ghostInput: React.CSSProperties = {
+  background: 'rgba(237,233,230,0.03)',
+  border: '1px solid rgba(237,233,230,0.14)',
 }
 
 interface EditForm {
@@ -80,45 +76,77 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className='mx-auto max-w-2xl'>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <h1 className='text-xl font-medium' style={{ color: '#c9b99a' }}>Meldingsmaler</h1>
-        <button
-          onClick={() => { setForm(emptyForm); setShowForm(true) }}
-          style={{ padding: '8px 16px', background: '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '40px' }}
-        >
-          Ny mal
-        </button>
+    <div className='max-w-2xl'>
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className='font-sans font-medium text-[18px] text-paper'>Meldingsmaler</h1>
+        <Btn variant='sm' onClick={() => { setForm(emptyForm); setShowForm(true) }}>Ny mal</Btn>
       </div>
 
       {/* Form */}
       {showForm && (
-        <div style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '8px', padding: '20px', marginBottom: '24px' }}>
-          <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '16px' }}>{form.id ? 'Rediger mal' : 'Ny mal'}</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div className='bg-panel border border-rule px-5 py-5 mb-6'>
+          <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>
+            {form.id ? 'Rediger mal' : 'Ny mal'}
+          </h2>
+          <div className='flex flex-col gap-4'>
             {!form.id && (
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Type</label>
-                <select value={form.type} onChange={(e) => setForm(f => ({ ...f, type: e.target.value }))} style={inputStyle}>
-                  {TEMPLATE_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-                </select>
+                <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Type</label>
+                <div className='relative'>
+                  <select
+                    value={form.type}
+                    onChange={(e) => setForm(f => ({ ...f, type: e.target.value }))}
+                    className='w-full font-sans text-[14px] text-paper px-4 min-h-[44px] outline-none appearance-none transition-colors duration-[200ms] cursor-pointer'
+                    style={ghostInput}
+                  >
+                    {TEMPLATE_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  </select>
+                  <svg className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none' width='12' height='8' viewBox='0 0 12 8' fill='none'>
+                    <path d='M1 1l5 5 5-5' stroke='var(--nav)' strokeWidth='1.5' strokeLinecap='square'/>
+                  </svg>
+                </div>
               </div>
             )}
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Tittel</label>
-              <input value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} style={inputStyle} placeholder='Mal-tittel' />
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Tittel</label>
+              <input
+                value={form.title}
+                onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))}
+                placeholder='Mal-tittel'
+                className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 min-h-[44px] outline-none transition-colors duration-[200ms]'
+                style={ghostInput}
+                onFocus={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+                }}
+              />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Innhold</label>
-              <textarea value={form.content} onChange={(e) => setForm(f => ({ ...f, content: e.target.value }))} style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }} placeholder='Meldingsinnhold…' />
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Innhold</label>
+              <textarea
+                value={form.content}
+                onChange={(e) => setForm(f => ({ ...f, content: e.target.value }))}
+                placeholder='Meldingsinnhold…'
+                rows={5}
+                className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-4 py-3 outline-none resize-vertical transition-colors duration-[200ms]'
+                style={ghostInput}
+                onFocus={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
+                }}
+                onBlur={e => {
+                  e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
+                  e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
+                }}
+              />
             </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saving ? '#5a4a2a' : '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', cursor: saving ? 'not-allowed' : 'pointer', fontSize: '0.875rem', minHeight: '44px' }}>
-                {saving ? 'Lagrer…' : 'Lagre'}
-              </button>
-              <button onClick={() => setShowForm(false)} style={{ padding: '10px 20px', background: 'transparent', color: '#7a6e62', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '44px' }}>
-                Avbryt
-              </button>
+            <div className='flex gap-2'>
+              <Btn variant='sm' onClick={handleSave} disabled={saving}>{saving ? 'Lagrer…' : 'Lagre'}</Btn>
+              <Btn variant='sm' onClick={() => setShowForm(false)}>Avbryt</Btn>
             </div>
           </div>
         </div>
@@ -126,24 +154,36 @@ export default function TemplatesPage() {
 
       {/* Template list */}
       {templates === undefined ? (
-        <p style={{ color: '#7a6e62' }}>Laster…</p>
+        <div className='flex flex-col gap-3'>
+          {[1, 2, 3].map(i => <Skeleton key={i} className='h-[80px]' />)}
+        </div>
       ) : templates.length === 0 ? (
-        <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen maler ennå. Klikk "Ny mal" for å opprette.</p>
+        <p className='font-sans text-[13px] text-mast-left'>Ingen maler ennå. Klikk «Ny mal» for å opprette.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className='flex flex-col gap-3'>
           {(templates as any[]).map((tpl) => (
-            <div key={tpl._id} style={{ background: '#141210', border: '1px solid #2a2724', borderRadius: '6px', padding: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ fontSize: '0.7rem', color: '#c9933a', background: '#2a1e0d', padding: '2px 8px', borderRadius: '999px' }}>{typeLabel(tpl.type)}</span>
-                  <p style={{ color: '#c9b99a', fontWeight: '500', fontSize: '0.9rem', marginTop: '6px' }}>{tpl.title}</p>
-                  <p style={{ color: '#7a6e62', fontSize: '0.8rem', marginTop: '4px', whiteSpace: 'pre-wrap', maxHeight: '60px', overflow: 'hidden' }}>{tpl.content}</p>
+            <div key={tpl._id} className='bg-panel border border-rule px-5 py-4'>
+              <div className='flex items-start justify-between gap-3'>
+                <div className='flex-1 min-w-0'>
+                  <span
+                    className='font-sans text-[9px] tracking-[0.1em] uppercase px-[8px] py-[3px] mb-2 inline-block'
+                    style={{ background: 'rgba(160,148,136,0.12)', color: 'var(--accent)', borderRadius: '2px' }}
+                  >
+                    {typeLabel(tpl.type)}
+                  </span>
+                  <p className='font-sans font-medium text-[14px] text-paper mt-1'>{tpl.title}</p>
+                  <p className='font-sans text-[12px] text-mast-left mt-1 whitespace-pre-wrap line-clamp-2'>{tpl.content}</p>
                 </div>
-                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-                  <button onClick={() => { setForm({ id: tpl._id, type: tpl.type, title: tpl.title, content: tpl.content }); setShowForm(true) }} style={{ padding: '6px 10px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', minHeight: '36px' }}>
+                <div className='flex gap-2 shrink-0'>
+                  <Btn variant='sm' onClick={() => { setForm({ id: tpl._id, type: tpl.type, title: tpl.title, content: tpl.content }); setShowForm(true) }}>
                     Rediger
-                  </button>
-                  <button onClick={() => handleDelete(tpl._id)} disabled={deleting === tpl._id} style={{ padding: '6px 10px', background: 'transparent', color: '#c96b6b', border: '1px solid #3a2020', borderRadius: '4px', cursor: deleting === tpl._id ? 'not-allowed' : 'pointer', fontSize: '0.8rem', minHeight: '36px' }}>
+                  </Btn>
+                  <button
+                    onClick={() => handleDelete(tpl._id)}
+                    disabled={deleting === tpl._id}
+                    className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-3 transition-colors duration-[200ms] border cursor-pointer disabled:cursor-not-allowed disabled:opacity-50'
+                    style={{ borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87', background: 'transparent' }}
+                  >
                     Slett
                   </button>
                 </div>
