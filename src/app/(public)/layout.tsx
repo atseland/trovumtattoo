@@ -3,9 +3,9 @@ import { PublicFooter } from '@/components/public/PublicFooter'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex min-h-screen flex-col' style={{ background: '#0d0c0b' }}>
+    <div className='flex min-h-screen flex-col bg-bg'>
       <PublicHeader />
-      <main className='flex-1'>{children}</main>
+      <main className='flex-1' style={{ animation: 'fade-in 0.4s ease-out both' }}>{children}</main>
       <PublicFooter />
     </div>
   )

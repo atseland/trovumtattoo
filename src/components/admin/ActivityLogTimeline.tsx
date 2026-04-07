@@ -23,43 +23,33 @@ interface LogEntry {
 
 export function ActivityLogTimeline({ entries }: { entries: LogEntry[] }) {
   if (entries.length === 0) {
-    return <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen aktivitet ennå.</p>
+    return <p className='font-sans text-[13px] text-mast-left'>Ingen aktivitet ennå.</p>
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div className='flex flex-col gap-4'>
       {entries.map((entry) => (
-        <div key={entry._id} style={{ display: 'flex', gap: '12px' }}>
+        <div key={entry._id} className='flex gap-3'>
           <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#c9933a',
-              flexShrink: 0,
-              marginTop: '5px',
-            }}
+            className='w-[8px] h-[8px] shrink-0 mt-[5px]'
+            style={{ background: 'var(--accent)', borderRadius: '50%' }}
           />
-          <div style={{ flex: 1 }}>
-            <p style={{ color: '#c9b99a', fontSize: '0.875rem', marginBottom: '2px' }}>
+          <div className='flex-1'>
+            <p className='font-sans text-[13px] text-paper mb-[2px]'>
               {actionLabels[entry.action] ?? entry.action}
               {entry.payload?.from && entry.payload?.to && (
-                <span style={{ color: '#7a6e62' }}>
+                <span className='text-mast-left'>
                   {': '}
-                  <span style={{ textDecoration: 'line-through' }}>{entry.payload.from}</span>
+                  <span className='line-through'>{entry.payload.from}</span>
                   {' → '}
                   {entry.payload.to}
                 </span>
               )}
             </p>
             {entry.payload?.note && (
-              <p style={{ color: '#7a6e62', fontSize: '0.8rem', fontStyle: 'italic' }}>
-                {entry.payload.note}
-              </p>
+              <p className='font-sans text-[12px] text-mast-left italic'>{entry.payload.note}</p>
             )}
-            <p style={{ color: '#7a6e62', fontSize: '0.75rem', marginTop: '2px' }}>
-              {formatTs(entry.createdAt)}
-            </p>
+            <p className='font-sans text-[11px] text-mast-left mt-[2px]'>{formatTs(entry.createdAt)}</p>
           </div>
         </div>
       ))}

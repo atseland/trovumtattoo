@@ -66,19 +66,16 @@ export function PushSubscriptionManager() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <div className='flex flex-col gap-3'>
+      <div className='flex items-center gap-3'>
         <span
+          className='inline-block w-[8px] h-[8px] shrink-0'
           style={{
-            display: 'inline-block',
-            width: '8px',
-            height: '8px',
             borderRadius: '50%',
-            background: isSubscribed ? '#4ade80' : '#7a6e62',
-            flexShrink: 0,
+            background: isSubscribed ? 'var(--status-booked)' : 'var(--mast-left)',
           }}
         />
-        <span style={{ color: '#c9b99a', fontSize: '0.875rem' }}>
+        <span className='font-sans text-[14px] text-paper'>
           {isSubscribed ? 'Push-varsler er aktivert' : 'Push-varsler er ikke aktivert'}
         </span>
       </div>
@@ -86,19 +83,8 @@ export function PushSubscriptionManager() {
       <button
         onClick={handleSubscribe}
         disabled={loading}
-        style={{
-          padding: '10px 18px',
-          background: isSubscribed ? 'transparent' : '#c9933a',
-          color: isSubscribed ? '#7a6e62' : '#0d0c0b',
-          border: isSubscribed ? '1px solid #2a2724' : 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          fontSize: '0.875rem',
-          fontWeight: '600',
-          minHeight: '48px',
-          opacity: loading ? 0.6 : 1,
-          alignSelf: 'flex-start',
-        }}
+        className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-6 border border-rule text-nav hover:text-paper hover:border-[rgba(237,233,230,0.38)] hover:bg-[rgba(237,233,230,0.04)] transition-colors duration-[200ms] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed self-start'
+        style={{ background: 'transparent' }}
       >
         {loading ? 'Aktiverer…' : isSubscribed ? 'Re-abonner' : 'Aktiver varsler'}
       </button>

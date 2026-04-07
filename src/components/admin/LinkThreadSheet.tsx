@@ -6,17 +6,11 @@ import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
+import { Btn } from '@/components/ui/Btn'
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '10px 14px',
-  fontSize: '0.9rem',
-  minHeight: '44px',
-  outline: 'none',
+const ghostInput: React.CSSProperties = {
+  width: '100%', background: 'rgba(237,233,230,0.03)', border: '1px solid rgba(237,233,230,0.14)',
+  color: 'var(--paper)', padding: '10px 14px', fontSize: '0.9rem', minHeight: '44px', outline: 'none',
 }
 
 interface Props {
@@ -40,54 +34,39 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
     if (!selectedClientId) { toast.error('Velg en kunde'); return }
     setSaving(true)
     try {
-      await linkThread({
-        threadId: threadId as Id<"mailThreads">,
-        linkedClientId: selectedClientId as Id<"clients">,
-        linkedProjectId: selectedProjectId ? selectedProjectId as Id<"projects"> : undefined,
-      })
+      await linkThread({ threadId: threadId as Id<"mailThreads">, linkedClientId: selectedClientId as Id<"clients">, linkedProjectId: selectedProjectId ? selectedProjectId as Id<"projects"> : undefined })
       toast.success('Tråd koblet')
       onOpenChange(false)
-    } catch {
-      toast.error('Kunne ikke koble tråd')
-    } finally {
-      setSaving(false)
-    }
+    } catch { toast.error('Kunne ikke koble tråd') }
+    finally { setSaving(false) }
   }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent style={{ background: '#141210', border: '1px solid #2a2724', color: '#c9b99a' }} className='w-full sm:max-w-md'>
+      <SheetContent style={{ background: 'var(--panel)' }} className='border-l border-rule-heavy w-full sm:max-w-md'>
         <SheetHeader>
-          <SheetTitle style={{ color: '#c9b99a' }}>Koble til kunde/prosjekt</SheetTitle>
+          <SheetTitle className='font-serif italic text-paper'>Koble til kunde/prosjekt</SheetTitle>
         </SheetHeader>
-
-        <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className='mt-6 flex flex-col gap-4 px-4'>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Søk på kunde</label>
-            <input value={search} onChange={(e) => { setSearch(e.target.value); setSelectedClientId(null); setSelectedProjectId(null) }} style={inputStyle} placeholder='Navn…' />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Søk på kunde</label>
+            <input value={search} onChange={(e) => { setSearch(e.target.value); setSelectedClientId(null); setSelectedProjectId(null) }} style={ghostInput} placeholder='Navn…' />
           </div>
 
           {clients && (clients as any[]).length > 0 && (
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Velg kunde</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflowY: 'auto' }}>
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Velg kunde</label>
+              <div className='flex flex-col gap-2 max-h-[200px] overflow-y-auto'>
                 {(clients as any[]).map((c) => (
-                  <button
-                    key={c._id}
-                    onClick={() => { setSelectedClientId(c._id); setSelectedProjectId(null) }}
+                  <button key={c._id} onClick={() => { setSelectedClientId(c._id); setSelectedProjectId(null) }}
+                    className='px-4 py-[10px] border text-left cursor-pointer font-sans text-[13px] transition-colors duration-[200ms]'
                     style={{
-                      padding: '10px 14px',
-                      background: selectedClientId === c._id ? '#2a1e0d' : '#1c1916',
-                      border: '1px solid',
-                      borderColor: selectedClientId === c._id ? '#c9933a' : '#2a2724',
-                      borderRadius: '4px',
-                      color: '#c9b99a',
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      fontSize: '0.875rem',
+                      background: selectedClientId === c._id ? 'rgba(160,148,136,0.1)' : 'rgba(237,233,230,0.02)',
+                      borderColor: selectedClientId === c._id ? 'var(--accent)' : 'var(--rule)',
+                      color: 'var(--paper)',
                     }}
                   >
-                    {c.name} <span style={{ color: '#7a6e62' }}>— {c.email}</span>
+                    {c.name} <span className='text-mast-left'>— {c.email}</span>
                   </button>
                 ))}
               </div>
@@ -96,22 +75,15 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
 
           {selectedClientId && projects && (projects as any[]).length > 0 && (
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Velg prosjekt (valgfritt)</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Velg prosjekt (valgfritt)</label>
+              <div className='flex flex-col gap-2'>
                 {(projects as any[]).map((p) => (
-                  <button
-                    key={p._id}
-                    onClick={() => setSelectedProjectId(p._id === selectedProjectId ? null : p._id)}
+                  <button key={p._id} onClick={() => setSelectedProjectId(p._id === selectedProjectId ? null : p._id)}
+                    className='px-4 py-[10px] border text-left cursor-pointer font-sans text-[13px] transition-colors duration-[200ms]'
                     style={{
-                      padding: '10px 14px',
-                      background: selectedProjectId === p._id ? '#0d2a0d' : '#1c1916',
-                      border: '1px solid',
-                      borderColor: selectedProjectId === p._id ? '#4ab97a' : '#2a2724',
-                      borderRadius: '4px',
-                      color: '#c9b99a',
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      fontSize: '0.875rem',
+                      background: selectedProjectId === p._id ? 'rgba(160,148,136,0.1)' : 'rgba(237,233,230,0.02)',
+                      borderColor: selectedProjectId === p._id ? 'var(--accent)' : 'var(--rule)',
+                      color: 'var(--paper)',
                     }}
                   >
                     {p.status} — {new Date(p.createdAt).toLocaleDateString('nb-NO')}
@@ -121,23 +93,9 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
             </div>
           )}
 
-          <button
-            onClick={handleSave}
-            disabled={saving || !selectedClientId}
-            style={{
-              background: saving || !selectedClientId ? '#5a4a2a' : '#c9933a',
-              color: '#0d0c0b',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '12px',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              cursor: saving || !selectedClientId ? 'not-allowed' : 'pointer',
-              minHeight: '48px',
-            }}
-          >
+          <Btn variant='action-primary' onClick={handleSave} disabled={saving || !selectedClientId}>
             {saving ? 'Lagrer…' : 'Koble tråd'}
-          </button>
+          </Btn>
         </div>
       </SheetContent>
     </Sheet>

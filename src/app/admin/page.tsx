@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { Eyebrow } from '@/components/ui/Eyebrow'
+import { Btn } from '@/components/ui/Btn'
 
 function relativeDate(ts: number) {
   const diff = Date.now() - ts
@@ -15,105 +18,72 @@ function relativeDate(ts: number) {
   return new Date(ts).toLocaleDateString('nb-NO', { day: '2-digit', month: 'short' })
 }
 
-interface SummaryCard {
-  label: string
-  value: number
-  color: string
-}
-
 export default function AdminDashboardPage() {
   const { isAuthenticated } = useConvexAuth()
   const summary = useQuery(api.dashboard.getSummary, isAuthenticated ? {} : 'skip')
 
-  const cards: SummaryCard[] = summary
+  const cards = summary
     ? [
-        { label: 'Nye forespørsler', value: summary.nyCount, color: 'var(--color-status-ny)' },
-        { label: 'Trenger mer info', value: summary.trengermInfoCount, color: 'var(--color-status-info)' },
-        { label: 'Venter på depositum', value: summary.venterDepositumCount, color: 'var(--color-status-depositum)' },
-        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount, color: 'var(--color-status-booket)' },
+        { label: 'Nye forespørsler', value: summary.nyCount },
+        { label: 'Trenger mer info', value: summary.trengermInfoCount },
+        { label: 'Venter på depositum', value: summary.venterDepositumCount },
+        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount },
       ]
     : []
 
   return (
-    <div>
-      <h1 className='mb-6 text-xl font-medium' style={{ color: '#c9b99a' }}>Dashboard</h1>
+    <div className='max-w-2xl'>
+      <h1 className='font-sans font-medium text-[18px] text-paper mb-6'>Dashboard</h1>
 
       {/* Summary cards */}
       {summary === undefined ? (
-        <p style={{ color: '#7a6e62', marginBottom: '24px' }}>Laster…</p>
+        <div className='grid grid-cols-2 gap-3 mb-7'>
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className='h-[72px]' />
+          ))}
+        </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '28px' }}>
+        <div className='grid grid-cols-2 gap-3 mb-7'>
           {cards.map((card) => (
             <div
               key={card.label}
-              style={{
-                background: '#141210',
-                border: '1px solid #2a2724',
-                borderRadius: '8px',
-                padding: '16px',
-              }}
+              className='bg-panel border border-rule p-4'
             >
-              <p style={{ fontSize: '2rem', fontWeight: '700', color: card.color, lineHeight: 1 }}>
-                {card.value}
-              </p>
-              <p style={{ fontSize: '0.75rem', color: '#7a6e62', marginTop: '6px' }}>{card.label}</p>
+              <p className='font-serif text-[36px] text-paper leading-[1]'>{card.value}</p>
+              <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-mast-left mt-[6px]'>{card.label}</p>
             </div>
           ))}
         </div>
       )}
 
       {/* Snarveier */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '28px', flexWrap: 'wrap' }}>
-        <Link
-          href='/admin/inquiries'
-          style={{ padding: '8px 14px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', fontSize: '0.875rem', textDecoration: 'none', minHeight: '40px', display: 'flex', alignItems: 'center' }}
-        >
-          Alle forespørsler
-        </Link>
-        <Link
-          href='/admin/clients'
-          style={{ padding: '8px 14px', background: 'transparent', color: '#c9b99a', border: '1px solid #2a2724', borderRadius: '4px', fontSize: '0.875rem', textDecoration: 'none', minHeight: '40px', display: 'flex', alignItems: 'center' }}
-        >
-          Alle kunder
-        </Link>
-        <Link
-          href='/book'
-          style={{ padding: '8px 14px', background: 'transparent', color: '#7a6e62', border: '1px solid #2a2724', borderRadius: '4px', fontSize: '0.875rem', textDecoration: 'none', minHeight: '40px', display: 'flex', alignItems: 'center' }}
-        >
-          Testbooking →
-        </Link>
+      <div className='flex flex-wrap gap-2 mb-7'>
+        <Btn href='/admin/inquiries' variant='sm'>Alle forespørsler</Btn>
+        <Btn href='/admin/clients' variant='sm'>Alle kunder</Btn>
+        <Btn href='/book' variant='sm'>Testbooking →</Btn>
       </div>
 
       {/* Recent inquiries */}
       <div>
-        <h2 style={{ color: '#c9b99a', fontSize: '1rem', marginBottom: '14px' }}>Siste forespørsler</h2>
+        <Eyebrow withLine className='mb-4'>Siste forespørsler</Eyebrow>
         {summary === undefined ? (
-          <p style={{ color: '#7a6e62' }}>Laster…</p>
+          <div className='flex flex-col gap-2'>
+            {[1, 2, 3].map((i) => <Skeleton key={i} className='h-[60px]' />)}
+          </div>
         ) : summary.recentInquiries.length === 0 ? (
-          <p style={{ color: '#7a6e62', fontSize: '0.875rem' }}>Ingen forespørsler ennå.</p>
+          <p className='font-sans text-[13px] text-mast-left'>Ingen forespørsler ennå.</p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className='flex flex-col gap-2'>
             {(summary.recentInquiries as any[]).map((inq) => (
               <Link
                 key={inq._id}
                 href={`/admin/inquiries/${inq._id}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '12px 16px',
-                  background: '#1c1916',
-                  border: '1px solid #2a2724',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  gap: '10px',
-                  flexWrap: 'wrap',
-                }}
+                className='flex items-center justify-between gap-3 px-4 py-[14px] bg-panel border border-rule min-h-[60px] transition-colors duration-[200ms] hover:bg-[rgba(237,233,230,0.02)] flex-wrap no-underline'
               >
-                <p style={{ color: '#c9b99a', fontSize: '0.9rem', fontWeight: '500', flex: 1, minWidth: 0 }}>{inq.name}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+                <p className='font-sans font-medium text-[14px] text-paper flex-1 min-w-0'>{inq.name}</p>
+                <div className='flex items-center gap-3 shrink-0'>
                   <StatusBadge status={inq.status} />
-                  <span style={{ color: '#7a6e62', fontSize: '0.75rem' }}>{relativeDate(inq.createdAt)}</span>
+                  <span className='font-sans text-[12px] text-mast-left'>{relativeDate(inq.createdAt)}</span>
                 </div>
               </Link>
             ))}

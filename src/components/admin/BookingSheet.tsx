@@ -6,17 +6,11 @@ import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
+import { Btn } from '@/components/ui/Btn'
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#1c1916',
-  border: '1px solid #2a2724',
-  borderRadius: '4px',
-  color: '#c9b99a',
-  padding: '10px 14px',
-  fontSize: '0.9rem',
-  minHeight: '44px',
-  outline: 'none',
+const ghostInput: React.CSSProperties = {
+  width: '100%', background: 'rgba(237,233,230,0.03)', border: '1px solid rgba(237,233,230,0.14)',
+  color: 'var(--paper)', padding: '10px 14px', fontSize: '0.9rem', minHeight: '44px', outline: 'none',
 }
 
 interface Props {
@@ -32,8 +26,7 @@ interface Props {
 }
 
 function toDatetimeLocal(ts: number) {
-  const d = new Date(ts)
-  return d.toISOString().slice(0, 16)
+  return new Date(ts).toISOString().slice(0, 16)
 }
 
 function fromDatetimeLocal(s: string): number {
@@ -60,7 +53,6 @@ export function BookingSheet({
     const start = fromDatetimeLocal(startAt)
     const end = fromDatetimeLocal(endAt)
     if (start >= end) { toast.error('Starttid må være før sluttid'); return }
-
     setSaving(true)
     try {
       if (mode === 'create') {
@@ -76,11 +68,8 @@ export function BookingSheet({
       }
       onOpenChange(false)
       onSuccess?.()
-    } catch (e) {
-      toast.error(`Feil: ${(e as Error).message}`)
-    } finally {
-      setSaving(false)
-    }
+    } catch (e) { toast.error(`Feil: ${(e as Error).message}`) }
+    finally { setSaving(false) }
   }
 
   async function handleCancel() {
@@ -91,56 +80,45 @@ export function BookingSheet({
       toast.success('Booking avlyst')
       onOpenChange(false)
       onSuccess?.()
-    } catch {
-      toast.error('Kunne ikke avlyse')
-    } finally {
-      setSaving(false)
-    }
+    } catch { toast.error('Kunne ikke avlyse') }
+    finally { setSaving(false) }
   }
 
   const title = mode === 'create' ? 'Ny booking' : mode === 'edit' ? 'Rediger booking' : 'Ombooking'
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent style={{ background: '#141210', border: '1px solid #2a2724', color: '#c9b99a' }} className='w-full sm:max-w-md'>
+      <SheetContent style={{ background: 'var(--panel)' }} className='border-l border-rule-heavy w-full sm:max-w-md'>
         <SheetHeader>
-          <SheetTitle style={{ color: '#c9b99a' }}>{title}</SheetTitle>
+          <SheetTitle className='font-serif italic text-paper'>{title}</SheetTitle>
         </SheetHeader>
-
-        <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className='mt-6 flex flex-col gap-4 px-4'>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Starttid</label>
-            <input type='datetime-local' value={startAt} onChange={(e) => setStartAt(e.target.value)} style={inputStyle} />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Starttid</label>
+            <input type='datetime-local' value={startAt} onChange={(e) => setStartAt(e.target.value)} style={ghostInput} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Sluttid</label>
-            <input type='datetime-local' value={endAt} onChange={(e) => setEndAt(e.target.value)} style={inputStyle} />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Sluttid</label>
+            <input type='datetime-local' value={endAt} onChange={(e) => setEndAt(e.target.value)} style={ghostInput} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#7a6e62', marginBottom: '6px' }}>Notater</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }} placeholder='Valgfrie notater…' />
+            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Notater</label>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} style={{ ...ghostInput, minHeight: '80px', resize: 'vertical' }} placeholder='Valgfrie notater…' />
           </div>
-
-          <button onClick={handleSave} disabled={saving} style={{ background: saving ? '#5a4a2a' : '#c9933a', color: '#0d0c0b', border: 'none', borderRadius: '4px', padding: '12px', fontSize: '0.9rem', fontWeight: '500', cursor: saving ? 'not-allowed' : 'pointer', minHeight: '48px' }}>
-            {saving ? 'Lagrer…' : title}
-          </button>
+          <Btn variant='action-primary' onClick={handleSave} disabled={saving}>{saving ? 'Lagrer…' : title}</Btn>
 
           {existingBookingId && !confirmCancel && (
-            <button onClick={() => setConfirmCancel(true)} style={{ background: 'transparent', color: '#c96b6b', border: '1px solid #3a2020', borderRadius: '4px', padding: '10px', fontSize: '0.875rem', cursor: 'pointer', minHeight: '44px' }}>
+            <button onClick={() => setConfirmCancel(true)} className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-4 border cursor-pointer transition-colors duration-[200ms]' style={{ background: 'transparent', borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}>
               Avlys booking
             </button>
           )}
 
           {confirmCancel && (
-            <div style={{ background: '#2a1010', border: '1px solid #3a2020', borderRadius: '6px', padding: '14px' }}>
-              <p style={{ color: '#c96b6b', fontSize: '0.875rem', marginBottom: '12px' }}>Er du sikker? Denne handlingen kan ikke angres.</p>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={handleCancel} disabled={saving} style={{ flex: 1, background: '#3a1010', color: '#c96b6b', border: '1px solid #3a2020', borderRadius: '4px', padding: '10px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '44px' }}>
-                  Ja, avlys
-                </button>
-                <button onClick={() => setConfirmCancel(false)} style={{ flex: 1, background: 'transparent', color: '#7a6e62', border: '1px solid #2a2724', borderRadius: '4px', padding: '10px', cursor: 'pointer', fontSize: '0.875rem', minHeight: '44px' }}>
-                  Nei, gå tilbake
-                </button>
+            <div className='px-4 py-4 border' style={{ background: 'rgba(175,140,135,0.06)', borderColor: 'rgba(175,140,135,0.2)' }}>
+              <p className='font-sans text-[13px] mb-3' style={{ color: '#af8c87' }}>Er du sikker? Denne handlingen kan ikke angres.</p>
+              <div className='flex gap-2'>
+                <button onClick={handleCancel} disabled={saving} className='flex-1 font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] cursor-pointer border transition-colors duration-[200ms]' style={{ background: 'transparent', borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}>Ja, avlys</button>
+                <button onClick={() => setConfirmCancel(false)} className='flex-1 font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] border border-rule text-nav cursor-pointer hover:text-paper transition-colors duration-[200ms]' style={{ background: 'transparent' }}>Nei, gå tilbake</button>
               </div>
             </div>
           )}

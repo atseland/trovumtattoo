@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </header>
 
         {/* Main content — add bottom padding on mobile for nav bar */}
-        <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4'>{children}</main>
+        <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4' style={{ animation: 'fade-in 0.4s ease-out both' }}>{children}</main>
       </div>
     </div>
   )
