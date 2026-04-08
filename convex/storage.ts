@@ -3,12 +3,7 @@ import { v } from 'convex/values'
 
 export const generateUploadUrl = mutation({
   args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
-
-    return await ctx.storage.generateUploadUrl()
-  },
+  handler: async (ctx) => await ctx.storage.generateUploadUrl(),
 })
 
 export const getImageUrls = query({
