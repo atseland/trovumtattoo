@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { UserButton } from '@clerk/nextjs'
 import { AdminNav } from '@/components/admin/AdminNav'
+import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
@@ -19,7 +20,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </header>
 
         {/* Main content — add bottom padding on mobile for nav bar */}
-        <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4' style={{ animation: 'fade-in 0.4s ease-out both' }}>{children}</main>
+        <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4' style={{ animation: 'fade-in 0.4s ease-out both' }}>
+          <AdminAuthGate>{children}</AdminAuthGate>
+        </main>
       </div>
     </div>
   )

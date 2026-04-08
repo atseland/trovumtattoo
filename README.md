@@ -16,6 +16,7 @@ Notater:
 
 - `npx convex dev` maa kjoere under utvikling slik at lokale Convex-funksjoner pushes til dev deployment og `convex/_generated/*` holdes i sync.
 - Appen kjoerer lokalt paa `http://localhost:3000`.
+- Clerk maa ha en JWT-template med navnet `convex`, og `CLERK_JWT_ISSUER_DOMAIN` maa peke til samme Clerk-instans. Uten dette vil admin-sider med Convex-data ikke laste.
 
 ## Verifikasjon
 
