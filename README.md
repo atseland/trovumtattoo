@@ -1,42 +1,88 @@
-# tmpscaffold
+# Trovum Tattoo OS v1
 
-## Foerste gang
+Next.js App Router-app for `trovumtattoo.no` med public bookingflyt, adminflate, Convex-backend, Clerk-auth, mail, varsler og PWA-stotte.
+
+## Oppstart
 
 ```bash
 cp .env.local.example .env.local
-# Fyll inn Clerk-secrets i .env.local
+# fyll inn Clerk- og Convex-verdier i .env.local
+
 npx convex dev
 pnpm dev
 ```
 
-## Test
+Notater:
+
+- `npx convex dev` maa kjoere under utvikling slik at lokale Convex-funksjoner pushes til dev deployment og `convex/_generated/*` holdes i sync.
+- Appen kjoerer lokalt paa `http://localhost:3000`.
+
+## Verifikasjon
+
+Smale kommandoer:
 
 ```bash
+pnpm typecheck
+pnpm lint
 pnpm test:run
+pnpm test:e2e
+pnpm build
 ```
 
-## AI tooling
+Full repo-verifikasjon:
 
-- Playwright MCP er konfigurert i `.vscode/mcp.json` for klienter som stoetter workspace-MCP.
-- Bruk den til UI-feilsoeking og reproduksjon, men behold testkode i `tests/` som varig verifikasjon.
+```bash
+just verify
+```
+
+Playwright-browser maa vaere installert foerste gang:
+
+```bash
+pnpm exec playwright install chromium
+```
+
+## Viktige kommandoer
+
+```bash
+pnpm dev
+pnpm typecheck
+pnpm lint
+pnpm test:run
+pnpm test:e2e
+pnpm build
+npx convex dev
+
+just verify
+just launch-check
+just preview
+just deploy-prod
+```
 
 ## DevLogs
 
 - Hver arbeidsokt skal loggfoeres til `/Users/33selale/Documents/Dev_Prosjekter/DevLogs/<framework>/<prosjekt>/...`.
 - Start med `just session-start "<slug>"`.
-- Logg implementeringer, LLM-feil, kommentarer og workflow underveis.
+- Logg underveis med `just session-implementation`, `just session-error`, `just session-feedback`, `just session-flow` og `just session-verify`.
 - Avslutt med `just session-close "<kort oppsummering>"`.
 
 ## Struktur
 
-```
-docs/specs/      # Feature-spesifikasjoner
-docs/tasks/      # Oppgavelister
-docs/handoffs/   # Kontekstoverfoering
-.agents/skills/  # Repo-spesifikke guardrails
-.vscode/mcp.json # Workspace MCP-konfig
-scripts/devlog.sh # Session-logging til ekstern DevLogs-mappe
-src/             # Applikasjonskode
+```text
+docs/specs/        # feature-specs og audit/spec-drevne arbeidsdokumenter
+docs/tasks/        # review-notater og oppgavespor
+docs/handoffs/     # handoff mellom sesjoner
+docs/RULES.md      # prosjektregler for preview/deploy/launch
+.agents/skills/    # repo-spesifikke Codex-skills
+.vscode/mcp.json   # workspace MCP-konfig
+scripts/devlog.sh  # session-logging til ekstern DevLogs-mappe
+convex/            # backendfunksjoner og schema
+src/               # Next.js-applikasjonen
+tests/             # Playwright e2e
 ```
 
-Se AGENTS.md for arbeidsmaate og regler.
+## AI tooling
+
+- Playwright MCP er konfigurert i `.vscode/mcp.json` for klienter som stoetter workspace-MCP.
+- Bruk MCP/Playwright CLI til UI-repro og frontend-feilsoeking, men behold repeterbar verifikasjon i committed tester.
+
+Se [AGENTS.md](/Users/33selale/Documents/Dev_Prosjekter/trovumtattoo_v2/AGENTS.md) for arbeidsmaate og repo-regler.
