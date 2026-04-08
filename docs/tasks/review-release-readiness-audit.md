@@ -4,6 +4,13 @@
 **Audit-scope:** full parity mot working tree
 **Kildehierarki:** `PRD.md` > `PRD_UI.md` > `TASKS*.md` > `README.md` / `docs/RULES.md` / `AGENTS.md` > `PROSJEKTBESKRIVELSE.md`
 
+## Oppdatering 2026-04-09
+
+- `convex/auth.config.ts` bruker naa prosjektets Clerk issuer `https://united-piranha-14.clerk.accounts.dev` som fallback.
+- `.env.local.example` og `README.md` dokumenterer naavaerende issuer og JWKS.
+- `E2E_CLERK_USER_EMAIL='aleksander.seland@gmail.com' pnpm playwright test tests/e2e/admin.spec.ts` passerer.
+- Admin-auth er dermed ikke lenger blokkert av issuer-mismatch i repooppsettet.
+
 ## Baseline
 
 - Branch: `main`
@@ -36,8 +43,8 @@ Tilleggsnotat:
 - `curl -I http://localhost:3000/admin` ga Clerk-protect rewrite og `signed-out`
 - Playwright snapshot av `/book` bekrefter lastet booking-side med komplett skjema og suksess-/submit-flate
 - Playwright aapning av `/admin` endte paa Clerk sign-in med `redirect_url=http://localhost:3000/admin`
-- Clerk-testinnlogging via `@clerk/testing` fungerer, men Convex-auth feiler etter innlogging fordi Clerk-instansen svarer `JWT template not found` for `tokens/convex`
-- Direkte query mot Convex med vanlig Clerk session-token feiler med `NoAuthProvider`, fordi `convex/auth.config.ts` krever `applicationID: 'convex'`
+- Clerk-testinnlogging via `@clerk/testing` fungerer
+- Målrettet admin-e2e passerer etter at issuer er satt korrekt i repooppsettet
 
 ## Hvor langt har vi kommet?
 
@@ -71,7 +78,7 @@ Vurdering:
 
 ### Admin
 
-Status: bredt implementert, men blokkert av auth-konfig i runtime
+Status: bredt implementert og naa delvis runtime-verifisert
 
 - Clerk-beskyttelse paa `/admin/*` er bekreftet
 - Dashboard, inquiries, clients, projects, mail, templates, notifications, search, settings og calendar har egne ruter
@@ -80,7 +87,7 @@ Status: bredt implementert, men blokkert av auth-konfig i runtime
 Vurdering:
 
 - `implemented` for struktur og dataoverflater
-- `partial` for runtime, fordi Clerk-instansen mangler JWT-template `convex` og derfor ikke kan autentisere Convex-data i admin
+- `partial` for runtime, fordi bare kjerneflyten er verifisert forelopig
 
 ### Clients / Projects / Bookings
 
@@ -122,7 +129,7 @@ Vurdering:
 
 ### Auth / Security
 
-Status: god grunnmur, men ikke release-klar
+Status: god grunnmur
 
 - Admin-ruter er beskyttet via Clerk middleware
 - Mail, templates, projects, clients, bookings og notifications sjekker auth i Convex
@@ -130,8 +137,8 @@ Status: god grunnmur, men ikke release-klar
 
 Vurdering:
 
-- `partial`
-- Residualrisk: auth/runtime paa innsiden av admin er blokkert til Clerk-instansen har JWT-template `convex`
+- `implemented`
+- Residualrisk: mail, notifications og oevrige admin-omraader mangler fortsatt full runtime-dekning
 
 ### Ops / Verifikasjon
 
@@ -153,7 +160,7 @@ Vurdering:
 | booking | Booking med referansebilder skal fungere offentlig | `src/app/(public)/book/BookPageClient.tsx`, `useInquirySubmission.ts`, `convex/inquiries.ts` | UI lastet; ingen trygg runtime-test mot backend kjoert | partial | high | Verifiser i isolert env og rett upload-grensesnitt |
 | booking uploads | Public upload skal fungere | `useInquirySubmission` kaller `api.storage.generateUploadUrl()`; `convex/storage.ts` krever auth | Statisk bekreftet mismatch; ikke kjoert mot backend | partial | high | Gjor upload-URL offentlig for bookingflyt eller lag dedikert public mutation |
 | admin auth | `/admin/*` skal vaere beskyttet | `src/proxy.ts` | Clerk redirect bekreftet med curl og Playwright | implemented | medium | Legg til auth-e2e for innlogget bruker |
-| admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*` og `src/components/admin/*` | Clerk-login virker, men Convex-data lastes ikke fordi `tokens/convex` gir `JWT template not found` | partial | high | Opprett Clerk JWT-template `convex` og kjor autentisert runtime-pass |
+| admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*` og `src/components/admin/*` | Clerk-login og admin kjerneflyt er bekreftet med committed Playwright-test | partial | medium | Utvid autentisert runtime-pass til mail, settings og notifications |
 | clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts` | Ingen ende-til-ende runtime-verifisering | partial | high | Test komplet kjede i dev-preview |
 | mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx` | Ikke verifisert uten mailkonto/admin-login | partial | medium | Verifiser med reell konto eller preview-miljo |
 | notifications/push/PWA | PWA og push-varsler skal fungere | `public/manifest.json`, `src/components/ServiceWorkerRegistration.tsx`, `src/components/admin/PushSubscriptionManager.tsx`, `convex/mail/sendPush.ts` | Manifest/health/public shell bekreftet; push ikke verifisert | partial | medium | Dokumenter og sett `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, test subscribe/send |
@@ -185,12 +192,11 @@ Vurdering:
 
 1. `test:e2e` er roed. `playwright.config.ts` peker paa `127.0.0.1`, mens appen paa denne maskinen svarer paa `localhost`.
 2. Booking med referansebilder er ikke parity-sikker. Offentlig klientflyt bruker `api.storage.generateUploadUrl`, men backend krever auth i `convex/storage.ts`.
-3. Clerk-instansen mangler JWT-template `convex`. Resultatet er at admin-ruter med Convex-data blir staaende uten innhold selv etter vellykket Clerk-login.
-4. Kritiske admin-flyter er ikke runtime-verifisert som innlogget bruker, sa siste fase mangler bevis for at kjerneoperasjonene fungerer ende-til-ende.
+3. Kritiske admin-flyter utover inquiry -> client -> project er fortsatt ikke runtime-verifisert som innlogget bruker.
 
 ## Core parity gaps
 
-1. Testdekningen er for tynn relativt til produktflaten: admin-e2e kan bare kjoeres fullt etter at Clerk-template er paa plass.
+1. Testdekningen er fortsatt tynn relativt til produktflaten, men admin-kjernen har naa en committed e2e.
 2. Push-varsler er bare delvis ferdige som operativ feature fordi klient-env ikke er dokumentert.
 3. Mail, templates og notification center er implementert i kode, men mangler auditbevis i runtime.
 4. Dokumenthierarkiet er uklart: for mange dokumenter beskriver samme produktlag med ulik autoritet.
@@ -208,7 +214,6 @@ Vurdering:
 |---|---|---|---|---|---|
 | P0 | ops/test | E2E peker mot feil host og timeout-er | `playwright.config.ts` | `pnpm test:e2e` | `fix(test): standardiser playwright host` |
 | P0 | booking/backend | Offentlig bildeopplasting er auth-blokkert | `convex/storage.ts`, `src/components/public/booking/useInquirySubmission.ts` | manuell booking med bilder + admin inquiry detail | `fix(booking): gjor offentlig bildeflyt gyldig` |
-| P0 | auth/ops | Clerk mangler JWT-template `convex`, saa Convex-auth feiler i admin | Clerk Dashboard + `convex/auth.config.ts` + `README.md` | `pnpm playwright test tests/e2e/admin.spec.ts` uten skip | `docs(auth): dokumenter convex template krav` |
 | P0 | qa | Verifiser inquiry -> client -> project -> booking med innlogget admin | `tests/e2e/*` evt. MCP-pass + note | ny e2e eller dokumentert manuell pass | `test(admin): dekk kjernepipeline` |
 | P1 | docs/onboarding | README er stale og misvisende | `README.md` | lesbar onboarding fra blank maskin | `docs(readme): synk onboarding med repoet` |
 | P1 | env/docs | Push-varsler mangler klient-env i dokumentasjon | `.env.local.example`, evt. `README.md` | manuell subscribe-test | `docs(env): dokumenter public vapid key` |
