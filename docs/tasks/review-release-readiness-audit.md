@@ -16,6 +16,7 @@
 - `npx convex run mail/sync:syncMail '{}'` svarer no med `{ synced: 0 }` paa tom INBOX, etter at `syncMail` ble gjort trygg mot ugyldig `FETCH 1:50`.
 - Ekte innkommende mail til `ellen@trovumtattoo.no` er synkronisert inn i admin med `syncMail`.
 - Ekte reply sendt fra admin ble mottatt av avsender, og reply-flyten filtrerer no bort egen mailbox som mottaker.
+- Mail-thread UI viser no lesbar `text/plain` for den ekte testmailen i stedet for ra MIME/headers.
 - Admin-auth er dermed ikke lenger blokkert av issuer-mismatch i repooppsettet.
 
 ## Baseline
@@ -119,11 +120,12 @@ Status: implementert i kode og delvis verifisert i runtime
 - Direkte `syncMail`-kjoring mot konfigurert konto er verifisert og haandterer tom INBOX uten feil
 - Template CRUD er verifisert i committed Playwright
 - Ekte inbound sync og ekte outbound reply er verifisert mot den konfigurerte one.com-kontoen
+- Thread-UI viser lesbar tekst for den testede innkommende mailen
 
 Vurdering:
 
 - `partial`
-- Thread-visning/parsing for innkommende MIME-innhold trenger fortsatt videre polish, men kjerneflyten er verifisert
+- Historiske duplikater i threaden boer ryddes, men kjerneflyten og lesbar thread-visning er verifisert
 
 ### Notifications / Push / PWA
 
@@ -173,7 +175,7 @@ Vurdering:
 | admin auth | `/admin/*` skal vaere beskyttet | `src/proxy.ts` | Clerk redirect bekreftet med curl og Playwright | implemented | medium | Legg til auth-e2e for innlogget bruker |
 | admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*`, `src/components/admin/*`, `tests/e2e/admin.spec.ts` | Clerk-login, kjerneflyt, template CRUD og basis runtime-pass for mail/settings/notifications er bekreftet med committed Playwright-test | implemented | medium | Ta reelle mail-handlinger i senere pass |
 | clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts`, `tests/e2e/admin.spec.ts` | Committed Playwright dekker naa inquiry -> client -> project -> booking | implemented | medium | Verifiser redigering/ombooking i senere pass |
-| mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx`, `tests/e2e/admin.spec.ts` | Template CRUD, ekte inbound sync og ekte outbound reply er verifisert; thread-polish gjenstaar | partial | medium | Rydd MIME/thread-visning og eventuelt legg til committed mail-e2e |
+| mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx`, `tests/e2e/admin.spec.ts` | Template CRUD, ekte inbound sync, ekte outbound reply og lesbar thread-visning er verifisert; historiske duplikater gjenstaar | partial | medium | Rydd historiske duplikater og eventuelt legg til committed mail-e2e |
 | notifications/push/PWA | PWA og push-varsler skal fungere | `public/manifest.json`, `src/components/ServiceWorkerRegistration.tsx`, `src/components/admin/PushSubscriptionManager.tsx`, `convex/mail/sendPush.ts` | Manifest/health/public shell bekreftet; push ikke verifisert | partial | medium | Dokumenter og sett `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, test subscribe/send |
 | ops/verifikasjon | Repo skal vaere verifiserbart mot launch | `package.json`, `playwright.config.ts`, `eslint.config.mjs` | `test:e2e` timeout; `localhost` virker, `127.0.0.1` virker ikke | partial | high | Standardiser Playwright til `localhost` eller env-styrt host |
 | docs/prosess | Docs/specs/tasks/handoffs skal brukes aktivt | `README.md`, `docs/`, `justfile`, `AGENTS.md` | `docs/specs`, `docs/tasks`, `docs/handoffs` var tomme foer auditten | doc-stale | medium | Normaliser dokumenthierarki og fyll operative docs |
@@ -203,13 +205,13 @@ Vurdering:
 
 1. `test:e2e` er roed. `playwright.config.ts` peker paa `127.0.0.1`, mens appen paa denne maskinen svarer paa `localhost`.
 2. Booking med referansebilder er ikke parity-sikker. Offentlig klientflyt bruker `api.storage.generateUploadUrl`, men backend krever auth i `convex/storage.ts`.
-3. Thread-polish for mail gjenstaar, men kjernehandlingene er runtime-verifisert.
+3. Historiske duplikater i enkelte mail-tråder gjenstaar, men kjernehandlingene er runtime-verifisert.
 
 ## Core parity gaps
 
 1. Testdekningen er fortsatt tynn relativt til produktflaten, men admin-kjernen dekker naa ogsaa bookingopprettelse i committed e2e.
 2. Push-varsler er bare delvis ferdige som operativ feature fordi klient-env ikke er dokumentert.
-3. Mail-kjernen er verifisert i runtime, men innkommende thread-visning trenger fortsatt forbedring.
+3. Mail-kjernen er verifisert i runtime, men eldre dubletter i thread-data boer ryddes.
 4. Dokumenthierarkiet er uklart: for mange dokumenter beskriver samme produktlag med ulik autoritet.
 
 ## Polish / docs cleanup
@@ -228,7 +230,7 @@ Vurdering:
 | P0 | qa | Verifiser inquiry -> client -> project -> booking med innlogget admin | `tests/e2e/*` evt. MCP-pass + note | ny e2e eller dokumentert manuell pass | `test(admin): dekk kjernepipeline` |
 | P1 | docs/onboarding | README er stale og misvisende | `README.md` | lesbar onboarding fra blank maskin | `docs(readme): synk onboarding med repoet` |
 | P1 | env/docs | Push-varsler mangler klient-env i dokumentasjon | `.env.local.example`, evt. `README.md` | manuell subscribe-test | `docs(env): dokumenter public vapid key` |
-| P1 | qa | Rydd mail thread-visning og legg evt. til committed e2e for ekte mailflyt | `convex/mail/*`, `src/app/admin/mail/*`, `tests/e2e/*` | manuell eller automatisert pass | `fix(mail): rydd thread-flyt` |
+| P1 | qa | Rydd historiske mail-dubletter og legg evt. til committed e2e for ekte mailflyt | `convex/mail/*`, `src/app/admin/mail/*`, `tests/e2e/*` | manuell eller automatisert pass | `fix(mail): rydd thread-flyt` |
 | P2 | docs/process | Normaliser dokumentautoritet og reduser dobbel dokumentasjon | `PROSJEKTBESKRIVELSE.md`, `README.md`, `docs/*` | review av dokumenthierarki | `docs(process): normaliser produktdokumenter` |
 | P2 | tooling | Reduser lint-stoy fra generated Convex-filer | `eslint.config.mjs` | `pnpm lint` | `chore(lint): ignorer generated convex warnings` |
 
