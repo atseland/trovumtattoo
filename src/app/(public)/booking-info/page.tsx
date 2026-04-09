@@ -49,7 +49,7 @@ er riktig match for hverandre, og da kan jeg gjerne anbefale en kollega.`,
 
 export default function BookingInfoPage() {
   return (
-    <div className='mx-auto max-w-2xl px-pad py-12'>
+    <div className='mx-auto max-w-2xl px-6 lg:px-12 py-12'>
       <div className='mb-6'>
         <LinkI href='/'>← Tilbake</LinkI>
       </div>

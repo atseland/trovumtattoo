@@ -4,7 +4,7 @@ import { Rule } from '@/components/ui/Rule'
 
 export default function PrivacyPage() {
   return (
-    <div className='mx-auto max-w-2xl px-pad py-12'>
+    <div className='mx-auto max-w-2xl px-6 lg:px-12 py-12'>
       <div className='mb-6'>
         <LinkI href='/'>← Tilbake</LinkI>
       </div>

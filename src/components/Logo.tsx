@@ -14,8 +14,8 @@ export function Logo({ context }: LogoProps) {
         <img
           src='/logo.png'
           alt='Trovum Tattoo'
-          className='h-8 md:h-9 w-auto'
-          style={{ opacity: 0.92, filter, transform: 'translateX(-10px)' }}
+          className='h-8 w-auto'
+          style={{ opacity: 0.92, filter }}
         />
       </picture>
     )
@@ -28,14 +28,13 @@ export function Logo({ context }: LogoProps) {
         <img
           src='/logo.png'
           alt='Trovum Tattoo'
-          className='h-9 w-auto'
-          style={{ opacity: 0.35, filter }}
+          className='h-8 w-auto'
+          style={{ opacity: 0.38, filter }}
         />
       </picture>
     )
   }
 
-  // hero-watermark
   return (
     <picture>
       <source srcSet='/logo.webp' type='image/webp' />
@@ -43,8 +42,8 @@ export function Logo({ context }: LogoProps) {
         src='/logo.png'
         alt=''
         aria-hidden='true'
-        className='w-[300px] md:w-[clamp(360px,44vw,560px)] h-auto'
-        style={{ opacity: 0.07, filter, pointerEvents: 'none' }}
+        className='h-auto w-[220px] md:w-[clamp(300px,36vw,480px)]'
+        style={{ opacity: 0.04, filter, pointerEvents: 'none' }}
       />
     </picture>
   )

@@ -76,7 +76,7 @@ const donts = [
 
 export default function AftercarePage() {
   return (
-    <div className='mx-auto max-w-2xl px-pad py-12'>
+    <div className='mx-auto max-w-2xl px-6 lg:px-12 py-12'>
       <div className='mb-6'>
         <LinkI href='/'>← Tilbake</LinkI>
       </div>
@@ -109,7 +109,7 @@ export default function AftercarePage() {
                 </ul>
               </div>
             </div>
-            {i < steps.length - 1 && <Rule />}
+            {i < steps.length - 1 && <Rule className='my-2' />}
           </div>
         ))}
       </div>
@@ -136,7 +136,7 @@ export default function AftercarePage() {
         </ul>
       </div>
 
-      <Rule />
+      <Rule className='my-4' />
 
       <div className='pt-2'>
         <p className='font-sans text-[13px] text-body leading-[1.8] mb-3'>

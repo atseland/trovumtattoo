@@ -1,126 +1,65 @@
 @import "tailwindcss";
 
-:root {
-  /* Bakgrunner */
-  --bg:           #0d0b09;
-  --panel:        #161412;
-
-  /* Tekst */
-  --paper:        #ede9e6;
-  --body:         #b8b0a8;
-  --nav:          #9a948e;
-  --mast-left:    #8a8078;
-  --mast-right:   #7a7068;
-  --index-num:    #6a6058;
-  --footer-label: #685850;
-
-  /* Aksent */
-  --accent:       #a09488;
-
-  /* Skillelinjer */
-  --rule:         rgba(237,233,230,0.065);
-  --rule-heavy:   rgba(237,233,230,0.08);
-  --rule-light:   rgba(237,233,230,0.04);
-  --rule-inner:   rgba(237,233,230,0.07);
-
-  /* Spacing */
-  --pad: 20px;
-
-  /* Statusfarger — dempede, varme varianter */
-  --status-new:           rgba(200, 185, 160, 0.15);
-  --status-new-text:      #c8b9a0;
-  --status-info:          rgba(170, 165, 190, 0.12);
-  --status-info-text:     #aaa5be;
-  --status-offer:         rgba(180, 170, 140, 0.12);
-  --status-offer-text:    #b4aa8c;
-  --status-deposit:       rgba(190, 165, 130, 0.14);
-  --status-deposit-text:  #bea582;
-  --status-booked:        rgba(140, 175, 155, 0.12);
-  --status-booked-text:   #8caf9b;
-  --status-done:          rgba(130, 165, 145, 0.14);
-  --status-done-text:     #82a591;
-  --status-rejected:      rgba(175, 140, 135, 0.12);
-  --status-rejected-text: #af8c87;
-}
-
-@media (min-width: 1024px) {
-  :root { --pad: 48px; }
-}
-
 @theme inline {
-  /* Farger */
-  --color-bg: var(--bg);
-  --color-panel: var(--panel);
-  --color-paper: var(--paper);
-  --color-body: var(--body);
-  --color-nav: var(--nav);
-  --color-mast-left: var(--mast-left);
-  --color-mast-right: var(--mast-right);
-  --color-index-num: var(--index-num);
-  --color-footer-label: var(--footer-label);
-  --color-accent: var(--accent);
-  --color-rule: var(--rule);
-  --color-rule-heavy: var(--rule-heavy);
-  --color-rule-light: var(--rule-light);
-  --color-rule-inner: var(--rule-inner);
+  --color-bg: #0d0b09;
+  --color-panel: #161412;
+  --color-paper: #ede9e6;
+  --color-body: #b8b0a8;
+  --color-nav: #9a948e;
+  --color-mast-left: #8a8078;
+  --color-mast-right: #7a7068;
+  --color-index-num: #6a6058;
+  --color-footer-label: #685850;
+  --color-accent: #a09488;
 
-  /* Statusfarger */
-  --color-status-new: var(--status-new);
-  --color-status-new-text: var(--status-new-text);
-  --color-status-info: var(--status-info);
-  --color-status-info-text: var(--status-info-text);
-  --color-status-offer: var(--status-offer);
-  --color-status-offer-text: var(--status-offer-text);
-  --color-status-deposit: var(--status-deposit);
-  --color-status-deposit-text: var(--status-deposit-text);
-  --color-status-booked: var(--status-booked);
-  --color-status-booked-text: var(--status-booked-text);
-  --color-status-done: var(--status-done);
-  --color-status-done-text: var(--status-done-text);
-  --color-status-rejected: var(--status-rejected);
-  --color-status-rejected-text: var(--status-rejected-text);
+  --color-rule: rgba(237,233,230,0.065);
+  --color-rule-heavy: rgba(237,233,230,0.08);
+  --color-rule-light: rgba(237,233,230,0.04);
+  --color-rule-inner: rgba(237,233,230,0.07);
 
-  /* Fonter */
+  --color-status-new: rgba(200, 185, 160, 0.15);
+  --color-status-new-text: #c8b9a0;
+  --color-status-info: rgba(170, 165, 190, 0.12);
+  --color-status-info-text: #aaa5be;
+  --color-status-offer: rgba(180, 170, 140, 0.12);
+  --color-status-offer-text: #b4aa8c;
+  --color-status-deposit: rgba(190, 165, 130, 0.14);
+  --color-status-deposit-text: #bea582;
+  --color-status-booked: rgba(140, 175, 155, 0.12);
+  --color-status-booked-text: #8caf9b;
+  --color-status-done: rgba(130, 165, 145, 0.14);
+  --color-status-done-text: #82a591;
+  --color-status-rejected: rgba(175, 140, 135, 0.12);
+  --color-status-rejected-text: #af8c87;
+
   --font-sans: var(--font-jost);
   --font-serif: var(--font-garamond);
   --font-mono: var(--font-plex);
-
-  /* Spacing */
-  --spacing-pad: var(--pad);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+@layer base {
+  html { scroll-behavior: smooth; }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background: var(--bg);
-  color: var(--paper);
-  font-family: var(--font-jost), sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-@media (min-width: 1024px) {
   body {
-    background:
-      radial-gradient(circle at top, rgba(160,148,136,0.06), transparent 38%),
-      linear-gradient(180deg, #13110f 0%, var(--bg) 100%);
+    background: var(--color-bg);
+    color: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
   }
-}
 
-a {
-  color: inherit;
-}
+  @media (min-width: 1024px) {
+    body {
+      background:
+        radial-gradient(circle at top, rgba(160,148,136,0.06), transparent 38%),
+        linear-gradient(180deg, #13110f 0%, var(--color-bg) 100%);
+    }
+  }
 
-:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 2px;
+  a { color: inherit; text-decoration: none; }
+
+  :focus-visible {
+    outline: 1px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 @keyframes fade-in {

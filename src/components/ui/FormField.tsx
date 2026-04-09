@@ -2,7 +2,7 @@
 
 import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode, forwardRef } from 'react'
 
-const inputClasses = [
+export const fieldInputClasses = [
   'w-full min-h-[44px] px-4 py-3',
   'bg-[rgba(237,233,230,0.03)] border border-[rgba(237,233,230,0.14)]',
   'text-paper font-sans text-[14px] leading-[1.5]',
@@ -12,7 +12,7 @@ const inputClasses = [
   'disabled:opacity-40',
 ].join(' ')
 
-const labelClasses = 'block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[6px]'
+export const fieldLabelClasses = 'block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[6px]'
 const errorClasses = 'font-sans text-[12px] mt-1 text-[#af8c87]'
 
 interface LabelOptionalProps {
@@ -39,7 +39,7 @@ function FieldWrapper({ label, optional, error, children, className = '' }: Fiel
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
-        <label className={labelClasses}>
+        <label className={fieldLabelClasses}>
           {label}
           {optional && <LabelOptional>valgfritt</LabelOptional>}
         </label>
@@ -63,7 +63,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
       <input
         ref={ref}
-        className={`${inputClasses} ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+        className={`${fieldInputClasses} ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
         {...props}
       />
     </FieldWrapper>
@@ -84,7 +84,7 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>
     <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
       <textarea
         ref={ref}
-        className={`${inputClasses} min-h-[120px] resize-y ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+        className={`${fieldInputClasses} min-h-[120px] resize-y ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
         {...props}
       />
     </FieldWrapper>
@@ -107,7 +107,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
       <div className='relative'>
         <select
           ref={ref}
-          className={`${inputClasses} appearance-none pr-9 ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+          className={`${fieldInputClasses} appearance-none pr-9 ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
           {...props}
         >
           {children}

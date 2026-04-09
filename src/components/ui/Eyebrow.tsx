@@ -8,8 +8,8 @@ interface EyebrowProps {
 
 export function Eyebrow({ children, withLine = false, className = '' }: EyebrowProps) {
   return (
-    <div className={`flex items-center gap-3 font-mono text-[8px] tracking-[0.24em] uppercase text-index-num ${className}`}>
-      {withLine && <span className='block w-4 h-px bg-index-num shrink-0' />}
+    <div className={`flex items-center gap-3 font-mono text-[9px] tracking-[0.22em] uppercase text-index-num ${className}`}>
+      {withLine && <span className='block h-px w-5 shrink-0 bg-index-num' />}
       {children}
     </div>
   )
