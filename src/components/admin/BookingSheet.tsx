@@ -4,14 +4,10 @@ import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { api } from '../../../convex/_generated/api'
-import { Id } from '../../../convex/_generated/dataModel'
+import { api } from '@convex/_generated/api'
+import { Id } from '@convex/_generated/dataModel'
 import { Btn } from '@/components/ui/Btn'
-
-const ghostInput: React.CSSProperties = {
-  width: '100%', background: 'rgba(237,233,230,0.03)', border: '1px solid rgba(237,233,230,0.14)',
-  color: 'var(--paper)', padding: '10px 14px', fontSize: '0.9rem', minHeight: '44px', outline: 'none',
-}
+import { InputField, TextareaField } from '@/components/ui/FormField'
 
 interface Props {
   open: boolean
@@ -93,18 +89,25 @@ export function BookingSheet({
           <SheetTitle className='font-serif italic text-paper'>{title}</SheetTitle>
         </SheetHeader>
         <div className='mt-6 flex flex-col gap-4 px-4'>
-          <div>
-            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Starttid</label>
-            <input type='datetime-local' value={startAt} onChange={(e) => setStartAt(e.target.value)} style={ghostInput} />
-          </div>
-          <div>
-            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Sluttid</label>
-            <input type='datetime-local' value={endAt} onChange={(e) => setEndAt(e.target.value)} style={ghostInput} />
-          </div>
-          <div>
-            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Notater</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} style={{ ...ghostInput, minHeight: '80px', resize: 'vertical' }} placeholder='Valgfrie notater…' />
-          </div>
+          <InputField
+            label='Starttid'
+            type='datetime-local'
+            value={startAt}
+            onChange={(e) => setStartAt(e.target.value)}
+          />
+          <InputField
+            label='Sluttid'
+            type='datetime-local'
+            value={endAt}
+            onChange={(e) => setEndAt(e.target.value)}
+          />
+          <TextareaField
+            label='Notater'
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className='min-h-[80px]'
+            placeholder='Valgfrie notater…'
+          />
           <Btn variant='action-primary' onClick={handleSave} disabled={saving}>{saving ? 'Lagrer…' : title}</Btn>
 
           {existingBookingId && !confirmCancel && (
