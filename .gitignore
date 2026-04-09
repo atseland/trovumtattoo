@@ -46,3 +46,4 @@ next-env.d.ts
 .devlog-session
 playwright-report
 test-results
+.playwright-cli/
