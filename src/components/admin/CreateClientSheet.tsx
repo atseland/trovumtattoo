@@ -5,14 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { api } from '../../../convex/_generated/api'
-import { Id } from '../../../convex/_generated/dataModel'
+import { api } from '@convex/_generated/api'
+import { Id } from '@convex/_generated/dataModel'
 import { Btn } from '@/components/ui/Btn'
-
-const ghostInput: React.CSSProperties = {
-  width: '100%', background: 'rgba(237,233,230,0.03)', border: '1px solid rgba(237,233,230,0.14)',
-  color: 'var(--paper)', padding: '10px 14px', fontSize: '0.9rem', minHeight: '44px', outline: 'none',
-}
+import { InputField } from '@/components/ui/FormField'
 
 interface Props {
   open: boolean
@@ -61,10 +57,13 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
             { label: 'Telefon', value: phone, set: setPhone, placeholder: '+47 000 00 000' },
             { label: 'Instagram', value: instagram, set: setInstagram, placeholder: '@bruker' },
           ].map(({ label, value, set, placeholder }) => (
-            <div key={label}>
-              <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>{label}</label>
-              <input value={value} onChange={(e) => set(e.target.value)} placeholder={placeholder} style={ghostInput} />
-            </div>
+            <InputField
+              key={label}
+              label={label}
+              value={value}
+              onChange={(e) => set(e.target.value)}
+              placeholder={placeholder}
+            />
           ))}
           <Btn variant='action-primary' onClick={handleCreate} disabled={saving} className='mt-2'>
             {saving ? 'Oppretter…' : 'Opprett klient og prosjekt'}
