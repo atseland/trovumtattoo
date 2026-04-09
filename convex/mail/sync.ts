@@ -5,6 +5,91 @@ import { internal } from '../_generated/api'
 import { ImapFlow } from 'imapflow'
 import { getMailConfig, type MailConfig } from './config'
 
+function decodeQuotedPrintable(input: string) {
+  const normalized = input.replace(/=\r?\n/g, '')
+  const bytes: number[] = []
+
+  for (let i = 0; i < normalized.length; i++) {
+    const char = normalized[i]
+    if (char === '=' && i + 2 < normalized.length) {
+      const hex = normalized.slice(i + 1, i + 3)
+      if (/^[0-9A-Fa-f]{2}$/.test(hex)) {
+        bytes.push(Number.parseInt(hex, 16))
+        i += 2
+        continue
+      }
+    }
+
+    bytes.push(char.charCodeAt(0))
+  }
+
+  return Buffer.from(bytes).toString('utf8')
+}
+
+function decodeTransferEncodedBody(body: string, encoding?: string) {
+  switch (encoding?.toLowerCase()) {
+    case 'quoted-printable':
+      return decodeQuotedPrintable(body)
+    case 'base64':
+      return Buffer.from(body.replace(/\s+/g, ''), 'base64').toString('utf8')
+    default:
+      return body
+  }
+}
+
+function extractHeaderValue(headers: string, headerName: string) {
+  const match = headers.match(new RegExp(`^${headerName}:\\s*(.+)$`, 'im'))
+  return match?.[1]?.trim() ?? null
+}
+
+function extractMessageBody(rawSource?: Buffer) {
+  if (!rawSource) return ''
+
+  const raw = rawSource.toString('utf8')
+  const separatorMatch = raw.match(/\r?\n\r?\n/)
+  if (!separatorMatch || separatorMatch.index === undefined) return raw.trim()
+
+  const separatorIndex = separatorMatch.index
+  const separatorLength = separatorMatch[0].length
+  const headers = raw.slice(0, separatorIndex)
+  const body = raw.slice(separatorIndex + separatorLength)
+  const contentType = extractHeaderValue(headers, 'Content-Type') ?? ''
+  const transferEncoding = extractHeaderValue(headers, 'Content-Transfer-Encoding') ?? undefined
+
+  const boundaryMatch = contentType.match(/boundary="?([^";]+)"?/i)
+  if (!boundaryMatch) {
+    return decodeTransferEncodedBody(body, transferEncoding).trim()
+  }
+
+  const boundary = boundaryMatch[1]
+  const parts = body.split(`--${boundary}`)
+
+  for (const part of parts) {
+    const trimmedPart = part.trim()
+    if (!trimmedPart || trimmedPart === '--') continue
+
+    const partSeparatorMatch = trimmedPart.match(/\r?\n\r?\n/)
+    if (!partSeparatorMatch || partSeparatorMatch.index === undefined) continue
+
+    const partSeparatorIndex = partSeparatorMatch.index
+    const partSeparatorLength = partSeparatorMatch[0].length
+    const partHeaders = trimmedPart.slice(0, partSeparatorIndex)
+    const partBody = trimmedPart.slice(partSeparatorIndex + partSeparatorLength)
+    const partContentType = extractHeaderValue(partHeaders, 'Content-Type') ?? ''
+    const partTransferEncoding = extractHeaderValue(partHeaders, 'Content-Transfer-Encoding') ?? undefined
+
+    if (/text\/plain/i.test(partContentType)) {
+      return decodeTransferEncodedBody(partBody, partTransferEncoding).trim()
+    }
+  }
+
+  return decodeTransferEncodedBody(body, transferEncoding).trim()
+}
+
+function normalizeAddress(value: string) {
+  return value.trim().toLowerCase()
+}
+
 /**
  * syncMail — Convex action som henter e-post fra IMAP og lagrer i Convex.
  * Krever at MAIL_* miljøvariabler er satt (se convex/mail/config.ts).
@@ -54,7 +139,13 @@ export const syncMail = action({
           const subject = envelope.subject ?? '(Uten emne)'
           const from = envelope.from?.[0]?.address ?? 'ukjent'
           const toAddrs = (envelope.to ?? []).map((a: { address?: string }) => a.address ?? '').filter(Boolean)
-          const participants = [from, ...toAddrs]
+          const participants = Array.from(
+            new Set(
+              [from, ...toAddrs].filter(
+                (address) => normalizeAddress(address) !== normalizeAddress(config.imap.auth.user),
+              ),
+            ),
+          )
           const date = envelope.date ? new Date(envelope.date).getTime() : Date.now()
 
           const threadId = await ctx.runMutation(internal.mail.mutations.upsertThread, {
@@ -72,7 +163,7 @@ export const syncMail = action({
             from,
             to: toAddrs,
             subject,
-            bodyText: msg.source?.toString() ?? '',
+            bodyText: extractMessageBody(msg.source),
             receivedAt: date,
             isRead: msg.flags?.has('\\Seen') ?? false,
           })

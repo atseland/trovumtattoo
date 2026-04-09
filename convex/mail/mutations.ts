@@ -17,6 +17,8 @@ export const upsertThread = internalMutation({
 
     if (existing) {
       await ctx.db.patch(existing._id, {
+        subject: args.subject,
+        participants: args.participants,
         lastMessageAt: args.lastMessageAt,
         unreadCount: args.unreadCount,
       })
@@ -31,6 +33,23 @@ export const upsertThread = internalMutation({
       unreadCount: args.unreadCount,
       status: 'active',
     })
+  },
+})
+
+export const updateThread = internalMutation({
+  args: {
+    threadId: v.id('mailThreads'),
+    subject: v.optional(v.string()),
+    participants: v.optional(v.array(v.string())),
+    lastMessageAt: v.optional(v.number()),
+    unreadCount: v.optional(v.number()),
+  },
+  handler: async (ctx, { threadId, ...fields }) => {
+    const patch: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined) patch[key] = value
+    }
+    await ctx.db.patch(threadId, patch)
   },
 })
 
@@ -50,18 +69,37 @@ export const upsertMessage = internalMutation({
     isRead: v.boolean(),
   },
   handler: async (ctx, { externalId, ...args }) => {
-    // Check for existing message by looking for same externalId in the thread
+    const timestampField = args.receivedAt !== undefined ? 'receivedAt' : 'sentAt'
+    const timestampValue = args.receivedAt ?? args.sentAt
     const existing = await ctx.db
       .query('mailMessages')
       .withIndex('by_thread', (q) => q.eq('threadId', args.threadId))
-      .filter((q) => q.eq(q.field('bodyText'), externalId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field('direction'), args.direction),
+          q.eq(q.field('from'), args.from),
+          q.eq(q.field('subject'), args.subject),
+          timestampValue === undefined
+            ? q.eq(q.field('isRead'), args.isRead)
+            : q.eq(q.field(timestampField), timestampValue),
+        ),
+      )
       .first()
 
     if (existing) {
-      await ctx.db.patch(existing._id, { isRead: args.isRead })
+      await ctx.db.patch(existing._id, {
+        to: args.to,
+        cc: args.cc,
+        bodyText: args.bodyText,
+        bodyHtml: args.bodyHtml,
+        sentAt: args.sentAt,
+        receivedAt: args.receivedAt,
+        isRead: args.isRead,
+      })
       return existing._id
     }
 
+    void externalId
     return await ctx.db.insert('mailMessages', args)
   },
 })

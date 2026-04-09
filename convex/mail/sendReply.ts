@@ -6,6 +6,10 @@ import { v } from 'convex/values'
 import nodemailer from 'nodemailer'
 import { getMailConfig, type MailConfig } from './config'
 
+function normalizeEmailAddress(value: string) {
+  return value.trim().toLowerCase()
+}
+
 /**
  * sendReply — Convex action for å sende e-post via SMTP og lagre som outbound melding.
  */
@@ -26,6 +30,22 @@ export const sendReply = action({
 
     const dbConfig = await ctx.runQuery(internal.mail.account.getConfig, {})
     const config: MailConfig = dbConfig ?? getMailConfig()
+    const ownAddresses = new Set([
+      normalizeEmailAddress(config.smtp.auth.user),
+      normalizeEmailAddress(config.from.match(/<([^>]+)>/)?.[1] ?? config.from),
+    ])
+    const recipients = Array.from(
+      new Set(
+        to
+          .map((address) => address.trim())
+          .filter(Boolean)
+          .filter((address) => !ownAddresses.has(normalizeEmailAddress(address))),
+      ),
+    )
+
+    if (recipients.length < 1) {
+      throw new Error('Fant ingen gyldige mottakere etter filtrering av egen mailbox.')
+    }
 
     const transporter = nodemailer.createTransport({
       host: config.smtp.host,
@@ -37,7 +57,7 @@ export const sendReply = action({
     try {
       await transporter.sendMail({
         from: config.from,
-        to: to.join(', '),
+        to: recipients.join(', '),
         subject,
         text: body,
         inReplyTo,
@@ -56,18 +76,18 @@ export const sendReply = action({
       externalId: `outbound-${now}`,
       direction: 'outbound',
       from: config.from,
-      to,
+      to: recipients,
       subject,
       bodyText: body,
       sentAt: now,
       isRead: true,
     })
 
-    // Oppdater tråd
-    await ctx.runMutation(internal.mail.mutations.upsertThread, {
-      externalThreadId: threadId,
+    // Oppdater eksisterende tråd i stedet for å opprette en ny "Re:"-tråd.
+    await ctx.runMutation(internal.mail.mutations.updateThread, {
+      threadId,
       subject,
-      participants: to,
+      participants: recipients,
       lastMessageAt: now,
       unreadCount: 0,
     })
