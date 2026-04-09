@@ -1,6 +1,37 @@
 import { mutation, internalMutation } from '../_generated/server'
 import { v } from 'convex/values'
 
+function normalizeAddress(value: string) {
+  return value.trim().toLowerCase()
+}
+
+function normalizeSubject(value: string) {
+  return value.replace(/^(re:\s*)+/i, '').trim().toLowerCase()
+}
+
+function messageDedupKey(message: {
+  direction: string
+  from: string
+  subject: string
+  bodyText?: string
+  receivedAt?: number
+  sentAt?: number
+}) {
+  return [
+    message.direction,
+    normalizeAddress(message.from),
+    normalizeSubject(message.subject),
+    message.receivedAt ?? '',
+    message.sentAt ?? '',
+    (message.bodyText ?? '').trim(),
+  ].join('::')
+}
+
+function threadGroupKey(thread: { subject: string; participants: string[] }) {
+  const participants = Array.from(new Set(thread.participants.map(normalizeAddress))).sort().join('|')
+  return `${normalizeSubject(thread.subject)}::${participants}`
+}
+
 export const upsertThread = internalMutation({
   args: {
     externalThreadId: v.string(),
@@ -132,5 +163,132 @@ export const linkThread = mutation({
     if (!identity) throw new Error('Unauthorized')
 
     await ctx.db.patch(threadId, { linkedClientId, linkedProjectId })
+  },
+})
+
+export const cleanupDuplicates = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    const allThreads = await ctx.db.query('mailThreads').collect()
+    let deletedMessages = 0
+    let mergedThreads = 0
+    let deletedThreads = 0
+
+    const canonicalThreadIds = new Set(allThreads.map((thread) => thread._id))
+
+    for (const thread of allThreads) {
+      if (!canonicalThreadIds.has(thread._id)) continue
+
+      const messages = await ctx.db
+        .query('mailMessages')
+        .withIndex('by_thread', (q) => q.eq('threadId', thread._id))
+        .order('asc')
+        .collect()
+
+      const seen = new Map<string, (typeof messages)[number]>()
+      for (const message of messages) {
+        const key = messageDedupKey(message)
+        const existing = seen.get(key)
+
+        if (!existing) {
+          seen.set(key, message)
+          continue
+        }
+
+        const preferred = (existing.bodyText?.length ?? 0) >= (message.bodyText?.length ?? 0) ? existing : message
+        const duplicate = preferred._id === existing._id ? message : existing
+
+        await ctx.db.patch(preferred._id, {
+          to: preferred.to.length >= duplicate.to.length ? preferred.to : duplicate.to,
+          cc: preferred.cc ?? duplicate.cc,
+          bodyText: (preferred.bodyText?.length ?? 0) >= (duplicate.bodyText?.length ?? 0)
+            ? preferred.bodyText
+            : duplicate.bodyText,
+          bodyHtml: preferred.bodyHtml ?? duplicate.bodyHtml,
+          sentAt: preferred.sentAt ?? duplicate.sentAt,
+          receivedAt: preferred.receivedAt ?? duplicate.receivedAt,
+          isRead: preferred.isRead && duplicate.isRead,
+        })
+
+        await ctx.db.delete(duplicate._id)
+        deletedMessages++
+        seen.set(key, preferred)
+      }
+    }
+
+    const refreshedThreads = await ctx.db.query('mailThreads').collect()
+    const groupedThreads = new Map<string, typeof refreshedThreads>()
+
+    for (const thread of refreshedThreads) {
+      const key = threadGroupKey(thread)
+      const group = groupedThreads.get(key) ?? []
+      group.push(thread)
+      groupedThreads.set(key, group)
+    }
+
+    for (const threads of groupedThreads.values()) {
+      if (threads.length < 2) continue
+
+      const canonical = [...threads].sort((a, b) => {
+        const aStartsWithRe = /^re:/i.test(a.subject)
+        const bStartsWithRe = /^re:/i.test(b.subject)
+        if (aStartsWithRe !== bStartsWithRe) return aStartsWithRe ? 1 : -1
+        return a.lastMessageAt - b.lastMessageAt
+      })[0]
+
+      const duplicates = threads.filter((thread) => thread._id !== canonical._id)
+      const canonicalMessages = await ctx.db
+        .query('mailMessages')
+        .withIndex('by_thread', (q) => q.eq('threadId', canonical._id))
+        .order('asc')
+        .collect()
+      const seenMessageKeys = new Set(canonicalMessages.map(messageDedupKey))
+
+      for (const duplicate of duplicates) {
+        const duplicateMessages = await ctx.db
+          .query('mailMessages')
+          .withIndex('by_thread', (q) => q.eq('threadId', duplicate._id))
+          .order('asc')
+          .collect()
+
+        for (const message of duplicateMessages) {
+          const key = messageDedupKey(message)
+          if (seenMessageKeys.has(key)) {
+            await ctx.db.delete(message._id)
+            deletedMessages++
+            continue
+          }
+
+          await ctx.db.patch(message._id, { threadId: canonical._id })
+          seenMessageKeys.add(key)
+        }
+
+        await ctx.db.patch(canonical._id, {
+          subject: /^re:/i.test(canonical.subject) && !/^re:/i.test(duplicate.subject) ? duplicate.subject : canonical.subject,
+          participants: Array.from(
+            new Set([...canonical.participants, ...duplicate.participants].map((value) => value.trim()).filter(Boolean)),
+          ),
+          linkedClientId: canonical.linkedClientId ?? duplicate.linkedClientId,
+          linkedProjectId: canonical.linkedProjectId ?? duplicate.linkedProjectId,
+          lastMessageAt: Math.max(canonical.lastMessageAt, duplicate.lastMessageAt),
+          unreadCount: Math.max(canonical.unreadCount, duplicate.unreadCount),
+          status: canonical.status === 'active' || duplicate.status === 'active' ? 'active' : canonical.status,
+        })
+
+        await ctx.db.delete(duplicate._id)
+        canonicalThreadIds.delete(duplicate._id)
+        mergedThreads++
+        deletedThreads++
+      }
+    }
+
+    return {
+      deletedMessages,
+      deletedThreads,
+      mergedThreads,
+    }
   },
 })
