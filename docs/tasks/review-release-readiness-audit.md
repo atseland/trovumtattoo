@@ -9,6 +9,7 @@
 - `convex/auth.config.ts` bruker naa prosjektets Clerk issuer `https://united-piranha-14.clerk.accounts.dev` som fallback.
 - `.env.local.example` og `README.md` dokumenterer naavaerende issuer og JWKS.
 - `E2E_CLERK_USER_EMAIL='aleksander.seland@gmail.com' pnpm playwright test tests/e2e/admin.spec.ts` passerer.
+- `tests/e2e/admin.spec.ts` dekker naa ogsaa prosjekt -> opprett booking, med verifisert bookingliste i admin.
 - Admin-auth er dermed ikke lenger blokkert av issuer-mismatch i repooppsettet.
 
 ## Baseline
@@ -161,7 +162,7 @@ Vurdering:
 | booking uploads | Public upload skal fungere | `useInquirySubmission` kaller `api.storage.generateUploadUrl()`; `convex/storage.ts` krever auth | Statisk bekreftet mismatch; ikke kjoert mot backend | partial | high | Gjor upload-URL offentlig for bookingflyt eller lag dedikert public mutation |
 | admin auth | `/admin/*` skal vaere beskyttet | `src/proxy.ts` | Clerk redirect bekreftet med curl og Playwright | implemented | medium | Legg til auth-e2e for innlogget bruker |
 | admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*` og `src/components/admin/*` | Clerk-login og admin kjerneflyt er bekreftet med committed Playwright-test | partial | medium | Utvid autentisert runtime-pass til mail, settings og notifications |
-| clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts` | Ingen ende-til-ende runtime-verifisering | partial | high | Test komplet kjede i dev-preview |
+| clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts`, `tests/e2e/admin.spec.ts` | Committed Playwright dekker naa inquiry -> client -> project -> booking | implemented | medium | Verifiser redigering/ombooking i senere pass |
 | mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx` | Ikke verifisert uten mailkonto/admin-login | partial | medium | Verifiser med reell konto eller preview-miljo |
 | notifications/push/PWA | PWA og push-varsler skal fungere | `public/manifest.json`, `src/components/ServiceWorkerRegistration.tsx`, `src/components/admin/PushSubscriptionManager.tsx`, `convex/mail/sendPush.ts` | Manifest/health/public shell bekreftet; push ikke verifisert | partial | medium | Dokumenter og sett `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, test subscribe/send |
 | ops/verifikasjon | Repo skal vaere verifiserbart mot launch | `package.json`, `playwright.config.ts`, `eslint.config.mjs` | `test:e2e` timeout; `localhost` virker, `127.0.0.1` virker ikke | partial | high | Standardiser Playwright til `localhost` eller env-styrt host |
@@ -192,11 +193,11 @@ Vurdering:
 
 1. `test:e2e` er roed. `playwright.config.ts` peker paa `127.0.0.1`, mens appen paa denne maskinen svarer paa `localhost`.
 2. Booking med referansebilder er ikke parity-sikker. Offentlig klientflyt bruker `api.storage.generateUploadUrl`, men backend krever auth i `convex/storage.ts`.
-3. Kritiske admin-flyter utover inquiry -> client -> project er fortsatt ikke runtime-verifisert som innlogget bruker.
+3. Mail, settings og notifications mangler fortsatt runtime-verifisering som innlogget bruker.
 
 ## Core parity gaps
 
-1. Testdekningen er fortsatt tynn relativt til produktflaten, men admin-kjernen har naa en committed e2e.
+1. Testdekningen er fortsatt tynn relativt til produktflaten, men admin-kjernen dekker naa ogsaa bookingopprettelse i committed e2e.
 2. Push-varsler er bare delvis ferdige som operativ feature fordi klient-env ikke er dokumentert.
 3. Mail, templates og notification center er implementert i kode, men mangler auditbevis i runtime.
 4. Dokumenthierarkiet er uklart: for mange dokumenter beskriver samme produktlag med ulik autoritet.

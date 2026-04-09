@@ -65,6 +65,16 @@ async function createInquiry() {
   return { id, name: unique, email }
 }
 
+function formatDatetimeLocal(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 test.beforeAll(async () => {
   await clerkSetup()
 })
@@ -95,6 +105,9 @@ async function getConvexTemplateStatus(page: Page) {
 
 test('admin can create client and project from a public inquiry', async ({ page }) => {
   const inquiry = await createInquiry()
+  const bookingStart = new Date(Date.now() + 48 * 60 * 60 * 1000)
+  bookingStart.setMinutes(0, 0, 0)
+  const bookingEnd = new Date(bookingStart.getTime() + 2 * 60 * 60 * 1000)
 
   await page.goto('/')
   await clerk.loaded({ page })
@@ -124,4 +137,19 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(page).toHaveURL(/\/admin\/projects\/.+/)
   await expect(page.getByRole('link', { name: inquiry.name })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Vis forespørsel →' })).toBeVisible()
+  await expect(page.getByText('Ingen bookinger ennå.')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Opprett booking' }).click()
+  const bookingDialog = page.getByRole('dialog', { name: 'Ny booking' })
+  await expect(bookingDialog.getByRole('heading', { name: 'Ny booking' })).toBeVisible()
+
+  await bookingDialog.locator('input[type="datetime-local"]').first().fill(formatDatetimeLocal(bookingStart))
+  await bookingDialog.locator('input[type="datetime-local"]').nth(1).fill(formatDatetimeLocal(bookingEnd))
+  await bookingDialog.getByPlaceholder('Valgfrie notater…').fill('Playwright opprettet booking fra prosjektflyt')
+  await bookingDialog.getByRole('button', { name: 'Ny booking' }).click()
+
+  await expect(page.getByText('Booking opprettet')).toBeVisible()
+  await expect(bookingDialog).not.toBeVisible()
+  await expect(page.getByText('Ingen bookinger ennå.')).not.toBeVisible()
+  await expect(page.getByText('scheduled')).toBeVisible()
 })
