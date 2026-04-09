@@ -1,6 +1,6 @@
 'use client'
 
-import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode, forwardRef } from 'react'
+import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode, forwardRef, useId } from 'react'
 
 export const fieldInputClasses = [
   'w-full min-h-[44px] px-4 py-3',
@@ -33,13 +33,14 @@ interface FieldWrapperProps {
   error?: string
   children: ReactNode
   className?: string
+  inputId?: string
 }
 
-function FieldWrapper({ label, optional, error, children, className = '' }: FieldWrapperProps) {
+function FieldWrapper({ label, optional, error, children, className = '', inputId }: FieldWrapperProps) {
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
-        <label className={fieldLabelClasses}>
+        <label className={fieldLabelClasses} htmlFor={inputId}>
           {label}
           {optional && <LabelOptional>valgfritt</LabelOptional>}
         </label>
@@ -59,15 +60,21 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', ...props }, ref) => (
-    <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
-      <input
-        ref={ref}
-        className={`${fieldInputClasses} ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
-        {...props}
-      />
-    </FieldWrapper>
-  )
+  ({ label, optional, error, wrapperClassName, className = '', id, ...props }, ref) => {
+    const generatedId = useId()
+    const inputId = id ?? generatedId
+
+    return (
+      <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName} inputId={inputId}>
+        <input
+          ref={ref}
+          id={inputId}
+          className={`${fieldInputClasses} ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+          {...props}
+        />
+      </FieldWrapper>
+    )
+  }
 )
 InputField.displayName = 'InputField'
 
@@ -80,15 +87,21 @@ interface TextareaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement>
 }
 
 export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', ...props }, ref) => (
-    <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
-      <textarea
-        ref={ref}
-        className={`${fieldInputClasses} min-h-[120px] resize-y ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
-        {...props}
-      />
-    </FieldWrapper>
-  )
+  ({ label, optional, error, wrapperClassName, className = '', id, ...props }, ref) => {
+    const generatedId = useId()
+    const inputId = id ?? generatedId
+
+    return (
+      <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName} inputId={inputId}>
+        <textarea
+          ref={ref}
+          id={inputId}
+          className={`${fieldInputClasses} min-h-[120px] resize-y ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+          {...props}
+        />
+      </FieldWrapper>
+    )
+  }
 )
 TextareaField.displayName = 'TextareaField'
 
@@ -102,34 +115,40 @@ interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', children, ...props }, ref) => (
-    <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
-      <div className='relative'>
-        <select
-          ref={ref}
-          className={`${fieldInputClasses} appearance-none pr-9 ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
-          {...props}
-        >
-          {children}
-        </select>
-        {/* Custom chevron */}
-        <svg
-          className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none'
-          width='12'
-          height='12'
-          viewBox='0 0 12 12'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='1.5'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-          style={{ color: 'var(--nav)' }}
-        >
-          <path d='M2 4l4 4 4-4' />
-        </svg>
-      </div>
-    </FieldWrapper>
-  )
+  ({ label, optional, error, wrapperClassName, className = '', children, id, ...props }, ref) => {
+    const generatedId = useId()
+    const inputId = id ?? generatedId
+
+    return (
+      <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName} inputId={inputId}>
+        <div className='relative'>
+          <select
+            ref={ref}
+            id={inputId}
+            className={`${fieldInputClasses} appearance-none pr-9 ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+            {...props}
+          >
+            {children}
+          </select>
+          {/* Custom chevron */}
+          <svg
+            className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none'
+            width='12'
+            height='12'
+            viewBox='0 0 12 12'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='1.5'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            style={{ color: 'var(--nav)' }}
+          >
+            <path d='M2 4l4 4 4-4' />
+          </svg>
+        </div>
+      </FieldWrapper>
+    )
+  }
 )
 SelectField.displayName = 'SelectField'
 
@@ -142,15 +161,20 @@ interface FileUploadFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const FileUploadField = forwardRef<HTMLInputElement, FileUploadFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', ...props }, ref) => (
-    <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName}>
-      <div
-        className={`min-h-[80px] border border-dashed border-[rgba(237,233,230,0.18)] flex flex-col items-center justify-center p-5 cursor-pointer transition-[border-color,background] duration-[200ms] hover:border-[rgba(237,233,230,0.30)] hover:bg-[rgba(237,233,230,0.03)] ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
-      >
-        <input ref={ref} type='file' className='sr-only' {...props} />
-        <span className='font-sans text-[12px] text-mast-left'>Klikk for å velge filer</span>
-      </div>
-    </FieldWrapper>
-  )
+  ({ label, optional, error, wrapperClassName, className = '', id, ...props }, ref) => {
+    const generatedId = useId()
+    const inputId = id ?? generatedId
+
+    return (
+      <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName} inputId={inputId}>
+        <div
+          className={`min-h-[80px] border border-dashed border-[rgba(237,233,230,0.18)] flex flex-col items-center justify-center p-5 cursor-pointer transition-[border-color,background] duration-[200ms] hover:border-[rgba(237,233,230,0.30)] hover:bg-[rgba(237,233,230,0.03)] ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+        >
+          <input ref={ref} id={inputId} type='file' className='sr-only' {...props} />
+          <span className='font-sans text-[12px] text-mast-left'>Klikk for å velge filer</span>
+        </div>
+      </FieldWrapper>
+    )
+  }
 )
 FileUploadField.displayName = 'FileUploadField'
