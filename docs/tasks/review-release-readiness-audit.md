@@ -10,6 +10,7 @@
 - `.env.local.example` og `README.md` dokumenterer naavaerende issuer og JWKS.
 - `E2E_CLERK_USER_EMAIL='aleksander.seland@gmail.com' pnpm playwright test tests/e2e/admin.spec.ts` passerer.
 - `tests/e2e/admin.spec.ts` dekker naa ogsaa prosjekt -> opprett booking, med verifisert bookingliste i admin.
+- Samme admin-spec verifiserer naa ogsaa at `mail`, `notifications` og `settings` renderer i autentisert runtime med forventede seksjoner eller empty states.
 - Admin-auth er dermed ikke lenger blokkert av issuer-mismatch i repooppsettet.
 
 ## Baseline
@@ -161,7 +162,7 @@ Vurdering:
 | booking | Booking med referansebilder skal fungere offentlig | `src/app/(public)/book/BookPageClient.tsx`, `useInquirySubmission.ts`, `convex/inquiries.ts` | UI lastet; ingen trygg runtime-test mot backend kjoert | partial | high | Verifiser i isolert env og rett upload-grensesnitt |
 | booking uploads | Public upload skal fungere | `useInquirySubmission` kaller `api.storage.generateUploadUrl()`; `convex/storage.ts` krever auth | Statisk bekreftet mismatch; ikke kjoert mot backend | partial | high | Gjor upload-URL offentlig for bookingflyt eller lag dedikert public mutation |
 | admin auth | `/admin/*` skal vaere beskyttet | `src/proxy.ts` | Clerk redirect bekreftet med curl og Playwright | implemented | medium | Legg til auth-e2e for innlogget bruker |
-| admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*` og `src/components/admin/*` | Clerk-login og admin kjerneflyt er bekreftet med committed Playwright-test | partial | medium | Utvid autentisert runtime-pass til mail, settings og notifications |
+| admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*`, `src/components/admin/*`, `tests/e2e/admin.spec.ts` | Clerk-login, kjerneflyt og basis runtime-pass for mail/settings/notifications er bekreftet med committed Playwright-test | partial | medium | Ta templates og reelle mail-handlinger i senere pass |
 | clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts`, `tests/e2e/admin.spec.ts` | Committed Playwright dekker naa inquiry -> client -> project -> booking | implemented | medium | Verifiser redigering/ombooking i senere pass |
 | mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx` | Ikke verifisert uten mailkonto/admin-login | partial | medium | Verifiser med reell konto eller preview-miljo |
 | notifications/push/PWA | PWA og push-varsler skal fungere | `public/manifest.json`, `src/components/ServiceWorkerRegistration.tsx`, `src/components/admin/PushSubscriptionManager.tsx`, `convex/mail/sendPush.ts` | Manifest/health/public shell bekreftet; push ikke verifisert | partial | medium | Dokumenter og sett `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, test subscribe/send |
@@ -193,13 +194,13 @@ Vurdering:
 
 1. `test:e2e` er roed. `playwright.config.ts` peker paa `127.0.0.1`, mens appen paa denne maskinen svarer paa `localhost`.
 2. Booking med referansebilder er ikke parity-sikker. Offentlig klientflyt bruker `api.storage.generateUploadUrl`, men backend krever auth i `convex/storage.ts`.
-3. Mail, settings og notifications mangler fortsatt runtime-verifisering som innlogget bruker.
+3. Templates og reelle mail-handlinger mangler fortsatt runtime-verifisering som innlogget bruker.
 
 ## Core parity gaps
 
 1. Testdekningen er fortsatt tynn relativt til produktflaten, men admin-kjernen dekker naa ogsaa bookingopprettelse i committed e2e.
 2. Push-varsler er bare delvis ferdige som operativ feature fordi klient-env ikke er dokumentert.
-3. Mail, templates og notification center er implementert i kode, men mangler auditbevis i runtime.
+3. Templates og reelle mail-handlinger er implementert i kode, men mangler fortsatt auditbevis i runtime.
 4. Dokumenthierarkiet er uklart: for mange dokumenter beskriver samme produktlag med ulik autoritet.
 
 ## Polish / docs cleanup
@@ -218,7 +219,7 @@ Vurdering:
 | P0 | qa | Verifiser inquiry -> client -> project -> booking med innlogget admin | `tests/e2e/*` evt. MCP-pass + note | ny e2e eller dokumentert manuell pass | `test(admin): dekk kjernepipeline` |
 | P1 | docs/onboarding | README er stale og misvisende | `README.md` | lesbar onboarding fra blank maskin | `docs(readme): synk onboarding med repoet` |
 | P1 | env/docs | Push-varsler mangler klient-env i dokumentasjon | `.env.local.example`, evt. `README.md` | manuell subscribe-test | `docs(env): dokumenter public vapid key` |
-| P1 | qa | Verifiser mail/templates/settings/notifications i autentisert runtime | `tests/e2e/*` eller auditnotat | manuell eller automatisert pass | `test(admin): verifiser mail og varsler` |
+| P1 | qa | Verifiser templates og reelle mail-handlinger i autentisert runtime | `tests/e2e/*` eller auditnotat | manuell eller automatisert pass | `test(admin): verifiser mail og varsler` |
 | P2 | docs/process | Normaliser dokumentautoritet og reduser dobbel dokumentasjon | `PROSJEKTBESKRIVELSE.md`, `README.md`, `docs/*` | review av dokumenthierarki | `docs(process): normaliser produktdokumenter` |
 | P2 | tooling | Reduser lint-stoy fra generated Convex-filer | `eslint.config.mjs` | `pnpm lint` | `chore(lint): ignorer generated convex warnings` |
 

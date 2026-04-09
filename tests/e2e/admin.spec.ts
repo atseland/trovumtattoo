@@ -75,6 +75,17 @@ function formatDatetimeLocal(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
+async function expectOneVisible(locators: ReturnType<Page['locator']>[]) {
+  for (const locator of locators) {
+    if (await locator.count()) {
+      await expect(locator.first()).toBeVisible()
+      return
+    }
+  }
+
+  throw new Error('Fant ingen forventet runtime-state')
+}
+
 test.beforeAll(async () => {
   await clerkSetup()
 })
@@ -152,4 +163,35 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(bookingDialog).not.toBeVisible()
   await expect(page.getByText('Ingen bookinger ennå.')).not.toBeVisible()
   await expect(page.getByText('scheduled')).toBeVisible()
+
+  await page.goto('/admin/mail')
+  await expect(page.getByRole('heading', { name: 'Innboks' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Uleste' })).toBeVisible()
+  await expectOneVisible([
+    page.getByText('Ingen e-poster ennå'),
+    page.locator('a[href*="/admin/mail/"]'),
+  ])
+
+  await page.goto('/admin/notifications')
+  await expect(page.getByRole('heading', { name: 'Varsler' })).toBeVisible()
+  await expectOneVisible([
+    page.getByText('Ingen varsler'),
+    page.getByRole('button', { name: 'Merk alle som lest' }),
+    page.locator('main > div button').filter({ hasText: /.+/ }),
+  ])
+
+  await page.goto('/admin/settings')
+  await expect(page.getByRole('heading', { name: 'Innstillinger' })).toBeVisible()
+  await expect(page.getByText('Push-varsler', { exact: true })).toBeVisible()
+  await expect(page.getByText('Mail-konto', { exact: true })).toBeVisible()
+  await expect(page.getByText('Conta', { exact: true })).toBeVisible()
+  await expectOneVisible([
+    page.getByText('Push-varsler er aktivert'),
+    page.getByText('Push-varsler er ikke aktivert'),
+  ])
+  await expectOneVisible([
+    page.getByRole('button', { name: 'Konfigurer konto' }),
+    page.getByRole('button', { name: 'Rediger konto' }),
+  ])
 })
