@@ -114,12 +114,7 @@ async function getConvexTemplateStatus(page: Page) {
   })
 }
 
-test('admin can create client and project from a public inquiry', async ({ page }) => {
-  const inquiry = await createInquiry()
-  const bookingStart = new Date(Date.now() + 48 * 60 * 60 * 1000)
-  bookingStart.setMinutes(0, 0, 0)
-  const bookingEnd = new Date(bookingStart.getTime() + 2 * 60 * 60 * 1000)
-
+async function signInAsAdmin(page: Page) {
   await page.goto('/')
   await clerk.loaded({ page })
   await clerk.signIn({ page, emailAddress: adminEmail })
@@ -129,6 +124,15 @@ test('admin can create client and project from a public inquiry', async ({ page 
     !convexTemplate.ok,
     `Clerk JWT template "convex" mangler eller er feil konfigurert: ${convexTemplate.reason}`,
   )
+}
+
+test('admin can create client and project from a public inquiry', async ({ page }) => {
+  const inquiry = await createInquiry()
+  const bookingStart = new Date(Date.now() + 48 * 60 * 60 * 1000)
+  bookingStart.setMinutes(0, 0, 0)
+  const bookingEnd = new Date(bookingStart.getTime() + 2 * 60 * 60 * 1000)
+
+  await signInAsAdmin(page)
 
   await page.goto(`/admin/inquiries/${inquiry.id}`)
   await expect(page.getByRole('heading', { name: inquiry.name })).toBeVisible()
@@ -194,4 +198,46 @@ test('admin can create client and project from a public inquiry', async ({ page 
     page.getByRole('button', { name: 'Konfigurer konto' }),
     page.getByRole('button', { name: 'Rediger konto' }),
   ])
+})
+
+test('admin can create edit and delete a message template', async ({ page }) => {
+  const unique = `Playwright template ${Date.now()}`
+  const updatedTitle = `${unique} oppdatert`
+  const initialContent = 'Første versjon av template-innhold.'
+  const updatedContent = 'Oppdatert template-innhold fra Playwright.'
+
+  await signInAsAdmin(page)
+
+  await page.goto('/admin/templates')
+  await expect(page.getByRole('heading', { name: 'Meldingsmaler' })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Ny mal' }).click()
+  await expect(page.getByRole('heading', { name: 'Ny mal' })).toBeVisible()
+
+  await page.getByRole('combobox').selectOption('estimate')
+  await page.getByPlaceholder('Mal-tittel').fill(unique)
+  await page.getByPlaceholder('Meldingsinnhold…').fill(initialContent)
+  await page.getByRole('button', { name: 'Lagre' }).click()
+
+  await expect(page.getByText('Mal opprettet')).toBeVisible()
+  const createdCard = page.locator('div.bg-panel').filter({ hasText: unique }).first()
+  await expect(createdCard).toBeVisible()
+  await expect(createdCard.getByText('Prisestimat')).toBeVisible()
+  await expect(createdCard.getByText(initialContent)).toBeVisible()
+
+  await createdCard.getByRole('button', { name: 'Rediger' }).click()
+  await expect(page.getByRole('heading', { name: 'Rediger mal' })).toBeVisible()
+
+  await page.getByPlaceholder('Mal-tittel').fill(updatedTitle)
+  await page.getByPlaceholder('Meldingsinnhold…').fill(updatedContent)
+  await page.getByRole('button', { name: 'Lagre' }).click()
+
+  await expect(page.getByText('Mal oppdatert')).toBeVisible()
+  const updatedCard = page.locator('div.bg-panel').filter({ hasText: updatedTitle }).first()
+  await expect(updatedCard).toBeVisible()
+  await expect(updatedCard.getByText(updatedContent)).toBeVisible()
+
+  await updatedCard.getByRole('button', { name: 'Slett' }).click()
+  await expect(page.getByText('Mal slettet')).toBeVisible()
+  await expect(updatedCard).not.toBeVisible()
 })
