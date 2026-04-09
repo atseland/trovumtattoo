@@ -37,7 +37,16 @@ export const syncMail = action({
       const lock = await client.getMailboxLock('INBOX')
 
       try {
-        for await (const msg of client.fetch('1:50', { envelope: true, source: true, flags: true })) {
+        const messageCount = client.mailbox ? client.mailbox.exists : 0
+        if (messageCount < 1) {
+          await ctx.runMutation(internal.mail.account.updateLastSync, {})
+          console.log('[syncMail] INBOX er tom, ingen meldinger aa synkronisere')
+          return { synced: 0 }
+        }
+
+        const fetchRange = `1:${Math.min(messageCount, 50)}`
+
+        for await (const msg of client.fetch(fetchRange, { envelope: true, source: true, flags: true })) {
           const envelope = msg.envelope
           if (!envelope) continue
 

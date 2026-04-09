@@ -1,7 +1,6 @@
 import { internalMutation, internalQuery, mutation, query } from '../_generated/server'
 import { v } from 'convex/values'
-import { assertEmailFormat, assertStringLength, assertOptionalStringLength } from '../lib/validate'
-import type { MailConfig } from './config'
+import { getMailConfig, getMailConfigSummary, hasMailConfig, type MailConfig } from './config'
 
 export const save = mutation({
   args: {
@@ -16,48 +15,8 @@ export const save = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) throw new Error('Unauthorized')
-
-    assertEmailFormat(args.emailAddress, 'emailAddress')
-    assertStringLength(args.fromName, 'fromName', 1, 200)
-    if (args.password !== undefined) assertStringLength(args.password, 'password', 1, 500)
-    assertOptionalStringLength(args.hostImap, 'hostImap', 200)
-    assertOptionalStringLength(args.hostSmtp, 'hostSmtp', 200)
-
-    const existing = await ctx.db
-      .query('mailAccounts')
-      .withIndex('by_emailAddress', (q) => q.eq('emailAddress', args.emailAddress))
-      .first()
-
-    if (existing) {
-      const patch: Record<string, unknown> = {
-        emailAddress: args.emailAddress,
-        username: args.emailAddress,
-        fromName: args.fromName,
-        hostImap: args.hostImap,
-        portImap: args.portImap,
-        hostSmtp: args.hostSmtp,
-        portSmtp: args.portSmtp,
-        isActive: true,
-      }
-      if (args.password) patch.password = args.password
-      await ctx.db.patch(existing._id, patch)
-      return existing._id
-    }
-
-    if (!args.password) throw new Error('Passord er påkrevd for ny konto')
-
-    return await ctx.db.insert('mailAccounts', {
-      emailAddress: args.emailAddress,
-      provider: 'imap-smtp',
-      username: args.emailAddress,
-      password: args.password,
-      fromName: args.fromName,
-      hostImap: args.hostImap,
-      portImap: args.portImap,
-      hostSmtp: args.hostSmtp,
-      portSmtp: args.portSmtp,
-      isActive: true,
-    })
+    void args
+    throw new Error('Mail-kontoen er låst til serverkonfigurasjon og kan ikke redigeres i admin.')
   },
 })
 
@@ -68,22 +27,24 @@ export const getCurrent = query({
     const identity = await ctx.auth.getUserIdentity()
     if (!identity) return null
 
+    if (!hasMailConfig()) return null
+
+    const summary = getMailConfigSummary()
     const account = await ctx.db
       .query('mailAccounts')
-      .filter((q) => q.eq(q.field('isActive'), true))
+      .withIndex('by_emailAddress', (q) => q.eq('emailAddress', summary.emailAddress))
       .first()
 
-    if (!account) return null
-
     return {
-      _id: account._id,
-      emailAddress: account.emailAddress,
-      fromName: account.fromName,
-      hostImap: account.hostImap ?? null,
-      portImap: account.portImap ?? null,
-      hostSmtp: account.hostSmtp ?? null,
-      portSmtp: account.portSmtp ?? null,
-      lastSyncAt: account.lastSyncAt ?? null,
+      _id: account?._id ?? null,
+      emailAddress: summary.emailAddress,
+      fromName: summary.fromName,
+      hostImap: summary.hostImap,
+      portImap: summary.portImap,
+      hostSmtp: summary.hostSmtp,
+      portSmtp: summary.portSmtp,
+      lastSyncAt: account?.lastSyncAt ?? null,
+      managedByEnv: true,
     }
   },
 })
@@ -92,28 +53,9 @@ export const getCurrent = query({
 export const getConfig = internalQuery({
   args: {},
   handler: async (ctx): Promise<MailConfig | null> => {
-    const account = await ctx.db
-      .query('mailAccounts')
-      .filter((q) => q.eq(q.field('isActive'), true))
-      .first()
-
-    if (!account) return null
-
-    return {
-      imap: {
-        host: account.hostImap ?? 'imap.one.com',
-        port: account.portImap ?? 993,
-        secure: true,
-        auth: { user: account.username, pass: account.password },
-      },
-      smtp: {
-        host: account.hostSmtp ?? 'send.one.com',
-        port: account.portSmtp ?? 465,
-        secure: true,
-        auth: { user: account.username, pass: account.password },
-      },
-      from: `${account.fromName} <${account.emailAddress}>`,
-    }
+    void ctx
+    if (!hasMailConfig()) return null
+    return getMailConfig()
   },
 })
 
@@ -121,12 +63,41 @@ export const getConfig = internalQuery({
 export const updateLastSync = internalMutation({
   args: {},
   handler: async (ctx) => {
+    if (!hasMailConfig()) return
+
+    const summary = getMailConfigSummary()
     const account = await ctx.db
       .query('mailAccounts')
-      .filter((q) => q.eq(q.field('isActive'), true))
+      .withIndex('by_emailAddress', (q) => q.eq('emailAddress', summary.emailAddress))
       .first()
+
+    const lastSyncAt = Date.now()
+
     if (account) {
-      await ctx.db.patch(account._id, { lastSyncAt: Date.now() })
+      await ctx.db.patch(account._id, {
+        fromName: summary.fromName,
+        hostImap: summary.hostImap,
+        portImap: summary.portImap,
+        hostSmtp: summary.hostSmtp,
+        portSmtp: summary.portSmtp,
+        isActive: true,
+        lastSyncAt,
+      })
+      return
     }
+
+    await ctx.db.insert('mailAccounts', {
+      emailAddress: summary.emailAddress,
+      provider: 'imap-smtp',
+      username: summary.emailAddress,
+      password: '__managed_by_env__',
+      fromName: summary.fromName,
+      hostImap: summary.hostImap,
+      portImap: summary.portImap,
+      hostSmtp: summary.hostSmtp,
+      portSmtp: summary.portSmtp,
+      isActive: true,
+      lastSyncAt,
+    })
   },
 })

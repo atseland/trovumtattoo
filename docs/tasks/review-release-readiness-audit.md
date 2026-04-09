@@ -12,6 +12,8 @@
 - `tests/e2e/admin.spec.ts` dekker naa ogsaa prosjekt -> opprett booking, med verifisert bookingliste i admin.
 - Samme admin-spec verifiserer naa ogsaa at `mail`, `notifications` og `settings` renderer i autentisert runtime med forventede seksjoner eller empty states.
 - Samme admin-spec verifiserer naa ogsaa `templates` i autentisert runtime: opprett, rediger og slett av meldingsmal.
+- Mail er naa laast til one.com-kontoen `ellen@trovumtattoo.no` via server-side `MAIL_*` i Convex, og kan ikke redigeres fra admin-UI.
+- `npx convex run mail/sync:syncMail '{}'` svarer no med `{ synced: 0 }` paa tom INBOX, etter at `syncMail` ble gjort trygg mot ugyldig `FETCH 1:50`.
 - Admin-auth er dermed ikke lenger blokkert av issuer-mismatch i repooppsettet.
 
 ## Baseline
@@ -107,15 +109,18 @@ Vurdering:
 
 ### Mail / Templates
 
-Status: implementert i kode, ikke fullt verifisert i runtime
+Status: implementert i kode og delvis verifisert i runtime
 
 - IMAP sync, SMTP send, mailkonto i UI, thread/detail og templates finnes i kodebasen
 - Cron for mail sync finnes
+- Mailkontoen er laast til server-side one.com-konfig i stedet for brukerredigering i admin
+- Direkte `syncMail`-kjoring mot konfigurert konto er verifisert og haandterer tom INBOX uten feil
+- Template CRUD er verifisert i committed Playwright
 
 Vurdering:
 
 - `partial`
-- Avhenger av reell mail-konfig og autentisert admin-sesjon for ende-til-ende-verifisering
+- Reelle utsendingshandlinger og thread-spesifikk mailflyt mangler fortsatt ende-til-ende-verifisering
 
 ### Notifications / Push / PWA
 
@@ -165,7 +170,7 @@ Vurdering:
 | admin auth | `/admin/*` skal vaere beskyttet | `src/proxy.ts` | Clerk redirect bekreftet med curl og Playwright | implemented | medium | Legg til auth-e2e for innlogget bruker |
 | admin flate | Inquiries, clients, projects, mail, templates, settings, notifications skal finnes | Egne ruter og komponentseksjoner i `src/app/admin/*`, `src/components/admin/*`, `tests/e2e/admin.spec.ts` | Clerk-login, kjerneflyt, template CRUD og basis runtime-pass for mail/settings/notifications er bekreftet med committed Playwright-test | implemented | medium | Ta reelle mail-handlinger i senere pass |
 | clients/projects/bookings | Pipeline fra inquiry til prosjekt/bookinger skal vaere operativ | `src/app/admin/inquiries/[id]/page.tsx`, `src/app/admin/projects/[id]/page.tsx`, `convex/bookings.ts`, `convex/projects.ts`, `tests/e2e/admin.spec.ts` | Committed Playwright dekker naa inquiry -> client -> project -> booking | implemented | medium | Verifiser redigering/ombooking i senere pass |
-| mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx` | Ikke verifisert uten mailkonto/admin-login | partial | medium | Verifiser med reell konto eller preview-miljo |
+| mail/templates | one.com mail light og templates er i v1-scope | `convex/mail/*`, `src/app/admin/mail/*`, `src/app/admin/templates/page.tsx`, `tests/e2e/admin.spec.ts` | Template CRUD og basis mailruntime er verifisert; direkte `syncMail` mot konfigurert konto returnerer rent paa tom INBOX | partial | medium | Verifiser utsending og thread-handlinger |
 | notifications/push/PWA | PWA og push-varsler skal fungere | `public/manifest.json`, `src/components/ServiceWorkerRegistration.tsx`, `src/components/admin/PushSubscriptionManager.tsx`, `convex/mail/sendPush.ts` | Manifest/health/public shell bekreftet; push ikke verifisert | partial | medium | Dokumenter og sett `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, test subscribe/send |
 | ops/verifikasjon | Repo skal vaere verifiserbart mot launch | `package.json`, `playwright.config.ts`, `eslint.config.mjs` | `test:e2e` timeout; `localhost` virker, `127.0.0.1` virker ikke | partial | high | Standardiser Playwright til `localhost` eller env-styrt host |
 | docs/prosess | Docs/specs/tasks/handoffs skal brukes aktivt | `README.md`, `docs/`, `justfile`, `AGENTS.md` | `docs/specs`, `docs/tasks`, `docs/handoffs` var tomme foer auditten | doc-stale | medium | Normaliser dokumenthierarki og fyll operative docs |

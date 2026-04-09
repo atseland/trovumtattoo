@@ -33,23 +33,68 @@ export interface MailConfig {
   from: string
 }
 
+export interface MailConfigSummary {
+  emailAddress: string
+  fromName: string
+  hostImap: string
+  portImap: number
+  hostSmtp: string
+  portSmtp: number
+}
+
+function parseFromName(from: string, fallbackEmail: string) {
+  const match = from.match(/^(.*)<[^>]+>$/)
+  const name = match?.[1]?.trim()
+  return name && name.length > 0 ? name.replace(/^"|"$/g, '') : fallbackEmail
+}
+
+function getFixedHosts() {
+  return {
+    hostImap: process.env.MAIL_HOST_IMAP ?? 'imap.one.com',
+    portImap: parseInt(process.env.MAIL_PORT_IMAP ?? '993', 10),
+    hostSmtp: process.env.MAIL_HOST_SMTP ?? 'send.one.com',
+    portSmtp: parseInt(process.env.MAIL_PORT_SMTP ?? '465', 10),
+  }
+}
+
+export function hasMailConfig() {
+  return Boolean(process.env.MAIL_USERNAME && process.env.MAIL_PASSWORD)
+}
+
+export function getMailConfigSummary(): MailConfigSummary {
+  const emailAddress = requireEnv('MAIL_USERNAME')
+  const from = process.env.MAIL_FROM ?? emailAddress
+  const fixed = getFixedHosts()
+
+  return {
+    emailAddress,
+    fromName: parseFromName(from, emailAddress),
+    hostImap: fixed.hostImap,
+    portImap: fixed.portImap,
+    hostSmtp: fixed.hostSmtp,
+    portSmtp: fixed.portSmtp,
+  }
+}
+
 export function getMailConfig(): MailConfig {
   const username = requireEnv('MAIL_USERNAME')
   const password = requireEnv('MAIL_PASSWORD')
+  const from = process.env.MAIL_FROM ?? username
+  const fixed = getFixedHosts()
 
   return {
     imap: {
-      host: process.env.MAIL_HOST_IMAP ?? 'imap.one.com',
-      port: parseInt(process.env.MAIL_PORT_IMAP ?? '993', 10),
+      host: fixed.hostImap,
+      port: fixed.portImap,
       secure: true,
       auth: { user: username, pass: password },
     },
     smtp: {
-      host: process.env.MAIL_HOST_SMTP ?? 'send.one.com',
-      port: parseInt(process.env.MAIL_PORT_SMTP ?? '465', 10),
+      host: fixed.hostSmtp,
+      port: fixed.portSmtp,
       secure: true,
       auth: { user: username, pass: password },
     },
-    from: requireEnv('MAIL_FROM'),
+    from,
   }
 }

@@ -195,8 +195,8 @@ test('admin can create client and project from a public inquiry', async ({ page 
     page.getByText('Push-varsler er ikke aktivert'),
   ])
   await expectOneVisible([
-    page.getByRole('button', { name: 'Konfigurer konto' }),
-    page.getByRole('button', { name: 'Rediger konto' }),
+    page.getByText('Mail er ikke konfigurert i servermiljoet.'),
+    page.getByText('Mailkontoen er laast til serverkonfigurasjon og styres ikke fra admin-UI.'),
   ])
 })
 

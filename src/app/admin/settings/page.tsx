@@ -4,7 +4,7 @@ import { useAction } from 'convex/react'
 import { toast } from 'sonner'
 import { PushSubscriptionManager } from '@/components/admin/PushSubscriptionManager'
 import { MailAccountForm } from '@/components/admin/MailAccountForm'
-import { api } from '../../../../convex/_generated/api'
+import { api } from '@convex/_generated/api'
 import { Rule } from '@/components/ui/Rule'
 import { Btn } from '@/components/ui/Btn'
 import { Eyebrow } from '@/components/ui/Eyebrow'
@@ -41,6 +41,9 @@ export default function SettingsPage() {
         <div className='bg-panel border border-rule px-5 py-5 flex flex-col gap-5'>
           <MailAccountForm />
           <div className='border-t border-rule pt-4'>
+            <p className='font-sans text-[12px] text-mast-left mb-3 leading-[1.7]'>
+              Endringer i mailoppsett gjores via servermiljoet, ikke i admin.
+            </p>
             <Btn variant='sm' onClick={handleForceSync}>Tving synkronisering</Btn>
           </div>
         </div>
