@@ -3,14 +3,10 @@
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
-import { api } from '../../../../convex/_generated/api'
+import { api } from '@convex/_generated/api'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { StatusBadge } from '@/components/admin/StatusBadge'
-
-const ghostInput: React.CSSProperties = {
-  background: 'rgba(237,233,230,0.03)',
-  border: '1px solid rgba(237,233,230,0.14)',
-}
+import { fieldInputClasses } from '@/components/ui/FormField'
 
 export default function SearchPage() {
   const { isAuthenticated } = useConvexAuth()
@@ -57,16 +53,7 @@ export default function SearchPage() {
         onChange={handleChange}
         placeholder='Søk etter kunder, forespørsler…'
         autoFocus
-        className='w-full font-sans text-[14px] text-paper placeholder:text-mast-left px-5 min-h-[52px] outline-none transition-colors duration-[200ms] mb-7'
-        style={ghostInput}
-        onFocus={e => {
-          e.currentTarget.style.border = '1px solid rgba(237,233,230,0.35)'
-          e.currentTarget.style.background = 'rgba(237,233,230,0.05)'
-        }}
-        onBlur={e => {
-          e.currentTarget.style.border = '1px solid rgba(237,233,230,0.14)'
-          e.currentTarget.style.background = 'rgba(237,233,230,0.03)'
-        }}
+        className={`${fieldInputClasses} px-5 min-h-[52px] mb-7`}
       />
 
       {!hasQuery && (

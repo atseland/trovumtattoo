@@ -4,14 +4,10 @@ import { useState } from 'react'
 import { useQuery, useMutation, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { api } from '../../../convex/_generated/api'
-import { Id } from '../../../convex/_generated/dataModel'
+import { api } from '@convex/_generated/api'
+import { Id } from '@convex/_generated/dataModel'
 import { Btn } from '@/components/ui/Btn'
-
-const ghostInput: React.CSSProperties = {
-  width: '100%', background: 'rgba(237,233,230,0.03)', border: '1px solid rgba(237,233,230,0.14)',
-  color: 'var(--paper)', padding: '10px 14px', fontSize: '0.9rem', minHeight: '44px', outline: 'none',
-}
+import { InputField } from '@/components/ui/FormField'
 
 interface Props {
   open: boolean
@@ -48,10 +44,16 @@ export function LinkThreadSheet({ open, onOpenChange, threadId }: Props) {
           <SheetTitle className='font-serif italic text-paper'>Koble til kunde/prosjekt</SheetTitle>
         </SheetHeader>
         <div className='mt-6 flex flex-col gap-4 px-4'>
-          <div>
-            <label className='block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-2'>Søk på kunde</label>
-            <input value={search} onChange={(e) => { setSearch(e.target.value); setSelectedClientId(null); setSelectedProjectId(null) }} style={ghostInput} placeholder='Navn…' />
-          </div>
+          <InputField
+            label='Søk på kunde'
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setSelectedClientId(null)
+              setSelectedProjectId(null)
+            }}
+            placeholder='Navn…'
+          />
 
           {clients && clients.length > 0 && (
             <div>

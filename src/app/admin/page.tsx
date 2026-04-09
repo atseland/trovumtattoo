@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
+import { api } from '@convex/_generated/api'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Eyebrow } from '@/components/ui/Eyebrow'

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell, Search } from 'lucide-react'
-import { api } from '../../../convex/_generated/api'
+import { api } from '@convex/_generated/api'
 import { Logo } from '@/components/Logo'
 
 const navItems = [

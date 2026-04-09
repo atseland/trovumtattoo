@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useConvexAuth } from 'convex/react'
 import { toast } from 'sonner'
-import { api } from '../../../convex/_generated/api'
+import { api } from '@convex/_generated/api'
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
