@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -24,7 +24,7 @@ function dateKey(ts: number) {
 
 export default function CalendarPage() {
   const { isAuthenticated } = useConvexAuth()
-  const [infoOpen, setInfoOpen] = useState(false)
+  const router = useRouter()
 
   const bookings = useQuery(api.bookings.listUpcomingWithDetails, isAuthenticated ? {} : 'skip')
 
@@ -42,7 +42,7 @@ export default function CalendarPage() {
     <div className='max-w-2xl'>
       <div className='flex items-center justify-between flex-wrap gap-3 mb-6'>
         <h1 className='font-sans font-medium text-[18px] text-paper'>Kalender</h1>
-        <Btn variant='sm' onClick={() => setInfoOpen(true)}>Ny booking</Btn>
+        <Btn href='/admin/search' variant='sm'>Finn prosjekt</Btn>
       </div>
 
       {bookings === undefined ? (
@@ -59,8 +59,8 @@ export default function CalendarPage() {
         <EmptyState
           icon={<CalendarDays size={48} strokeWidth={1.5} />}
           title='Ingen kommende bookinger'
-          text='Bookinger opprettes fra prosjektsiden.'
-          action={{ label: 'Gå til prosjekter', onClick: () => {} }}
+          text='Bookinger opprettes fra prosjektsiden. Finn riktig kunde eller prosjekt via admin-soket.'
+          action={{ label: 'Finn prosjekt', onClick: () => router.push('/admin/search') }}
         />
       ) : (
         <div className='flex flex-col gap-7'>
@@ -96,18 +96,6 @@ export default function CalendarPage() {
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Info modal */}
-      {infoOpen && (
-        <div className='fixed inset-0 z-60 flex items-center justify-center p-4' style={{ background: 'rgba(0,0,0,0.6)' }}>
-          <div className='bg-panel border border-rule-heavy px-6 py-6 w-full max-w-[400px]'>
-            <p className='font-sans text-[13px] text-body mb-5'>
-              For å opprette en booking, gå til prosjektsiden og klikk «Opprett booking».
-            </p>
-            <Btn variant='sm' onClick={() => setInfoOpen(false)}>OK</Btn>
-          </div>
         </div>
       )}
     </div>
