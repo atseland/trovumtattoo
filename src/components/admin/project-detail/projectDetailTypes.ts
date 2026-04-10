@@ -10,6 +10,7 @@ export interface ProjectBookingSummary {
   startAt: number
   endAt: number
   status: string
+  notes?: string | null
 }
 
 export type ProjectActivityEntries = ComponentProps<typeof ActivityLogTimeline>['entries']

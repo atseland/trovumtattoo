@@ -14,12 +14,15 @@ import { ProjectEstimateSection } from '@/components/admin/project-detail/Projec
 import { ProjectHeader } from '@/components/admin/project-detail/ProjectHeader'
 import { ProjectQuickActions } from '@/components/admin/project-detail/ProjectQuickActions'
 import { ProjectRelationsSection } from '@/components/admin/project-detail/ProjectRelationsSection'
+import type { ProjectBookingSummary } from '@/components/admin/project-detail/projectDetailTypes'
 import { BookingSheet } from '@/components/admin/BookingSheet'
 import { AftercareSheet } from '@/components/admin/AftercareSheet'
 import { ReviewRequestSheet } from '@/components/admin/ReviewRequestSheet'
 import { useProjectDetailForm } from '@/components/admin/project-detail/useProjectDetailForm'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { Rule } from '@/components/ui/Rule'
+
+type BookingSheetMode = 'create' | 'edit' | 'rebook'
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -37,10 +40,38 @@ export default function ProjectDetailPage() {
   const bookings = useQuery(api.bookings.listByProject, isAuthenticated ? { projectId: id as Id<"projects"> } : 'skip')
 
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
+  const [bookingSheetMode, setBookingSheetMode] = useState<BookingSheetMode>('create')
+  const [activeBooking, setActiveBooking] = useState<ProjectBookingSummary | null>(null)
   const [aftercareSheetOpen, setAftercareSheetOpen] = useState(false)
   const [reviewSheetOpen, setReviewSheetOpen] = useState(false)
 
   const form = useProjectDetailForm(project)
+
+  function openCreateBookingSheet() {
+    setActiveBooking(null)
+    setBookingSheetMode('create')
+    setBookingSheetOpen(true)
+  }
+
+  function openEditBookingSheet(booking: ProjectBookingSummary) {
+    setActiveBooking(booking)
+    setBookingSheetMode('edit')
+    setBookingSheetOpen(true)
+  }
+
+  function openRebookBookingSheet(booking: ProjectBookingSummary) {
+    setActiveBooking(booking)
+    setBookingSheetMode('rebook')
+    setBookingSheetOpen(true)
+  }
+
+  function handleBookingSheetChange(open: boolean) {
+    setBookingSheetOpen(open)
+    if (!open) {
+      setBookingSheetMode('create')
+      setActiveBooking(null)
+    }
+  }
 
   if (!isAuthenticated || project === undefined) {
     return (
@@ -70,7 +101,7 @@ export default function ProjectDetailPage() {
       <ProjectHeader clientId={project.clientId} status={project.status} />
       <ProjectQuickActions
         reviewRequestedAt={project.reviewRequestedAt}
-        onCreateBooking={() => setBookingSheetOpen(true)}
+        onCreateBooking={openCreateBookingSheet}
         onSendAftercare={() => setAftercareSheetOpen(true)}
         onSendReviewRequest={() => setReviewSheetOpen(true)}
       />
@@ -108,15 +139,23 @@ export default function ProjectDetailPage() {
 
       <Rule className='mb-6' />
 
-      <ProjectBookingsSection bookings={bookings} />
+      <ProjectBookingsSection
+        bookings={bookings}
+        onEditBooking={openEditBookingSheet}
+        onRebookBooking={openRebookBookingSheet}
+      />
       <ProjectActivitySection entries={activityLog} />
 
       {bookingSheetOpen && (
         <BookingSheet
           open={bookingSheetOpen}
-          onOpenChange={setBookingSheetOpen}
+          onOpenChange={handleBookingSheetChange}
           projectId={id as Id<"projects">}
-          mode='create'
+          existingBookingId={activeBooking?._id}
+          existingStartAt={activeBooking?.startAt}
+          existingEndAt={activeBooking?.endAt}
+          existingNotes={activeBooking?.notes ?? undefined}
+          mode={bookingSheetMode}
         />
       )}
 

@@ -5,9 +5,15 @@ import type { ProjectBookingSummary } from '@/components/admin/project-detail/pr
 
 interface ProjectBookingsSectionProps {
   bookings: ProjectBookingSummary[] | null | undefined
+  onEditBooking: (booking: ProjectBookingSummary) => void
+  onRebookBooking: (booking: ProjectBookingSummary) => void
 }
 
-export function ProjectBookingsSection({ bookings }: ProjectBookingsSectionProps) {
+export function ProjectBookingsSection({
+  bookings,
+  onEditBooking,
+  onRebookBooking,
+}: ProjectBookingsSectionProps) {
   const bookingItems = bookings ?? []
 
   return (
@@ -24,24 +30,54 @@ export function ProjectBookingsSection({ bookings }: ProjectBookingsSectionProps
           {bookingItems.map((booking) => (
             <div
               key={booking._id}
-              className='flex items-center justify-between flex-wrap gap-2 px-4 py-[14px] bg-panel border border-rule min-h-[52px]'
+              className='px-4 py-[14px] bg-panel border border-rule'
             >
-              <span className='font-sans text-[13px] text-paper'>
-                {new Date(booking.startAt).toLocaleString('nb-NO', {
-                  day: '2-digit',
-                  month: 'short',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}{' '}
-                –{' '}
-                {new Date(booking.endAt).toLocaleTimeString('nb-NO', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-              <span className='font-sans text-[11px] tracking-[0.1em] uppercase text-mast-left'>
-                {booking.status}
-              </span>
+              <div className='flex items-start justify-between flex-wrap gap-3'>
+                <div className='flex-1 min-w-0'>
+                  <p className='font-sans text-[13px] text-paper'>
+                    {new Date(booking.startAt).toLocaleString('nb-NO', {
+                      day: '2-digit',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}{' '}
+                    –{' '}
+                    {new Date(booking.endAt).toLocaleTimeString('nb-NO', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                  {booking.notes && (
+                    <p className='font-sans text-[12px] text-mast-left mt-[4px] whitespace-pre-wrap'>
+                      {booking.notes}
+                    </p>
+                  )}
+                </div>
+
+                <div className='flex items-center gap-3 shrink-0 flex-wrap justify-end'>
+                  <span className='font-sans text-[11px] tracking-[0.1em] uppercase text-mast-left'>
+                    {booking.status}
+                  </span>
+                  <div className='flex gap-2'>
+                    <button
+                      type='button'
+                      onClick={() => onEditBooking(booking)}
+                      className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                      style={{ background: 'transparent' }}
+                    >
+                      Rediger
+                    </button>
+                    <button
+                      type='button'
+                      onClick={() => onRebookBooking(booking)}
+                      className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                      style={{ background: 'transparent' }}
+                    >
+                      Ombook
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
