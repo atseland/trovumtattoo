@@ -26,7 +26,7 @@ const loadingFallback = (
 
 const Layout4 = dynamic(() => import('./Layout4TypographicMinimal'), { ssr: false, loading: () => loadingFallback })
 const Layout8 = dynamic(() => import('./Layout8PortfolioBeforeAbout'), { ssr: false, loading: () => loadingFallback })
-const Layout9 = dynamic(() => import('./Layout9ProfileInHero'), { ssr: false, loading: () => loadingFallback })
+const Layout9 = dynamic(() => import('./Layout9AleksEdits'), { ssr: false, loading: () => loadingFallback })
 
 const layoutComponents = [Layout4, Layout8, Layout9]
 

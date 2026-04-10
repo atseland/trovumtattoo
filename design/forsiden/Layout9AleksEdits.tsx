@@ -64,7 +64,7 @@ function Ornament({ className = '' }: { className?: string }) {
 /*  Layout                                                             */
 /* ------------------------------------------------------------------ */
 
-export default function Layout9ProfileInHero() {
+export default function Layout9AleksEdits() {
   return (
     <div className="min-h-screen bg-bg text-paper">
 
