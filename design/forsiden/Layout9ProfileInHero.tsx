@@ -71,7 +71,7 @@ export default function Layout9ProfileInHero() {
       {/* ============================================================ */}
       {/*  HERO — L8 + sirkulært profilbilde mellom tittel og CTA-er  */}
       {/* ============================================================ */}
-      <section className="flex min-h-[85vh] flex-col items-center justify-center px-6 py-20 text-center md:min-h-screen md:px-12">
+      <section className="relative flex min-h-[85vh] flex-col items-center justify-center px-6 py-20 text-center md:min-h-screen md:px-12">
         <span className="mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12">
           Tigr Tattoo &middot; Sandvika
         </span>
@@ -113,6 +113,25 @@ export default function Layout9ProfileInHero() {
           <Btn href="/book" variant="default" className="sm:w-auto sm:min-w-[160px]">
             Send melding
           </Btn>
+        </div>
+
+        {/* Scroll-indikator — absolutt posisjonert i bunnen av seksjonen */}
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2">
+          <div className="flex flex-col items-center gap-2">
+            <div
+              className="h-7 w-px"
+              style={{
+                background: 'linear-gradient(to bottom, transparent, rgba(237,233,230,0.25))',
+                animation: 'scroll-fade 2s ease-in-out infinite',
+              }}
+            />
+            <style>{`
+              @keyframes scroll-fade {
+                0%, 100% { opacity: 0.3; transform: scaleY(0.7); transform-origin: top; }
+                50%       { opacity: 1;   transform: scaleY(1);   transform-origin: top; }
+              }
+            `}</style>
+          </div>
         </div>
       </section>
 
