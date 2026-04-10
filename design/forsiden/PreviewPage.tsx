@@ -21,6 +21,7 @@ const layouts = [
   { id: 5, name: 'Stacked Immersive', description: 'Full-bleed seksjoner med bakgrunnsbilder og overlay' },
   { id: 6, name: 'Portrait Anchor', description: 'Fremhevet portrettbilde synlig over fold. Resterende 4 i 2×2-grid. Desktop: side-by-side.' },
   { id: 7, name: 'Strip + Act After', description: 'Stripa kommer før CTA. Alle 5 arbeider synlig før siden ber om handling.' },
+  { id: 8, name: 'Portfolio Before About', description: 'L4 med én endring: portefølje og bio byttet om.' },
 ]
 
 const loadingFallback = (
@@ -40,7 +41,9 @@ const Layout5 = dynamic(() => import('./Layout5StackedImmersive'), { ssr: false,
 const Layout6 = dynamic(() => import('./Layout6PortraitAnchor'), { ssr: false, loading: () => loadingFallback })
 const Layout7 = dynamic(() => import('./Layout7StripActAfter'), { ssr: false, loading: () => loadingFallback })
 
-const layoutComponents = [Layout1, Layout2, Layout3, Layout4, Layout5, Layout6, Layout7]
+const Layout8 = dynamic(() => import('./Layout8PortfolioBeforeAbout'), { ssr: false, loading: () => loadingFallback })
+
+const layoutComponents = [Layout1, Layout2, Layout3, Layout4, Layout5, Layout6, Layout7, Layout8]
 
 export default function PreviewPage() {
   const [active, setActive] = useState(0)
@@ -96,7 +99,7 @@ export default function PreviewPage() {
             onClick={() => setSelectorOpen(true)}
             className="cursor-pointer rounded-sm border border-rule bg-panel/90 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.22em] text-accent shadow-lg backdrop-blur-sm transition-colors hover:text-paper"
           >
-            {String(active + 1).padStart(2, '0')} / 07
+            {String(active + 1).padStart(2, '0')} / 08
           </button>
         )}
       </div>
