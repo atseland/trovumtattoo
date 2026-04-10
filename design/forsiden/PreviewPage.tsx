@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 const layouts = [
   { id: 4, name: 'Typographic Minimal', description: 'Typografidrevet hero, horisontal porteføljescroll' },
   { id: 8, name: 'Portfolio Before About', description: 'L4 med én endring: portefølje og bio byttet om.' },
-  { id: 9, name: 'Profile In Hero', description: 'L8 med sirkulært profilbilde i hero mellom tittel og CTA.' },
+  { id: 9, name: 'Aleks Edits', description: 'L8 med profilbilde i hero, éin CTA, scroll-indikator og "Om meg"-overskrift.' },
 ]
 
 const loadingFallback = (
