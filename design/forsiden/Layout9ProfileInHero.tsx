@@ -111,6 +111,27 @@ export default function Layout9ProfileInHero() {
             Send melding
           </Btn>
         </div>
+
+        {/* Scroll-indikator */}
+        <a
+          href="#arbeider"
+          className="mt-10 flex w-full max-w-xs items-center gap-3 transition-opacity duration-200 hover:opacity-60"
+        >
+          <span className="block h-px flex-1 bg-rule-heavy" />
+          <span className="flex flex-col items-center gap-0.5">
+            <span className="font-mono text-[8px] uppercase tracking-[0.22em] text-index-num">
+              se arbeider
+            </span>
+            <svg
+              width="10" height="12" viewBox="0 0 10 12" fill="none"
+              className="text-index-num"
+            >
+              <path d="M5 0v7M1 4l4 4 4-4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M1 7.5l4 4 4-4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+            </svg>
+          </span>
+          <span className="block h-px flex-1 bg-rule-heavy" />
+        </a>
       </section>
 
       {/* ============================================================ */}
