@@ -19,8 +19,8 @@ const layouts = [
   { id: 3, name: 'Split Cinematic', description: 'Sticky bildepanel + scrollende innhold side om side' },
   { id: 4, name: 'Typographic Minimal', description: 'Typografidrevet hero, horisontal porteføljescroll' },
   { id: 5, name: 'Stacked Immersive', description: 'Full-bleed seksjoner med bakgrunnsbilder og overlay' },
-  { id: 6, name: 'Compact + Early Portfolio', description: 'Kompakt hero → portefølje umiddelbart → om → booking. Basert på L4-feedback.' },
-  { id: 7, name: 'Asymmetric Entry', description: 'To bilder inne i hero-seksjonen (desktop) / featured bilde under tekst (mobil).' },
+  { id: 6, name: 'Portrait Anchor', description: 'Fremhevet portrettbilde synlig over fold. Resterende 4 i 2×2-grid. Desktop: side-by-side.' },
+  { id: 7, name: 'Strip + Act After', description: 'Stripa kommer før CTA. Alle 5 arbeider synlig før siden ber om handling.' },
 ]
 
 const loadingFallback = (
@@ -37,8 +37,8 @@ const Layout2 = dynamic(() => import('./Layout2GridMosaic'), { ssr: false, loadi
 const Layout3 = dynamic(() => import('./Layout3SplitCinematic'), { ssr: false, loading: () => loadingFallback })
 const Layout4 = dynamic(() => import('./Layout4TypographicMinimal'), { ssr: false, loading: () => loadingFallback })
 const Layout5 = dynamic(() => import('./Layout5StackedImmersive'), { ssr: false, loading: () => loadingFallback })
-const Layout6 = dynamic(() => import('./Layout6CompactEarlyPortfolio'), { ssr: false, loading: () => loadingFallback })
-const Layout7 = dynamic(() => import('./Layout7AsymmetricEntry'), { ssr: false, loading: () => loadingFallback })
+const Layout6 = dynamic(() => import('./Layout6PortraitAnchor'), { ssr: false, loading: () => loadingFallback })
+const Layout7 = dynamic(() => import('./Layout7StripActAfter'), { ssr: false, loading: () => loadingFallback })
 
 const layoutComponents = [Layout1, Layout2, Layout3, Layout4, Layout5, Layout6, Layout7]
 
