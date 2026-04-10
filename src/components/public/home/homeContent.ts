@@ -25,6 +25,7 @@ export const homeArtworks = [
   '/artworks/Art4.png',
   '/artworks/Art5.png',
   '/artworks/Art6.png',
+  '/artworks/Art7.png',
 ]
 
 export const homeSteps = [

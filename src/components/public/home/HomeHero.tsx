@@ -4,23 +4,23 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export function HomeHero() {
   return (
-    <section className='relative overflow-hidden px-6 pb-10 pt-8 md:px-12 md:pb-24 md:pt-20 lg:px-12'>
-      <div className='pointer-events-none absolute inset-0 flex items-end justify-center pb-4 select-none md:items-center md:pb-0'>
+    <section className='relative flex min-h-[100svh] flex-col justify-start overflow-hidden px-5 pb-20 pt-[28svh] md:justify-center md:pt-0 lg:px-12'>
+      <div className='pointer-events-none absolute inset-0 flex items-center justify-center select-none'>
         <Logo context='hero-watermark' />
       </div>
 
-      <div className='relative z-10 mx-auto max-w-3xl'>
-        <Eyebrow withLine className='mb-4 md:mb-6'>Tatovør i Sandvika</Eyebrow>
-        <h1 className='mb-4 font-serif italic text-[36px] leading-[0.95] tracking-[-0.02em] text-paper sm:text-[44px] md:mb-6 md:text-[clamp(48px,6.5vw,68px)]'>
+      <div className='relative z-10 max-w-[600px]'>
+        <Eyebrow withLine className='mb-6'>Tatovør i Sandvika</Eyebrow>
+        <h1 className='mb-6 font-serif italic text-[44px] leading-[0.92] tracking-[-0.025em] text-paper md:text-[clamp(48px,7vw,72px)]'>
           Dark art &amp; custom&nbsp;design
         </h1>
         <p
-          className='mb-7 max-w-[28ch] font-serif italic text-[15px] leading-[1.5] md:mb-10 md:max-w-[30ch] md:text-[17px]'
-          style={{ color: 'rgba(237,233,230,0.55)' }}
+          className='mb-10 max-w-[28ch] font-serif italic text-[17px] leading-[1.4]'
+          style={{ color: 'rgba(237,233,230,0.60)' }}
         >
           Skreddersydde tatoveringer fra bunnen av — hvert motiv tegnet for deg.
         </p>
-        <Btn href='/book' variant='action-cta' className='sm:max-w-sm'>
+        <Btn href='/book' variant='action-cta' className='max-w-sm'>
           Send bookingforespørsel
         </Btn>
       </div>

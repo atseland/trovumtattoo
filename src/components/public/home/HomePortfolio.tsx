@@ -7,14 +7,12 @@ interface HomePortfolioProps {
 
 export function HomePortfolio({ artworks }: HomePortfolioProps) {
   return (
-    <section className='border-t border-rule py-10 md:py-20'>
-      <div className='mx-auto max-w-3xl px-6 md:px-12 lg:px-12'>
-        <Eyebrow withLine className='mb-5'>Portfolio</Eyebrow>
-      </div>
-      <div className='mx-auto max-w-3xl md:px-12 lg:px-12'>
-        <div className='grid grid-cols-2 gap-px sm:grid-cols-3'>
+    <section className='px-5 py-16 lg:px-12'>
+      <div className='mx-auto max-w-4xl'>
+        <Eyebrow withLine className='mb-6'>Portfolio</Eyebrow>
+        <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>
           {artworks.map((src, index) => (
-            <div key={src} className='aspect-square overflow-hidden bg-panel'>
+            <div key={src} className='aspect-square overflow-hidden'>
               <Image
                 src={src}
                 alt={`Portfolio-bilde ${index + 1}`}

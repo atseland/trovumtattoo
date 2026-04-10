@@ -7,6 +7,7 @@ import { HomePortfolio } from '@/components/public/home/HomePortfolio'
 import { HomeProcess } from '@/components/public/home/HomeProcess'
 import { HomeStyles } from '@/components/public/home/HomeStyles'
 import { homeArtworks, homeJsonLd, homeSteps, homeStyles } from '@/components/public/home/homeContent'
+import { Rule } from '@/components/ui/Rule'
 
 export const metadata: Metadata = {
   title: 'Trovum Tattoo — Tatovør i Sandvika',
@@ -34,10 +35,15 @@ export default function PublicHomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
       <HomeHero />
+      <Rule />
       <HomeAbout />
+      <Rule />
       <HomePortfolio artworks={homeArtworks} />
+      <Rule />
       <HomeStyles styles={homeStyles} />
+      <Rule />
       <HomeProcess steps={homeSteps} />
+      <Rule />
       <HomeCta />
     </div>
   )

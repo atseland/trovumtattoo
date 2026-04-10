@@ -16,7 +16,7 @@ export function PublicHeader() {
 
   return (
     <header className='sticky top-0 z-40 border-b border-rule bg-bg'>
-      <div className='flex h-14 items-center justify-between px-6 lg:px-12 md:h-16'>
+      <div className='flex h-14 items-center justify-between px-5 md:h-16 lg:px-12'>
         <Link href='/' onClick={() => setOpen(false)} className='shrink-0'>
           <Logo context='nav' />
         </Link>
@@ -73,7 +73,7 @@ export function PublicHeader() {
       {open && (
         <nav
           id='public-mobile-nav'
-          className='flex flex-col border-t border-rule bg-bg px-6 lg:px-12 py-5 md:hidden'
+          className='flex flex-col border-t border-rule bg-bg px-5 py-5 md:hidden lg:px-12'
         >
           {navLinks.map((link) => (
             <Link

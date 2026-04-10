@@ -12,28 +12,23 @@ interface HomeProcessProps {
 
 export function HomeProcess({ steps }: HomeProcessProps) {
   return (
-    <section className='border-t border-rule px-6 py-10 md:px-12 md:py-20 lg:px-12'>
+    <section className='px-5 py-16 lg:px-12'>
       <div className='mx-auto max-w-3xl'>
-        <Eyebrow withLine className='mb-3'>Prosessen</Eyebrow>
-        <h2 className='mb-6 font-serif italic text-[22px] leading-[1.15] tracking-[-0.02em] text-paper sm:text-[28px] md:mb-8'>
+        <Eyebrow withLine className='mb-4'>Prosessen</Eyebrow>
+        <h2 className='mb-10 font-serif italic text-[clamp(22px,3vw,30px)] leading-[1.1] tracking-[-0.02em] text-paper'>
           Slik fungerer det
         </h2>
-        <ol className='flex flex-col'>
-          {steps.map((step, index) => (
-            <li
-              key={step.num}
-              className={`grid grid-cols-[1.75rem_1fr] gap-x-3 py-4 md:grid-cols-[2rem_1fr] md:gap-x-6 md:py-6 ${
-                index > 0 ? 'border-t border-rule' : ''
-              }`}
-            >
-              <span className='pt-0.5 font-mono text-[10px] tracking-[0.16em] text-index-num'>
+        <ol className='flex flex-col gap-10'>
+          {steps.map((step) => (
+            <li key={step.num} className='flex gap-6'>
+              <span className='w-6 shrink-0 pt-[2px] font-mono text-[11px] tracking-[0.18em] text-nav'>
                 {step.num}
               </span>
               <div>
-                <h3 className='mb-1 font-sans text-[14px] font-medium leading-snug text-paper md:text-[15px]'>
+                <h3 className='mb-2 font-sans text-[14px] font-medium text-paper'>
                   {step.title}
                 </h3>
-                <p className='max-w-[44ch] font-sans text-[13px] leading-[1.65] text-body md:text-[13.5px]'>
+                <p className='max-w-[52ch] font-sans text-[13px] leading-[1.8] text-body'>
                   {step.body}
                 </p>
               </div>

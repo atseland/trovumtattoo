@@ -4,7 +4,7 @@ import { Logo } from '@/components/Logo'
 export function PublicFooter() {
   return (
     <footer className='border-t border-rule bg-bg'>
-      <div className='px-6 py-8 md:px-12 md:py-12 lg:px-12'>
+      <div className='px-5 py-8 md:py-12 lg:px-12'>
         <div className='mx-auto max-w-3xl'>
           <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <Logo context='footer' />

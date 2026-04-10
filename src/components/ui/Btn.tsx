@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 type Variant = 'default' | 'sm' | 'action' | 'action-primary' | 'action-cta'
 
@@ -84,7 +85,7 @@ const variantClasses: Record<Variant, string> = {
 
 export function Btn(props: BtnProps) {
   const { variant = 'default', children, className = '', href, ...rest } = props
-  const classes = `${variantClasses[variant]} ${className}`
+  const classes = cn(variantClasses[variant], className)
 
   if (href) {
     return (
