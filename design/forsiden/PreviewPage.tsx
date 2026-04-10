@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic'
 const layouts = [
   { id: 4, name: 'Typographic Minimal', description: 'Typografidrevet hero, horisontal porteføljescroll' },
   { id: 8, name: 'Portfolio Before About', description: 'L4 med én endring: portefølje og bio byttet om.' },
+  { id: 9, name: 'Profile In Hero', description: 'L8 med sirkulært profilbilde i hero mellom tittel og CTA.' },
 ]
 
 const loadingFallback = (
@@ -25,8 +26,9 @@ const loadingFallback = (
 
 const Layout4 = dynamic(() => import('./Layout4TypographicMinimal'), { ssr: false, loading: () => loadingFallback })
 const Layout8 = dynamic(() => import('./Layout8PortfolioBeforeAbout'), { ssr: false, loading: () => loadingFallback })
+const Layout9 = dynamic(() => import('./Layout9ProfileInHero'), { ssr: false, loading: () => loadingFallback })
 
-const layoutComponents = [Layout4, Layout8]
+const layoutComponents = [Layout4, Layout8, Layout9]
 
 export default function PreviewPage() {
   const [active, setActive] = useState(0)
