@@ -71,7 +71,7 @@ export default function Layout9ProfileInHero() {
       {/* ============================================================ */}
       {/*  HERO — L8 + sirkulært profilbilde mellom tittel og CTA-er  */}
       {/* ============================================================ */}
-      <section className="flex min-h-[85vh] flex-col items-center justify-center px-6 py-20 text-center md:min-h-screen md:px-12">
+      <section className="flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center md:min-h-screen md:px-12 md:py-20">
         <span className="mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12">
           Tigr Tattoo &middot; Sandvika
         </span>
@@ -106,11 +106,11 @@ export default function Layout9ProfileInHero() {
           Dark art, blackwork og black and grey
         </p>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <Btn href="#arbeider" variant="default" className="sm:w-auto sm:min-w-[160px]">
+        <div className="flex gap-3">
+          <Btn href="#arbeider" variant="default" className="flex-1 sm:flex-none sm:min-w-[160px]">
             Se arbeider
           </Btn>
-          <Btn href="/book" variant="default" className="sm:w-auto sm:min-w-[160px]">
+          <Btn href="/book" variant="default" className="flex-1 sm:flex-none sm:min-w-[160px]">
             Send melding
           </Btn>
         </div>
