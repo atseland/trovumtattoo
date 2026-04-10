@@ -4,7 +4,7 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export function HomeHero() {
   return (
-    <section className='relative flex min-h-[100svh] flex-col justify-start overflow-hidden px-5 pb-20 pt-[28svh] md:justify-center md:pt-0 lg:px-12'>
+    <section className='relative flex min-h-[100svh] flex-col justify-start overflow-hidden px-pad pb-20 pt-[28svh] md:justify-center md:pt-0'>
       <div className='pointer-events-none absolute inset-0 flex items-center justify-center select-none'>
         <Logo context='hero-watermark' />
       </div>

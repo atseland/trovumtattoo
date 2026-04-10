@@ -3,7 +3,7 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export function HomeCta() {
   return (
-    <section className='px-5 py-20 text-center lg:px-12'>
+    <section className='px-pad py-20 text-center'>
       <div className='mx-auto max-w-3xl'>
         <Eyebrow withLine className='mb-4 justify-center'>Book</Eyebrow>
         <h2 className='mb-3 font-serif italic text-[clamp(32px,5vw,48px)] leading-[1.1] tracking-[-0.02em] text-paper'>

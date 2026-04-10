@@ -1,4 +1,8 @@
-const CACHE_NAME = 'trovum-v1'
+const CACHE_NAME = 'trovum-v2'
+const IS_LOCALHOST =
+  self.location.hostname === 'localhost' ||
+  self.location.hostname === '127.0.0.1'
+
 const STATIC_ASSETS = [
   '/',
   '/offline.html',
@@ -7,81 +11,110 @@ const STATIC_ASSETS = [
   '/icons/icon-512.svg',
 ]
 
-// Install — cache app shell
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  )
-  self.skipWaiting()
-})
+async function clearAllCaches() {
+  const cacheNames = await caches.keys()
+  await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)))
+}
 
-// Activate — clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  )
-  self.clients.claim()
-})
+if (IS_LOCALHOST) {
+  self.addEventListener('install', (event) => {
+    event.waitUntil(self.skipWaiting())
+  })
 
-// Fetch — network-first for API/Convex, cache-first for static assets
-self.addEventListener('fetch', (event) => {
-  const { request } = event
-  const url = new URL(request.url)
+  self.addEventListener('activate', (event) => {
+    event.waitUntil((async () => {
+      await clearAllCaches()
+      await self.registration.unregister()
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') return
-
-  // Network-first for API, Convex, and auth
-  const isApi =
-    url.pathname.startsWith('/api/') ||
-    url.hostname.includes('convex.cloud') ||
-    url.hostname.includes('clerk') ||
-    url.pathname.startsWith('/_next/data/')
-
-  if (isApi) {
-    event.respondWith(
-      fetch(request).catch(() => {
-        if (request.mode === 'navigate') {
-          return caches.match('/offline.html')
-        }
-        return new Response('{"error":"offline"}', { status: 503, headers: { 'Content-Type': 'application/json' } })
+      const clients = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true,
       })
+
+      await Promise.all(
+        clients.map((client) => client.navigate(client.url))
+      )
+    })())
+  })
+} else {
+  // Install — cache app shell
+  self.addEventListener('install', (event) => {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
     )
-    return
-  }
+    self.skipWaiting()
+  })
 
-  // Cache-first for static assets (_next/static, fonts, images)
-  const isStatic =
-    url.pathname.startsWith('/_next/static/') ||
-    url.pathname.startsWith('/icons/') ||
-    url.pathname.endsWith('.woff2') ||
-    url.pathname.endsWith('.svg') ||
-    url.pathname.endsWith('.png') ||
-    url.pathname.endsWith('.jpg')
+  // Activate — clean up old caches
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      caches.keys().then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      )
+    )
+    self.clients.claim()
+  })
 
-  if (isStatic) {
+  // Fetch — network-first for API/Convex, cache-first for static assets
+  self.addEventListener('fetch', (event) => {
+    const { request } = event
+    const url = new URL(request.url)
+
+    // Skip non-GET requests
+    if (request.method !== 'GET') return
+
+    // Network-first for API, Convex, and auth
+    const isApi =
+      url.pathname.startsWith('/api/') ||
+      url.hostname.includes('convex.cloud') ||
+      url.hostname.includes('clerk') ||
+      url.pathname.startsWith('/_next/data/')
+
+    if (isApi) {
+      event.respondWith(
+        fetch(request).catch(() => {
+          if (request.mode === 'navigate') {
+            return caches.match('/offline.html')
+          }
+          return new Response('{"error":"offline"}', { status: 503, headers: { 'Content-Type': 'application/json' } })
+        })
+      )
+      return
+    }
+
+    // Cache-first for static assets (_next/static, fonts, images)
+    const isStatic =
+      url.pathname.startsWith('/_next/static/') ||
+      url.pathname.startsWith('/icons/') ||
+      url.pathname.endsWith('.woff2') ||
+      url.pathname.endsWith('.svg') ||
+      url.pathname.endsWith('.png') ||
+      url.pathname.endsWith('.jpg')
+
+    if (isStatic) {
+      event.respondWith(
+        caches.match(request).then((cached) => cached ?? fetch(request).then((res) => {
+          if (!res.ok) return res
+
+          const clone = res.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+          return res
+        }))
+      )
+      return
+    }
+
+    // Network-first for navigation with offline fallback
+    if (request.mode === 'navigate') {
+      event.respondWith(
+        fetch(request).catch(() => caches.match('/offline.html'))
+      )
+      return
+    }
+
+    // Default: network-first
     event.respondWith(
-      caches.match(request).then((cached) => cached ?? fetch(request).then((res) => {
-        const clone = res.clone()
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
-        return res
-      }))
+      fetch(request).catch(() => caches.match(request))
     )
-    return
-  }
-
-  // Network-first for navigation with offline fallback
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(() => caches.match('/offline.html'))
-    )
-    return
-  }
-
-  // Default: network-first
-  event.respondWith(
-    fetch(request).catch(() => caches.match(request))
-  )
-})
+  })
+}

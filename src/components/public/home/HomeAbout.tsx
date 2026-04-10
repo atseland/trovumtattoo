@@ -3,7 +3,7 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export function HomeAbout() {
   return (
-    <section className='px-5 py-16 lg:px-12'>
+    <section className='px-pad py-16'>
       <div className='mx-auto max-w-3xl'>
         <Eyebrow withLine className='mb-4'>Om tatovøren</Eyebrow>
         <div className='flex flex-col gap-8 md:flex-row md:items-start'>

@@ -7,7 +7,7 @@ interface HomePortfolioProps {
 
 export function HomePortfolio({ artworks }: HomePortfolioProps) {
   return (
-    <section className='px-5 py-16 lg:px-12'>
+    <section className='px-pad py-16'>
       <div className='mx-auto max-w-4xl'>
         <Eyebrow withLine className='mb-6'>Portfolio</Eyebrow>
         <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4'>

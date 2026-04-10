@@ -6,7 +6,7 @@ interface HomeStylesProps {
 
 export function HomeStyles({ styles }: HomeStylesProps) {
   return (
-    <section className='px-5 py-16 lg:px-12'>
+    <section className='px-pad py-16'>
       <div className='mx-auto max-w-3xl'>
         <Eyebrow withLine className='mb-4'>Spesialiseringer</Eyebrow>
         <h2 className='mb-6 font-serif italic text-[clamp(22px,3vw,30px)] leading-[1.1] tracking-[-0.02em] text-paper'>
