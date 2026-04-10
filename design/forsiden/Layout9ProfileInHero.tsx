@@ -107,10 +107,10 @@ export default function Layout9ProfileInHero() {
         </p>
 
         <div className="flex gap-3">
-          <Btn href="#arbeider" variant="default" className="flex-1 sm:flex-none sm:min-w-[160px]">
+          <Btn href="#arbeider" variant="default" className="min-w-[148px]">
             Se arbeider
           </Btn>
-          <Btn href="/book" variant="default" className="flex-1 sm:flex-none sm:min-w-[160px]">
+          <Btn href="/book" variant="default" className="min-w-[148px]">
             Kontakt
           </Btn>
         </div>
