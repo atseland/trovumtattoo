@@ -193,21 +193,9 @@ export default function Layout9ProfileInHero() {
       {/* ============================================================ */}
       <section className="border-t border-rule px-6 py-14 md:px-12 md:py-24">
         <div className="mx-auto max-w-xl text-center">
-          <div className="mb-6 flex justify-center">
-            <Image
-              src="/profilbilde.jpeg"
-              alt="Trovum Tattoo"
-              width={88}
-              height={88}
-              className="rounded-full object-cover"
-              style={{
-                width: 88,
-                height: 88,
-                filter: 'grayscale(20%) contrast(1.05)',
-                border: '1px solid rgba(237,233,230,0.08)',
-              }}
-            />
-          </div>
+          <h2 className="mb-6 font-serif italic text-[28px] leading-[1.1] tracking-[-0.02em] text-paper md:text-[34px]">
+            Om meg
+          </h2>
 
           <p className="mb-4 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]">
             Jeg tatoverer hos Tigr Tattoo i Sandvika og har holdt på siden starten av 2023.
