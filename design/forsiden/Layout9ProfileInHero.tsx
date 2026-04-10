@@ -71,7 +71,7 @@ export default function Layout9ProfileInHero() {
       {/* ============================================================ */}
       {/*  HERO — L8 + sirkulært profilbilde mellom tittel og CTA-er  */}
       {/* ============================================================ */}
-      <section className="flex flex-col items-center justify-center px-6 pb-6 pt-10 text-center md:min-h-screen md:px-12 md:py-20">
+      <section className="flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center md:min-h-screen md:px-12 md:py-20">
         <span className="mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12">
           Tigr Tattoo &middot; Sandvika
         </span>
