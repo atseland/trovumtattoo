@@ -111,7 +111,7 @@ export default function Layout9ProfileInHero() {
             Se arbeider
           </Btn>
           <Btn href="/book" variant="default" className="flex-1 sm:flex-none sm:min-w-[160px]">
-            Send melding
+            Kontakt
           </Btn>
         </div>
       </section>
