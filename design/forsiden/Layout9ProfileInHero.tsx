@@ -119,7 +119,7 @@ export default function Layout9ProfileInHero() {
       {/* ============================================================ */}
       {/*  PORTEFØLJE — løftet opp, før om-seksjonen                  */}
       {/* ============================================================ */}
-      <section id="arbeider" className="border-t border-rule py-14 md:py-24">
+      <section id="arbeider" className="py-14 md:py-24">
         <div className="mx-auto max-w-xl px-6 text-center md:px-12">
           <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.22em] text-index-num">
             Portefølje
