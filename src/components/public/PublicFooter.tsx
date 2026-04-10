@@ -6,7 +6,7 @@ export function PublicFooter() {
     <footer className='border-t border-rule bg-bg'>
       <div className='px-pad py-8 md:py-12'>
         <div className='mx-auto max-w-3xl'>
-          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div className='flex flex-col items-center gap-4'>
             <Logo context='footer' />
 
             <div className='flex gap-4 sm:gap-6'>
@@ -27,7 +27,7 @@ export function PublicFooter() {
             </div>
           </div>
 
-          <p className='mt-6 font-sans text-[10px] tracking-wide text-footer-label sm:mt-8 sm:text-[11px]'>
+          <p className='mt-6 text-center font-sans text-[10px] tracking-wide text-footer-label sm:mt-8 sm:text-[11px]'>
             {`© ${new Date().getFullYear()} Trovum Tattoo — Sandvika`}
           </p>
         </div>
