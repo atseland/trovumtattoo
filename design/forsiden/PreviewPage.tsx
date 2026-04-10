@@ -1,5 +1,5 @@
 /**
- * Preview-side for å bytte mellom de 5 layoutene.
+ * Preview-side for å bytte mellom alle 7 layoutene.
  *
  * Bruk: Legg til en midlertidig rute:
  *   src/app/(public)/design/page.tsx  →  export { default } from '../../../../design/forsiden/PreviewPage'
@@ -19,6 +19,8 @@ const layouts = [
   { id: 3, name: 'Split Cinematic', description: 'Sticky bildepanel + scrollende innhold side om side' },
   { id: 4, name: 'Typographic Minimal', description: 'Typografidrevet hero, horisontal porteføljescroll' },
   { id: 5, name: 'Stacked Immersive', description: 'Full-bleed seksjoner med bakgrunnsbilder og overlay' },
+  { id: 6, name: 'Compact + Early Portfolio', description: 'Kompakt hero → portefølje umiddelbart → om → booking. Basert på L4-feedback.' },
+  { id: 7, name: 'Asymmetric Entry', description: 'To bilder inne i hero-seksjonen (desktop) / featured bilde under tekst (mobil).' },
 ]
 
 const loadingFallback = (
@@ -35,8 +37,10 @@ const Layout2 = dynamic(() => import('./Layout2GridMosaic'), { ssr: false, loadi
 const Layout3 = dynamic(() => import('./Layout3SplitCinematic'), { ssr: false, loading: () => loadingFallback })
 const Layout4 = dynamic(() => import('./Layout4TypographicMinimal'), { ssr: false, loading: () => loadingFallback })
 const Layout5 = dynamic(() => import('./Layout5StackedImmersive'), { ssr: false, loading: () => loadingFallback })
+const Layout6 = dynamic(() => import('./Layout6CompactEarlyPortfolio'), { ssr: false, loading: () => loadingFallback })
+const Layout7 = dynamic(() => import('./Layout7AsymmetricEntry'), { ssr: false, loading: () => loadingFallback })
 
-const layoutComponents = [Layout1, Layout2, Layout3, Layout4, Layout5]
+const layoutComponents = [Layout1, Layout2, Layout3, Layout4, Layout5, Layout6, Layout7]
 
 export default function PreviewPage() {
   const [active, setActive] = useState(0)
@@ -92,7 +96,7 @@ export default function PreviewPage() {
             onClick={() => setSelectorOpen(true)}
             className="cursor-pointer rounded-sm border border-rule bg-panel/90 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.22em] text-accent shadow-lg backdrop-blur-sm transition-colors hover:text-paper"
           >
-            {String(active + 1).padStart(2, '0')} / 05
+            {String(active + 1).padStart(2, '0')} / 07
           </button>
         )}
       </div>
