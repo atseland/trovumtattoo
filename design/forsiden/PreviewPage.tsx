@@ -14,6 +14,7 @@ const layouts = [
   { id: 4, name: 'Typographic Minimal', description: 'Typografidrevet hero, horisontal porteføljescroll' },
   { id: 8, name: 'Portfolio Before About', description: 'L4 med én endring: portefølje og bio byttet om.' },
   { id: 9, name: 'Aleks Edits', description: 'L8 med profilbilde i hero, éin CTA, scroll-indikator og "Om meg"-overskrift.' },
+  { id: 10, name: 'Ellen Action', description: 'L9 med nytt profilbilde og actionbilde i "Om meg"-seksjonen.' },
 ]
 
 const loadingFallback = (
@@ -27,8 +28,9 @@ const loadingFallback = (
 const Layout4 = dynamic(() => import('./Layout4TypographicMinimal'), { ssr: false, loading: () => loadingFallback })
 const Layout8 = dynamic(() => import('./Layout8PortfolioBeforeAbout'), { ssr: false, loading: () => loadingFallback })
 const Layout9 = dynamic(() => import('./Layout9AleksEdits'), { ssr: false, loading: () => loadingFallback })
+const Layout10 = dynamic(() => import('./Layout10EllenAction'), { ssr: false, loading: () => loadingFallback })
 
-const layoutComponents = [Layout4, Layout8, Layout9]
+const layoutComponents = [Layout4, Layout8, Layout9, Layout10]
 
 export default function PreviewPage() {
   const [active, setActive] = useState(0)

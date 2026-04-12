@@ -1,12 +1,18 @@
 /**
- * Layout 9: Profile In Hero
+ * Layout 10: Ellen Action
  *
- * Layout 8 med én endring: sirkulært profilbilde av tatovøren
- * plassert i hero-seksjonen mellom "Trovum Tattoo"-tittelen
- * og "Se arbeider" / "Send melding"-knappene.
+ * Basert på Layout 9 (AleksEdits) med to endringer:
+ *
+ * 1. Nytt profilbilde (profilbilde_v2.jpeg) i hero.
+ *
+ * 2. Bilde2_less.png plassert i "Om meg"-seksjonen mellom
+ *    overskriften og bioteksten. Bildet viser tatovøren i arbeid —
+ *    havfruemotiv, studiomiljø — og kommuniserer håndverk og
+ *    atmosfære uten å konkurrere med teksten.
+ *    Aspektforhold 3/4 er konsistent med porteføljekortene.
  *
  * Rekkefølge:
- *   Hero (tittel → profilbilde → CTA) → Portefølje → Om → Booking → Footer
+ *   Hero → Portefølje → [Om meg: overskrift → bilde → tekst] → Booking
  */
 
 import Image from 'next/image'
@@ -62,12 +68,12 @@ function Ornament({ className = '' }: { className?: string }) {
 /*  Layout                                                             */
 /* ------------------------------------------------------------------ */
 
-export default function Layout9AleksEdits() {
+export default function Layout10EllenAction() {
   return (
     <div className="min-h-screen bg-bg text-paper">
 
       {/* ============================================================ */}
-      {/*  HERO — L8 + sirkulært profilbilde mellom tittel og CTA-er  */}
+      {/*  HERO — identisk med L9                                      */}
       {/* ============================================================ */}
       <section className="flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center md:min-h-screen md:px-12 md:py-20">
         <span className="mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12">
@@ -133,7 +139,7 @@ export default function Layout9AleksEdits() {
       </section>
 
       {/* ============================================================ */}
-      {/*  PORTEFØLJE — løftet opp, før om-seksjonen                  */}
+      {/*  PORTEFØLJE                                                  */}
       {/* ============================================================ */}
       <section id="arbeider" className="py-14 md:py-24">
         <div className="mx-auto max-w-xl px-6 text-center md:px-12">
@@ -187,33 +193,54 @@ export default function Layout9AleksEdits() {
       </section>
 
       {/* ============================================================ */}
-      {/*  OM — flyttet ned, under porteføljen                         */}
+      {/*  OM — overskrift → bilde i arbeid → biotekst                 */}
+      {/*                                                              */}
+      {/*  Bilde2_less.png viser tatovøren i arbeid med havfrue-       */}
+      {/*  motivet. Aspektforhold 3/4 er konsistent med portefølje-    */}
+      {/*  kortene. Bildet settes inn mellom overskriften og teksten   */}
+      {/*  slik at det illustrerer innholdet uten å dominere det.      */}
       {/* ============================================================ */}
       <section className="border-t border-rule px-6 py-14 md:px-12 md:py-24">
-        <div className="mx-auto max-w-xl text-center">
-          <h2 className="mb-6 font-serif italic text-[28px] leading-[1.1] tracking-[-0.02em] text-paper md:text-[34px]">
+        <div className="mx-auto max-w-xl">
+
+          <h2 className="mb-8 text-center font-serif italic text-[28px] leading-[1.1] tracking-[-0.02em] text-paper md:mb-10 md:text-[34px]">
             Om meg
           </h2>
 
-          <p className="mb-4 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]">
-            Jeg tatoverer hos Tigr Tattoo i Sandvika og har holdt på siden starten av 2023.
-            Jeg jobber hovedsakelig i black and grey, blackwork, dark art og semi realism.
-          </p>
-          <p className="mb-6 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]">
-            Jeg liker motiver med tyngde og kontrast — skaller, katedraler, flaggermus, blomster
-            og mørkere fantasy-, film- og bandreferanser. Mye av det jeg lager ligger et sted
-            mellom det makabre og det pene.
-          </p>
+          {/* Bilde i arbeid */}
+          <div className="mb-8 aspect-[3/4] overflow-hidden md:mb-10">
+            <Image
+              src="/Bilde2_less.png"
+              alt="Tatovering i arbeid"
+              width={600}
+              height={800}
+              className="h-full w-full object-cover object-top"
+              style={{ filter: 'grayscale(15%) contrast(1.08)' }}
+            />
+          </div>
 
-          <Ornament className="mb-5" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-index-num">
-            Black and grey &middot; Blackwork &middot; Dark art &middot; Semi realism
-          </p>
+          {/* Biotekst */}
+          <div className="text-center">
+            <p className="mb-4 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]">
+              Jeg tatoverer hos Tigr Tattoo i Sandvika og har holdt på siden starten av 2023.
+              Jeg jobber hovedsakelig i black and grey, blackwork, dark art og semi realism.
+            </p>
+            <p className="mb-6 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]">
+              Jeg liker motiver med tyngde og kontrast — skaller, katedraler, flaggermus, blomster
+              og mørkere fantasy-, film- og bandreferanser. Mye av det jeg lager ligger et sted
+              mellom det makabre og det pene.
+            </p>
+
+            <Ornament className="mb-5" />
+            <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-index-num">
+              Black and grey &middot; Blackwork &middot; Dark art &middot; Semi realism
+            </p>
+          </div>
         </div>
       </section>
 
       {/* ============================================================ */}
-      {/*  BOOKING / KONTAKT — identisk med L4                         */}
+      {/*  BOOKING / KONTAKT                                           */}
       {/* ============================================================ */}
       <section className="border-t border-rule px-6 py-14 md:px-12 md:py-24">
         <div className="mx-auto max-w-xl text-center">
