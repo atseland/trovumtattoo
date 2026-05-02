@@ -208,13 +208,13 @@ export default function Layout10EllenAction() {
           </h2>
 
           {/* Bilde i arbeid */}
-          <div className="mb-8 aspect-[3/4] overflow-hidden md:mb-10">
+          <div className="mb-8 aspect-[4/3] overflow-hidden md:mb-10">
             <Image
               src="/Bilde2_less.png"
               alt="Tatovering i arbeid"
-              width={600}
-              height={800}
-              className="h-full w-full object-cover object-top"
+              width={800}
+              height={600}
+              className="h-full w-full object-cover object-center"
               style={{ filter: 'grayscale(15%) contrast(1.08)' }}
             />
           </div>
@@ -244,8 +244,6 @@ export default function Layout10EllenAction() {
       {/* ============================================================ */}
       <section className="border-t border-rule px-6 py-14 md:px-12 md:py-24">
         <div className="mx-auto max-w-xl text-center">
-          <Ornament className="mb-6" />
-
           <h2 className="mb-4 font-serif text-[26px] italic leading-[1.1] tracking-[-0.02em] text-paper md:text-[32px]">
             Ta kontakt
           </h2>
