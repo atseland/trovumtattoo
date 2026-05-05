@@ -57,7 +57,7 @@ review slug:
 
 # Sjekk launch-krav foer prod-deploy
 launch-check:
-    @bash -euo pipefail -c 'echo "==> Verifikasjon"; just verify; echo "==> Health endpoint"; url="http://localhost:3000/api/health"; if curl -sf "$url" >/dev/null 2>&1; then echo "OK: $url"; else echo "ADVARSEL: Health endpoint svarer ikke paa $url (dev-server kjoerer?)"; fi; echo "==> Sentry"; if grep -q "SENTRY_DSN" .env.local 2>/dev/null && grep "SENTRY_DSN" .env.local | grep -qv "=$"; then echo "OK: Sentry DSN er satt"; else echo "ADVARSEL: Sentry DSN er ikke satt i .env.local"; fi; echo "Launch-sjekk ferdig."'
+    @bash -euo pipefail -c 'echo "==> Verifikasjon"; just verify; echo "==> Health endpoint"; url="http://localhost:3000/api/health"; if curl -sf "$url" >/dev/null 2>&1; then echo "OK: $url"; else echo "ADVARSEL: Health endpoint svarer ikke paa $url (dev-server kjoerer?)"; fi; echo "==> Sentry"; if grep -E "^(NEXT_PUBLIC_SENTRY_DSN|SENTRY_DSN)=" .env.local 2>/dev/null | grep -qv "=$"; then echo "OK: Sentry DSN er satt"; else echo "ADVARSEL: Sentry DSN er ikke satt i .env.local"; fi; echo "Launch-sjekk ferdig."'
 
 # Deploy til Convex preview-miljo (branch-basert)
 preview:
