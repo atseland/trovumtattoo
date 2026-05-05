@@ -1,15 +1,10 @@
-import { PublicHeader } from '@/components/public/PublicHeader'
-import { PublicFooter } from '@/components/public/PublicFooter'
 import ConvexClientProvider from '@/components/ConvexClientProvider'
+import { PublicChrome } from '@/components/public/PublicChrome'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <ConvexClientProvider>
-      <div className='flex min-h-screen flex-col bg-bg'>
-        <PublicHeader />
-        <main className='flex-1' style={{ animation: 'fade-in 0.4s ease-out both' }}>{children}</main>
-        <PublicFooter />
-      </div>
+      <PublicChrome>{children}</PublicChrome>
     </ConvexClientProvider>
   )
 }

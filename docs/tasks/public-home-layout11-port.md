@@ -38,3 +38,11 @@ Port Layout 11 til produksjonsklar public homepage uten aa gjeninnfoere tidliger
 - `/book` er fortsatt tilgjengelig fra forsiden.
 - Produksjonsdeploy er runtime-verifisert etter eventuell deploy.
 
+## Status 2026-05-06
+
+- Layout 11 er portet til `src/components/public/home/Layout11Home.tsx`.
+- `/` bruker Layout 11-komponenten og har oppdatert metadata uten placeholder/noindex.
+- Public header/footer skjules kun paa `/`; undersider som `/book` beholder public chrome.
+- Lokalt verifisert med Playwright desktop og mobil: ingen document horizontal overflow, ingen blanke bilder, og bookinglenker peker til `/book`.
+- `just verify` passer.
+- Ikke deployet. Placeholder forblir live i produksjon til UI er godkjent eller deploy eksplisitt avtales.
