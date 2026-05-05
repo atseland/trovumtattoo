@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
 
 export default withSentryConfig(nextConfig, {
   org: 'lektor-seland',
-  project: '4511089055563856',
+  project: 'trovumtattoo',
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
   widenClientFileUpload: true,
