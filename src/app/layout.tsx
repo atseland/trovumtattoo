@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from 'next'
-import { ClerkProvider } from '@clerk/nextjs'
 import { EB_Garamond, IBM_Plex_Sans, Jost } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
-import ConvexClientProvider from '@/components/ConvexClientProvider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 
@@ -55,18 +53,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang='no' suppressHydrationWarning>
-        <body className={`${ebGaramond.variable} ${ibmPlexSans.variable} ${jost.variable} min-h-screen antialiased`}>
-          <ThemeProvider>
-            <ConvexClientProvider>
-              {children}
-              <Toaster richColors />
-              <ServiceWorkerRegistration />
-            </ConvexClientProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang='no' suppressHydrationWarning>
+      <body className={`${ebGaramond.variable} ${ibmPlexSans.variable} ${jost.variable} min-h-screen antialiased`}>
+        <ThemeProvider>
+          {children}
+          <Toaster richColors />
+          <ServiceWorkerRegistration />
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }

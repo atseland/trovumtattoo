@@ -115,7 +115,7 @@ async function getConvexTemplateStatus(page: Page) {
 }
 
 async function signInAsAdmin(page: Page) {
-  await page.goto('/')
+  await page.goto('/sign-in')
   await clerk.loaded({ page })
   await clerk.signIn({ page, emailAddress: adminEmail })
 

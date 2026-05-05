@@ -1,29 +1,34 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { UserButton } from '@clerk/nextjs'
+import { ClerkProvider, UserButton } from '@clerk/nextjs'
 import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
+import { AuthenticatedConvexClientProvider } from '@/components/ConvexClientProvider'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
   return (
-    <div className='flex min-h-screen bg-bg'>
-      <AdminNav />
+    <ClerkProvider>
+      <AuthenticatedConvexClientProvider>
+        <div className='flex min-h-screen bg-bg'>
+          <AdminNav />
 
-      <div className='flex flex-1 flex-col md:overflow-hidden'>
-        {/* Sticky header */}
-        <header className='sticky top-0 z-40 flex items-center justify-between border-b border-rule bg-panel px-4 py-3 min-h-[56px]'>
-          <span className='font-sans text-sm font-medium text-paper'>Admin</span>
-          <UserButton appearance={{ variables: { colorPrimary: 'var(--accent)' } }} />
-        </header>
+          <div className='flex flex-1 flex-col md:overflow-hidden'>
+            {/* Sticky header */}
+            <header className='sticky top-0 z-40 flex items-center justify-between border-b border-rule bg-panel px-4 py-3 min-h-[56px]'>
+              <span className='font-sans text-sm font-medium text-paper'>Admin</span>
+              <UserButton appearance={{ variables: { colorPrimary: 'var(--accent)' } }} />
+            </header>
 
-        {/* Main content — add bottom padding on mobile for nav bar */}
-        <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4' style={{ animation: 'fade-in 0.4s ease-out both' }}>
-          <AdminAuthGate>{children}</AdminAuthGate>
-        </main>
-      </div>
-    </div>
+            {/* Main content - add bottom padding on mobile for nav bar */}
+            <main className='flex-1 overflow-auto p-4 pb-20 md:pb-4' style={{ animation: 'fade-in 0.4s ease-out both' }}>
+              <AdminAuthGate>{children}</AdminAuthGate>
+            </main>
+          </div>
+        </div>
+      </AuthenticatedConvexClientProvider>
+    </ClerkProvider>
   )
 }
