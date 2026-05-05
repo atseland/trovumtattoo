@@ -68,6 +68,13 @@ Dette er en hard regel. Ikke avslutt arbeidsokt eller oppgave uten at session-lo
 
 Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 
+### Public UI-arbeid
+
+- For neste public-home-iterasjon er godkjent designretning `design/forsiden/Layout11Final.tsx`, med mindre nyere task/handoff sier noe annet.
+- Produksjon kan midlertidig vise placeholder paa `/`; ikke erstatt den med uferdig public UI.
+- Naar `design/`-prototyper flyttes til ekte app, port dem inn i `src/app/(public)/` og/eller `src/components/public/` i stedet for aa la produksjonsruter importere direkte fra `design/`.
+- Verifiser public UI med browser/Playwright paa baade mobil og desktop foer deploy.
+
 ## Repo-skills
 
 - `$repo-verify` for endringssikker verifikasjon og avslutning.
