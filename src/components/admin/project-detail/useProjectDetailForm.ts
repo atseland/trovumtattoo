@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '@convex/_generated/api'
@@ -21,33 +21,37 @@ function toInputValue(value?: number | string | null) {
   return value === undefined || value === null ? '' : String(value)
 }
 
+function createProjectFormState(project: ProjectDetailFormProject | null | undefined) {
+  return {
+    projectId: project?._id ?? null,
+    estimate: toInputValue(project?.estimatedPrice),
+    depositAmount: toInputValue(project?.depositAmount),
+    depositStatus: project?.depositStatus ?? 'pending',
+    paymentLink: project?.paymentLink ?? '',
+    paymentNote: project?.paymentNote ?? '',
+    invoiceReference: project?.invoiceReference ?? '',
+    accountingStatus: project?.accountingStatus ?? '',
+  }
+}
+
 export function useProjectDetailForm(project: ProjectDetailFormProject | null | undefined) {
   const updateProject = useMutation(api.projects.update)
+  const projectId = project?._id ?? null
 
-  const [estimate, setEstimate] = useState('')
+  const [formState, setFormState] = useState(() => createProjectFormState(project))
   const [savingEstimate, setSavingEstimate] = useState(false)
-
-  const [depositAmount, setDepositAmount] = useState('')
-  const [depositStatus, setDepositStatus] = useState('pending')
-  const [paymentLink, setPaymentLink] = useState('')
-  const [paymentNote, setPaymentNote] = useState('')
   const [savingDeposit, setSavingDeposit] = useState(false)
-
-  const [invoiceReference, setInvoiceReference] = useState('')
-  const [accountingStatus, setAccountingStatus] = useState('')
   const [savingAccounting, setSavingAccounting] = useState(false)
 
-  useEffect(() => {
-    if (!project) return
+  let activeFormState = formState
+  if (formState.projectId !== projectId) {
+    activeFormState = createProjectFormState(project)
+    setFormState(activeFormState)
+  }
 
-    setEstimate(toInputValue(project.estimatedPrice))
-    setDepositAmount(toInputValue(project.depositAmount))
-    setDepositStatus(project.depositStatus ?? 'pending')
-    setPaymentLink(project.paymentLink ?? '')
-    setPaymentNote(project.paymentNote ?? '')
-    setInvoiceReference(project.invoiceReference ?? '')
-    setAccountingStatus(project.accountingStatus ?? '')
-  }, [project])
+  function updateField(field: keyof Omit<typeof activeFormState, 'projectId'>, value: string) {
+    setFormState((current) => ({ ...current, projectId, [field]: value }))
+  }
 
   async function saveEstimate() {
     if (!project) return
@@ -56,7 +60,7 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
     try {
       await updateProject({
         id: project._id,
-        estimatedPrice: estimate ? parseFloat(estimate) : undefined,
+        estimatedPrice: activeFormState.estimate ? parseFloat(activeFormState.estimate) : undefined,
       })
       toast.success('Estimat lagret')
     } catch {
@@ -73,10 +77,10 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
     try {
       await updateProject({
         id: project._id,
-        depositAmount: depositAmount ? parseFloat(depositAmount) : undefined,
-        depositStatus: depositStatus || undefined,
-        paymentLink: paymentLink || undefined,
-        paymentNote: paymentNote || undefined,
+        depositAmount: activeFormState.depositAmount ? parseFloat(activeFormState.depositAmount) : undefined,
+        depositStatus: activeFormState.depositStatus || undefined,
+        paymentLink: activeFormState.paymentLink || undefined,
+        paymentNote: activeFormState.paymentNote || undefined,
       })
       toast.success('Depositum lagret')
     } catch {
@@ -93,8 +97,8 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
     try {
       await updateProject({
         id: project._id,
-        invoiceReference: invoiceReference || undefined,
-        accountingStatus: accountingStatus || undefined,
+        invoiceReference: activeFormState.invoiceReference || undefined,
+        accountingStatus: activeFormState.accountingStatus || undefined,
       })
       toast.success('Conta-data lagret')
     } catch {
@@ -105,24 +109,24 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
   }
 
   return {
-    estimate,
-    setEstimate,
+    estimate: activeFormState.estimate,
+    setEstimate: (value: string) => updateField('estimate', value),
     savingEstimate,
     saveEstimate,
-    depositAmount,
-    setDepositAmount,
-    depositStatus,
-    setDepositStatus,
-    paymentLink,
-    setPaymentLink,
-    paymentNote,
-    setPaymentNote,
+    depositAmount: activeFormState.depositAmount,
+    setDepositAmount: (value: string) => updateField('depositAmount', value),
+    depositStatus: activeFormState.depositStatus,
+    setDepositStatus: (value: string) => updateField('depositStatus', value),
+    paymentLink: activeFormState.paymentLink,
+    setPaymentLink: (value: string) => updateField('paymentLink', value),
+    paymentNote: activeFormState.paymentNote,
+    setPaymentNote: (value: string) => updateField('paymentNote', value),
     savingDeposit,
     saveDeposit,
-    invoiceReference,
-    setInvoiceReference,
-    accountingStatus,
-    setAccountingStatus,
+    invoiceReference: activeFormState.invoiceReference,
+    setInvoiceReference: (value: string) => updateField('invoiceReference', value),
+    accountingStatus: activeFormState.accountingStatus,
+    setAccountingStatus: (value: string) => updateField('accountingStatus', value),
     savingAccounting,
     saveAccounting,
   }

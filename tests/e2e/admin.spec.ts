@@ -31,18 +31,13 @@ function loadLocalEnv() {
 const localEnv = loadLocalEnv()
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL ?? localEnv.NEXT_PUBLIC_CONVEX_URL
 const adminEmail = process.env.E2E_CLERK_USER_EMAIL ?? localEnv.E2E_CLERK_USER_EMAIL
+const canRunAdminE2E = Boolean(convexUrl && adminEmail)
 
-if (!convexUrl) {
-  throw new Error('NEXT_PUBLIC_CONVEX_URL must be available to run admin e2e tests')
-}
-
-if (!adminEmail) {
-  throw new Error('E2E_CLERK_USER_EMAIL must be set to run admin e2e tests')
-}
-
-const convex = new ConvexHttpClient(convexUrl, { logger: false })
+const convex = convexUrl ? new ConvexHttpClient(convexUrl, { logger: false }) : null
 
 async function createInquiry() {
+  if (!convex) throw new Error('NEXT_PUBLIC_CONVEX_URL must be available to create e2e inquiries')
+
   const unique = `Audit ${Date.now()}`
   const email = `aleks+${Date.now()}@example.com`
 
@@ -89,6 +84,11 @@ async function expectOneVisible(locators: ReturnType<Page['locator']>[]) {
 test.beforeAll(async () => {
   await clerkSetup()
 })
+
+test.skip(
+  !canRunAdminE2E,
+  'Admin e2e requires NEXT_PUBLIC_CONVEX_URL and E2E_CLERK_USER_EMAIL.',
+)
 
 async function getConvexTemplateStatus(page: Page) {
   return await page.evaluate(async () => {

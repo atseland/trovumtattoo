@@ -107,3 +107,43 @@ export const listByClient = query({
       .collect()
   },
 })
+
+export const searchWithClient = query({
+  args: { searchQuery: v.string() },
+  handler: async (ctx, { searchQuery }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    const normalizedQuery = searchQuery.trim().toLowerCase()
+    if (normalizedQuery.length < 2) return []
+
+    const projects = await ctx.db.query('projects').order('desc').collect()
+    const rows = await Promise.all(
+      projects.map(async (project) => {
+        const client = await ctx.db.get(project.clientId)
+        const inquiry = project.inquiryId ? await ctx.db.get(project.inquiryId) : null
+        return { ...project, client, inquiry }
+      }),
+    )
+
+    return rows
+      .filter((row) => {
+        const haystack = [
+          row.status,
+          row.client?.name,
+          row.client?.email,
+          row.client?.phone,
+          row.client?.instagramHandle,
+          row.inquiry?.name,
+          row.inquiry?.email,
+          row.inquiry?.description,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+
+        return haystack.includes(normalizedQuery)
+      })
+      .slice(0, 20)
+  },
+})

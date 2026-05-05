@@ -1,3 +1,9 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+overrides:
+  postcss: 8.5.14
+
+allowBuilds:
+  '@clerk/shared': true
+  '@sentry/cli': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

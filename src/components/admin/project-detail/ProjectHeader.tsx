@@ -5,10 +5,12 @@ import { StatusBadge } from '@/components/admin/StatusBadge'
 
 interface ProjectHeaderProps {
   clientId: string
+  clientName?: string
+  clientEmail?: string
   status: string
 }
 
-export function ProjectHeader({ clientId, status }: ProjectHeaderProps) {
+export function ProjectHeader({ clientId, clientName, clientEmail, status }: ProjectHeaderProps) {
   return (
     <>
       <Link
@@ -20,10 +22,13 @@ export function ProjectHeader({ clientId, status }: ProjectHeaderProps) {
 
       <div className='flex items-center gap-3 flex-wrap mb-4'>
         <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em]'>
-          Prosjekt
+          {clientName ? `Prosjekt for ${clientName}` : 'Prosjekt'}
         </h1>
         <StatusBadge status={status} />
       </div>
+      {clientEmail && (
+        <p className='font-sans text-[13px] text-mast-left mb-4'>{clientEmail}</p>
+      )}
     </>
   )
 }

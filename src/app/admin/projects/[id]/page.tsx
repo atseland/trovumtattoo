@@ -98,7 +98,12 @@ export default function ProjectDetailPage() {
 
   return (
     <div className='max-w-2xl'>
-      <ProjectHeader clientId={project.clientId} status={project.status} />
+      <ProjectHeader
+        clientId={project.clientId}
+        clientName={client?.name}
+        clientEmail={client?.email}
+        status={project.status}
+      />
       <ProjectQuickActions
         reviewRequestedAt={project.reviewRequestedAt}
         onCreateBooking={openCreateBookingSheet}

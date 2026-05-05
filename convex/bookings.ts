@@ -49,6 +49,45 @@ export const listByProject = query({
   handler: async (ctx, { projectId }) => await listBookingsByProject(ctx, projectId),
 })
 
+export const searchWithDetails = query({
+  args: { searchQuery: v.string() },
+  handler: async (ctx, { searchQuery }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    const normalizedQuery = searchQuery.trim().toLowerCase()
+    if (normalizedQuery.length < 2) return []
+
+    const bookings = await ctx.db.query('bookings').withIndex('by_startAt').order('desc').collect()
+    const rows = await Promise.all(
+      bookings.map(async (booking) => {
+        const project = await ctx.db.get(booking.projectId)
+        const client = project ? await ctx.db.get(project.clientId) : null
+        return { ...booking, project, client }
+      }),
+    )
+
+    return rows
+      .filter((row) => {
+        const haystack = [
+          row.status,
+          row.notes,
+          row.project?.status,
+          row.client?.name,
+          row.client?.email,
+          row.client?.phone,
+          row.client?.instagramHandle,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+
+        return haystack.includes(normalizedQuery)
+      })
+      .slice(0, 20)
+  },
+})
+
 export const get = query({
   args: { id: v.id('bookings') },
   handler: async (ctx, { id }) => await getBooking(ctx, id),

@@ -24,10 +24,10 @@ export default function AdminDashboardPage() {
 
   const cards = summary
     ? [
-        { label: 'Nye forespørsler', value: summary.nyCount },
-        { label: 'Trenger mer info', value: summary.trengermInfoCount },
-        { label: 'Venter på depositum', value: summary.venterDepositumCount },
-        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount },
+        { label: 'Nye forespørsler', value: summary.nyCount, href: '/admin/inquiries?status=Ny' },
+        { label: 'Trenger mer info', value: summary.trengermInfoCount, href: '/admin/inquiries?status=Trenger+mer+info' },
+        { label: 'Venter på depositum', value: summary.venterDepositumCount, href: '/admin/inquiries?status=Venter+p%C3%A5+depositum' },
+        { label: 'Bookinger denne uken', value: summary.upcomingBookingsCount, href: '/admin/calendar' },
       ]
     : []
 
@@ -45,13 +45,14 @@ export default function AdminDashboardPage() {
       ) : (
         <div className='grid grid-cols-2 gap-3 mb-7'>
           {cards.map((card) => (
-            <div
+            <Link
               key={card.label}
-              className='bg-panel border border-rule p-4'
+              href={card.href}
+              className='bg-panel border border-rule p-4 no-underline transition-colors duration-[200ms] hover:bg-[rgba(237,233,230,0.02)]'
             >
               <p className='font-serif text-[36px] text-paper leading-[1]'>{card.value}</p>
               <p className='font-sans text-[10px] tracking-[0.14em] uppercase text-mast-left mt-[6px]'>{card.label}</p>
-            </div>
+            </Link>
           ))}
         </div>
       )}

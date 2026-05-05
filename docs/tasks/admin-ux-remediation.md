@@ -12,13 +12,13 @@
 - [x] `ux-admin-02` Eksponer booking-vedlikehold fra prosjektsiden
   Gjør eksisterende bookinger klikkbare eller gi dem tydelige handlinger for `rediger`, `ombook` og `avlys`, slik at `BookingSheet`-støtten faktisk er tilgjengelig i UI.
 
-- [ ] `ux-admin-03` Gi prosjektflaten sterkere identitet
+- [x] `ux-admin-03` Gi prosjektflaten sterkere identitet
   Vis klientnavn, evt. inquiry-navn og kort sammendrag i header slik at brukeren vet hvilket prosjekt som er aapent uten aa maatte lese relasjonsseksjonene.
 
-- [ ] `ux-admin-04` Gjør dashboardkort operative
+- [x] `ux-admin-04` Gjør dashboardkort operative
   La oppsummeringskortene navigere til relevant filtrert arbeidsflate, slik at dashboard fungerer som cockpit i stedet for ren statusvisning.
 
-- [ ] `ux-admin-05` Utvid admin-soek til faktisk arbeidssoek
+- [x] `ux-admin-05` Utvid admin-soek til faktisk arbeidssoek
   Inkluder minst prosjekter og bookinger, eller ton funksjonen tydelig ned til `kunder + foresporsler` hvis det er bevisst scope.
 
 - [ ] `ux-admin-06` Tydeliggjør lagringsstatus pa prosjektsiden
@@ -45,4 +45,5 @@
 
 - `ux-admin-01` er ferdig.
 - `ux-admin-02` er ferdig.
-- `ux-admin-03` er neste anbefalte task.
+- `ux-admin-03`, `ux-admin-04` og `ux-admin-05` er ferdig.
+- `ux-admin-06` er neste anbefalte task.

@@ -8,6 +8,15 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { StatusBadge } from '@/components/admin/StatusBadge'
 import { fieldInputClasses } from '@/components/ui/FormField'
 
+function formatDateTime(ts: number) {
+  return new Date(ts).toLocaleString('nb-NO', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 export default function SearchPage() {
   const { isAuthenticated } = useConvexAuth()
   const [query, setQuery] = useState('')
@@ -32,6 +41,16 @@ export default function SearchPage() {
   const inquiries = useQuery(
     api.inquiries.list,
     isAuthenticated && hasQuery ? {} : 'skip',
+  )
+
+  const projects = useQuery(
+    api.projects.searchWithClient,
+    isAuthenticated && hasQuery ? { searchQuery: debouncedQuery } : 'skip',
+  )
+
+  const bookings = useQuery(
+    api.bookings.searchWithDetails,
+    isAuthenticated && hasQuery ? { searchQuery: debouncedQuery } : 'skip',
   )
 
   const filteredInquiries =
@@ -90,7 +109,7 @@ export default function SearchPage() {
           </section>
 
           {/* Inquiries */}
-          <section>
+          <section className='mb-8'>
             <h2 className='font-mono text-[8px] tracking-[0.24em] uppercase text-index-num mb-3'>Forespørsler</h2>
 
             {inquiries === undefined ? (
@@ -113,6 +132,72 @@ export default function SearchPage() {
                       <p className='font-sans text-[12px] text-mast-left'>{i.email}</p>
                     </div>
                     <StatusBadge status={i.status} />
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className='mb-8'>
+            <h2 className='font-mono text-[8px] tracking-[0.24em] uppercase text-index-num mb-3'>Prosjekter</h2>
+
+            {projects === undefined ? (
+              <div className='flex flex-col gap-2'>
+                <Skeleton className='h-[60px]' />
+                <Skeleton className='h-[60px]' />
+              </div>
+            ) : projects.length === 0 ? (
+              <p className='font-sans text-[13px] text-mast-left'>Ingen prosjekter funnet.</p>
+            ) : (
+              <div className='flex flex-col gap-2'>
+                {projects.map((project) => (
+                  <Link
+                    key={project._id}
+                    href={`/admin/projects/${project._id}`}
+                    className='flex items-center justify-between gap-3 px-4 py-[14px] bg-panel border border-rule min-h-[60px] hover:bg-[rgba(237,233,230,0.02)] transition-colors duration-[200ms] no-underline flex-wrap'
+                  >
+                    <div className='min-w-0'>
+                      <p className='font-sans font-medium text-[14px] text-paper'>
+                        {project.client?.name ?? 'Ukjent kunde'}
+                      </p>
+                      <p className='font-sans text-[12px] text-mast-left truncate'>
+                        {project.client?.email ?? 'Ingen e-post'}
+                      </p>
+                    </div>
+                    <StatusBadge status={project.status} />
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section>
+            <h2 className='font-mono text-[8px] tracking-[0.24em] uppercase text-index-num mb-3'>Bookinger</h2>
+
+            {bookings === undefined ? (
+              <div className='flex flex-col gap-2'>
+                <Skeleton className='h-[60px]' />
+                <Skeleton className='h-[60px]' />
+              </div>
+            ) : bookings.length === 0 ? (
+              <p className='font-sans text-[13px] text-mast-left'>Ingen bookinger funnet.</p>
+            ) : (
+              <div className='flex flex-col gap-2'>
+                {bookings.map((booking) => (
+                  <Link
+                    key={booking._id}
+                    href={`/admin/projects/${booking.projectId}`}
+                    className='flex items-center justify-between gap-3 px-4 py-[14px] bg-panel border border-rule min-h-[60px] hover:bg-[rgba(237,233,230,0.02)] transition-colors duration-[200ms] no-underline flex-wrap'
+                  >
+                    <div className='min-w-0'>
+                      <p className='font-sans font-medium text-[14px] text-paper'>
+                        {booking.client?.name ?? 'Ukjent kunde'}
+                      </p>
+                      <p className='font-sans text-[12px] text-mast-left'>
+                        {formatDateTime(booking.startAt)}
+                      </p>
+                    </div>
+                    <StatusBadge status={booking.status} />
                   </Link>
                 ))}
               </div>
