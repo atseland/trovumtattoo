@@ -70,7 +70,7 @@ export default function SearchPage() {
         type='search'
         value={query}
         onChange={handleChange}
-        placeholder='Søk etter kunder, forespørsler…'
+        placeholder='Søk etter kunder, forespørsler, prosjekter og bookinger...'
         autoFocus
         className={`${fieldInputClasses} px-5 min-h-[52px] mb-7`}
       />

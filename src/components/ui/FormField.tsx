@@ -21,7 +21,7 @@ interface LabelOptionalProps {
 
 function LabelOptional({ children }: LabelOptionalProps) {
   return (
-    <span className='font-serif italic text-[12px] text-mast-left normal-case tracking-normal ml-[6px]'>
+    <span aria-hidden='true' className='font-serif italic text-[12px] text-mast-left normal-case tracking-normal ml-[6px]'>
       {children}
     </span>
   )
@@ -42,7 +42,12 @@ function FieldWrapper({ label, optional, error, children, className = '', inputI
       {label && (
         <label className={fieldLabelClasses} htmlFor={inputId}>
           {label}
-          {optional && <LabelOptional>valgfritt</LabelOptional>}
+          {optional && (
+            <>
+              {' '}
+              <LabelOptional>valgfritt</LabelOptional>
+            </>
+          )}
         </label>
       )}
       {children}

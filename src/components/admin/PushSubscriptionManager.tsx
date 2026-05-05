@@ -15,6 +15,8 @@ function urlBase64ToUint8Array(base64String: string) {
 export function PushSubscriptionManager() {
   const { isAuthenticated } = useConvexAuth()
   const [loading, setLoading] = useState(false)
+  const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  const isConfigured = Boolean(vapidKey)
 
   const subscriptions = useQuery(api.pushSubscriptions.getCurrent, isAuthenticated ? {} : 'skip')
   const saveSub = useMutation(api.pushSubscriptions.save)
@@ -22,7 +24,6 @@ export function PushSubscriptionManager() {
   const isSubscribed = Array.isArray(subscriptions) && subscriptions.length > 0
 
   async function handleSubscribe() {
-    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
     if (!vapidKey) {
       toast.error('VAPID public key ikke konfigurert')
       return
@@ -76,13 +77,22 @@ export function PushSubscriptionManager() {
           }}
         />
         <span className='font-sans text-[14px] text-paper'>
-          {isSubscribed ? 'Push-varsler er aktivert' : 'Push-varsler er ikke aktivert'}
+          {!isConfigured
+            ? 'Push-varsler er ikke konfigurert'
+            : isSubscribed
+              ? 'Push-varsler er aktivert'
+              : 'Push-varsler er ikke aktivert'}
         </span>
       </div>
+      {!isConfigured && (
+        <p className='max-w-[48ch] font-sans text-[12px] leading-[1.7] text-mast-left'>
+          Sett VAPID-nøkler i miljøet før push kan brukes i produksjon.
+        </p>
+      )}
 
       <button
         onClick={handleSubscribe}
-        disabled={loading}
+        disabled={loading || !isConfigured}
         className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[44px] px-6 border border-rule text-nav hover:text-paper hover:border-[rgba(237,233,230,0.38)] hover:bg-[rgba(237,233,230,0.04)] transition-colors duration-[200ms] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed self-start'
         style={{ background: 'transparent' }}
       >

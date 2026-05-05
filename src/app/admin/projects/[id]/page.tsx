@@ -117,6 +117,7 @@ export default function ProjectDetailPage() {
       <ProjectEstimateSection
         estimate={form.estimate}
         saving={form.savingEstimate}
+        dirty={form.estimateDirty}
         onEstimateChange={form.setEstimate}
         onSave={form.saveEstimate}
       />
@@ -127,6 +128,7 @@ export default function ProjectDetailPage() {
         paymentLink={form.paymentLink}
         paymentNote={form.paymentNote}
         saving={form.savingDeposit}
+        dirty={form.depositDirty}
         onDepositAmountChange={form.setDepositAmount}
         onDepositStatusChange={form.setDepositStatus}
         onPaymentLinkChange={form.setPaymentLink}
@@ -137,6 +139,7 @@ export default function ProjectDetailPage() {
         invoiceReference={form.invoiceReference}
         accountingStatus={form.accountingStatus}
         saving={form.savingAccounting}
+        dirty={form.accountingDirty}
         onInvoiceReferenceChange={form.setInvoiceReference}
         onAccountingStatusChange={form.setAccountingStatus}
         onSave={form.saveAccounting}

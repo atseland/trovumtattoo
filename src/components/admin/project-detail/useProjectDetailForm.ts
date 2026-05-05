@@ -39,19 +39,33 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
   const projectId = project?._id ?? null
 
   const [formState, setFormState] = useState(() => createProjectFormState(project))
+  const [savedState, setSavedState] = useState(() => createProjectFormState(project))
   const [savingEstimate, setSavingEstimate] = useState(false)
   const [savingDeposit, setSavingDeposit] = useState(false)
   const [savingAccounting, setSavingAccounting] = useState(false)
 
   let activeFormState = formState
+  let activeSavedState = savedState
   if (formState.projectId !== projectId) {
     activeFormState = createProjectFormState(project)
+    activeSavedState = activeFormState
     setFormState(activeFormState)
+    setSavedState(activeSavedState)
   }
 
   function updateField(field: keyof Omit<typeof activeFormState, 'projectId'>, value: string) {
     setFormState((current) => ({ ...current, projectId, [field]: value }))
   }
+
+  const estimateDirty = activeFormState.estimate !== activeSavedState.estimate
+  const depositDirty =
+    activeFormState.depositAmount !== activeSavedState.depositAmount ||
+    activeFormState.depositStatus !== activeSavedState.depositStatus ||
+    activeFormState.paymentLink !== activeSavedState.paymentLink ||
+    activeFormState.paymentNote !== activeSavedState.paymentNote
+  const accountingDirty =
+    activeFormState.invoiceReference !== activeSavedState.invoiceReference ||
+    activeFormState.accountingStatus !== activeSavedState.accountingStatus
 
   async function saveEstimate() {
     if (!project) return
@@ -62,6 +76,7 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
         id: project._id,
         estimatedPrice: activeFormState.estimate ? parseFloat(activeFormState.estimate) : undefined,
       })
+      setSavedState((current) => ({ ...current, projectId, estimate: activeFormState.estimate }))
       toast.success('Estimat lagret')
     } catch {
       toast.error('Kunne ikke lagre estimat')
@@ -82,6 +97,14 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
         paymentLink: activeFormState.paymentLink || undefined,
         paymentNote: activeFormState.paymentNote || undefined,
       })
+      setSavedState((current) => ({
+        ...current,
+        projectId,
+        depositAmount: activeFormState.depositAmount,
+        depositStatus: activeFormState.depositStatus,
+        paymentLink: activeFormState.paymentLink,
+        paymentNote: activeFormState.paymentNote,
+      }))
       toast.success('Depositum lagret')
     } catch {
       toast.error('Kunne ikke lagre depositum')
@@ -100,6 +123,12 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
         invoiceReference: activeFormState.invoiceReference || undefined,
         accountingStatus: activeFormState.accountingStatus || undefined,
       })
+      setSavedState((current) => ({
+        ...current,
+        projectId,
+        invoiceReference: activeFormState.invoiceReference,
+        accountingStatus: activeFormState.accountingStatus,
+      }))
       toast.success('Conta-data lagret')
     } catch {
       toast.error('Kunne ikke lagre')
@@ -112,6 +141,7 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
     estimate: activeFormState.estimate,
     setEstimate: (value: string) => updateField('estimate', value),
     savingEstimate,
+    estimateDirty,
     saveEstimate,
     depositAmount: activeFormState.depositAmount,
     setDepositAmount: (value: string) => updateField('depositAmount', value),
@@ -122,12 +152,14 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
     paymentNote: activeFormState.paymentNote,
     setPaymentNote: (value: string) => updateField('paymentNote', value),
     savingDeposit,
+    depositDirty,
     saveDeposit,
     invoiceReference: activeFormState.invoiceReference,
     setInvoiceReference: (value: string) => updateField('invoiceReference', value),
     accountingStatus: activeFormState.accountingStatus,
     setAccountingStatus: (value: string) => updateField('accountingStatus', value),
     savingAccounting,
+    accountingDirty,
     saveAccounting,
   }
 }

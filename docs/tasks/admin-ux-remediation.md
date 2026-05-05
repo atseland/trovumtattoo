@@ -21,13 +21,13 @@
 - [x] `ux-admin-05` Utvid admin-soek til faktisk arbeidssoek
   Inkluder minst prosjekter og bookinger, eller ton funksjonen tydelig ned til `kunder + foresporsler` hvis det er bevisst scope.
 
-- [ ] `ux-admin-06` Tydeliggjør lagringsstatus pa prosjektsiden
+- [x] `ux-admin-06` Tydeliggjør lagringsstatus pa prosjektsiden
   Vis `ulagrede endringer`, `lagret` eller tilsvarende per seksjon slik at seksjonsvise save-knapper ikke skaper tvil.
 
 - [ ] `ux-admin-07` Stram inn klientoversiktens gjenfinningssignal
   Suppler klientlisten med tydeligere siste aktivitet eller prosjektstatus, slik at brukeren lettere velger riktig klient uten aa maatte klikke seg inn.
 
-- [ ] `ux-admin-08` Vurder notifications som prioriteringsflate
+- [x] `ux-admin-08` Vurder notifications som prioriteringsflate
   Bekreft at varselradene navigerer robust, og vurder tydeligere skille mellom prioriterte og historiske varsler.
 
 ## Rekkefolge
@@ -46,4 +46,6 @@
 - `ux-admin-01` er ferdig.
 - `ux-admin-02` er ferdig.
 - `ux-admin-03`, `ux-admin-04` og `ux-admin-05` er ferdig.
-- `ux-admin-06` er neste anbefalte task.
+- `ux-admin-06` er ferdig.
+- `ux-admin-08` er ferdig for robust varselnavigasjon.
+- `ux-admin-07` er neste anbefalte task.

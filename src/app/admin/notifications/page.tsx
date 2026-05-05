@@ -10,11 +10,29 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Btn } from '@/components/ui/Btn'
 import { Bell } from 'lucide-react'
 
-const typeNavigation: Record<string, (n: Doc<"notifications">) => string | null> = {
-  'new-inquiry': (n) => n.relatedEntityId ? `/admin/inquiries/${n.relatedEntityId}` : null,
-  'new-reply': (n) => n.relatedEntityId ? `/admin/mail/${n.relatedEntityId}` : null,
-  'booking-today': () => '/admin/calendar',
-  'booking-tomorrow': () => '/admin/calendar',
+function notificationPath(notification: Doc<"notifications">) {
+  if (notification.relatedEntityId) {
+    switch (notification.relatedEntityType) {
+      case 'inquiry':
+        return `/admin/inquiries/${notification.relatedEntityId}`
+      case 'project':
+        return `/admin/projects/${notification.relatedEntityId}`
+      case 'booking':
+        return '/admin/calendar'
+      case 'mailThread':
+        return `/admin/mail/${notification.relatedEntityId}`
+      default:
+        break
+    }
+  }
+
+  switch (notification.type) {
+    case 'booking-today':
+    case 'booking-tomorrow':
+      return '/admin/calendar'
+    default:
+      return null
+  }
 }
 
 function relativeTime(ts: number) {
@@ -40,8 +58,7 @@ export default function NotificationsPage() {
     if (!notification.isRead) {
       await markRead({ id: notification._id }).catch(() => {})
     }
-    const getPath = typeNavigation[notification.type]
-    const path = getPath ? getPath(notification) : null
+    const path = notificationPath(notification)
     if (path) router.push(path)
   }
 

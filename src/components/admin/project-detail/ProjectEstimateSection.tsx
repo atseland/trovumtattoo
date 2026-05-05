@@ -6,6 +6,7 @@ import { InputField } from '@/components/ui/FormField'
 interface ProjectEstimateSectionProps {
   estimate: string
   saving: boolean
+  dirty: boolean
   onEstimateChange: (value: string) => void
   onSave: () => void
 }
@@ -13,12 +14,18 @@ interface ProjectEstimateSectionProps {
 export function ProjectEstimateSection({
   estimate,
   saving,
+  dirty,
   onEstimateChange,
   onSave,
 }: ProjectEstimateSectionProps) {
   return (
     <div className='bg-panel border border-rule px-5 py-5 mb-4'>
-      <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>Estimat</h2>
+      <div className='mb-4 flex items-center justify-between gap-3'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Estimat</h2>
+        <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
+          {saving ? 'Lagrer' : dirty ? 'Ulagret' : 'Lagret'}
+        </span>
+      </div>
       <div className='flex gap-3 items-end'>
         <InputField
           wrapperClassName='flex-1'

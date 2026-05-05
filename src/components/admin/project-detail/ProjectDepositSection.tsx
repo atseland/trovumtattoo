@@ -16,6 +16,7 @@ interface ProjectDepositSectionProps {
   paymentLink: string
   paymentNote: string
   saving: boolean
+  dirty: boolean
   onDepositAmountChange: (value: string) => void
   onDepositStatusChange: (value: string) => void
   onPaymentLinkChange: (value: string) => void
@@ -30,6 +31,7 @@ export function ProjectDepositSection({
   paymentLink,
   paymentNote,
   saving,
+  dirty,
   onDepositAmountChange,
   onDepositStatusChange,
   onPaymentLinkChange,
@@ -38,13 +40,18 @@ export function ProjectDepositSection({
 }: ProjectDepositSectionProps) {
   return (
     <div className='bg-panel border border-rule px-5 py-5 mb-4'>
-      <div className='flex items-center gap-3 mb-4'>
-        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Depositum</h2>
-        {depositStatus && (
-          <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
-            {depositStatusLabel[depositStatus] ?? depositStatus}
-          </span>
-        )}
+      <div className='flex items-center justify-between gap-3 mb-4'>
+        <div className='flex items-center gap-3'>
+          <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Depositum</h2>
+          {depositStatus && (
+            <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
+              {depositStatusLabel[depositStatus] ?? depositStatus}
+            </span>
+          )}
+        </div>
+        <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
+          {saving ? 'Lagrer' : dirty ? 'Ulagret' : 'Lagret'}
+        </span>
       </div>
 
       <div className='flex flex-col gap-3'>

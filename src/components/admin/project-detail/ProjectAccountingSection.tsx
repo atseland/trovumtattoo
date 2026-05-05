@@ -7,6 +7,7 @@ interface ProjectAccountingSectionProps {
   invoiceReference: string
   accountingStatus: string
   saving: boolean
+  dirty: boolean
   onInvoiceReferenceChange: (value: string) => void
   onAccountingStatusChange: (value: string) => void
   onSave: () => void
@@ -16,13 +17,19 @@ export function ProjectAccountingSection({
   invoiceReference,
   accountingStatus,
   saving,
+  dirty,
   onInvoiceReferenceChange,
   onAccountingStatusChange,
   onSave,
 }: ProjectAccountingSectionProps) {
   return (
     <div className='bg-panel border border-rule px-5 py-5 mb-4'>
-      <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-4'>Conta — regnskap</h2>
+      <div className='mb-4 flex items-center justify-between gap-3'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Conta — regnskap</h2>
+        <span className='font-sans text-[10px] tracking-[0.1em] uppercase text-mast-left'>
+          {saving ? 'Lagrer' : dirty ? 'Ulagret' : 'Lagret'}
+        </span>
+      </div>
       <div className='flex flex-col gap-3'>
         <InputField
           label='Fakturanummer'

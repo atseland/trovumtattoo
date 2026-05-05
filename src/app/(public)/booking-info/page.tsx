@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import { LinkI } from '@/components/ui/LinkI'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Rule } from '@/components/ui/Rule'
@@ -21,29 +22,138 @@ export const metadata: Metadata = {
   },
 }
 
+const listClasses = 'flex flex-col gap-2 font-sans text-[14px] leading-[1.8] text-body max-w-[48ch]'
+const listItemClasses = 'flex gap-3'
+const markerClasses = 'mt-[0.75em] block h-px w-4 shrink-0 bg-index-num'
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul className={listClasses}>
+      {items.map((item) => (
+        <li key={item} className={listItemClasses}>
+          <span className={markerClasses} />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function NumberedList({ items }: { items: string[] }) {
+  return (
+    <ol className='flex flex-col gap-3 font-sans text-[14px] leading-[1.8] text-body max-w-[48ch]'>
+      {items.map((item, index) => (
+        <li key={item} className='flex gap-4'>
+          <span className='w-5 shrink-0 font-mono text-[10px] tracking-[0.16em] text-nav'>
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+function BodyText({ children }: { children: ReactNode }) {
+  return (
+    <p className='font-sans text-[14px] text-body leading-[1.8] max-w-[48ch]'>
+      {children}
+    </p>
+  )
+}
+
 const sections = [
   {
     title: 'Hva slags prosjekter passer?',
-    content: `Jeg jobber primært med dark art, blackwork, realism og custom design.
-Prosjekter som passer godt: naturmotiver, botanikk, portretter, geometri og abstrakt ornamentikk.
-Er du usikker, send gjerne en forespørsel — det verste som kan skje er at vi ikke
-er riktig match for hverandre, og da kan jeg gjerne anbefale en kollega.`,
+    content: (
+      <div className='flex flex-col gap-4'>
+        <BodyText>
+          Jeg jobber primært med dark art, blackwork, realism og custom design.
+        </BodyText>
+        <BodyText>
+          Prosjekter som passer godt: naturmotiver, botanikk, portretter, geometri og abstrakt ornamentikk.
+        </BodyText>
+        <BodyText>
+          Er du usikker, send gjerne en forespørsel. Hvis vi ikke er riktig match for hverandre,
+          kan jeg gjerne anbefale en kollega.
+        </BodyText>
+      </div>
+    ),
   },
   {
     title: 'Hva kunden bør sende inn',
-    content: `For at jeg skal gi deg et godt estimat og en realistisk vurdering av prosjektet, trenger jeg:\n\n• Referansebilder (stiler du liker, motiver som inspirerer)\n• Bilde av plasseringen på kroppen, gjerne flere vinkler\n• Beskrivelse av motivet — jo mer konkret, jo bedre\n• Ønsket størrelse og om du er fleksibel på dette\n• Eventuelle spesielle krav (cover-up, eksisterende tatoveringer i nærheten, etc.)\n\nDu trenger ikke ha alt klart — vi kan utvikle konseptet sammen gjennom dialog.`,
+    content: (
+      <div className='flex flex-col gap-4'>
+        <BodyText>For å gi et godt estimat og en realistisk vurdering trenger jeg:</BodyText>
+        <BulletList
+          items={[
+            'Referansebilder: stiler du liker eller motiver som inspirerer.',
+            'Bilde av plasseringen på kroppen, gjerne fra flere vinkler.',
+            'Beskrivelse av motivet. Jo mer konkret, jo bedre.',
+            'Ønsket størrelse og om du er fleksibel på dette.',
+            'Eventuelle spesielle krav, som cover-up eller eksisterende tatoveringer i nærheten.',
+          ]}
+        />
+        <BodyText>Du trenger ikke ha alt klart. Vi kan utvikle konseptet sammen gjennom dialog.</BodyText>
+      </div>
+    ),
   },
   {
     title: 'Slik estimeres prisen',
-    content: `Prisen baseres på:\n\n• Størrelse og kompleksitet\n• Estimert tidsbruk i studio\n• Plasseringens tilgjengelighet (noen steder er vanskeligere å tatovere)\n• Om det er et cover-up-prosjekt\n\nSmå, enkle design: fra 1000 kr. Mellomstore prosjekter: 2500–5000 kr. Store, komplekse prosjekter: 6000 kr og oppover, gjerne over flere sesjoner. Du får alltid et konkret prisestimat via e-post før vi bekrefter booking.`,
+    content: (
+      <div className='flex flex-col gap-4'>
+        <BodyText>Prisen baseres på:</BodyText>
+        <BulletList
+          items={[
+            'Størrelse og kompleksitet.',
+            'Estimert tidsbruk i studio.',
+            'Plasseringens tilgjengelighet.',
+            'Om det er et cover-up-prosjekt.',
+          ]}
+        />
+        <BodyText>
+          Små, enkle design starter rundt 1000 kr. Mellomstore prosjekter ligger ofte på
+          2500-5000 kr. Store, komplekse prosjekter starter rundt 6000 kr og kan gå over flere sesjoner.
+        </BodyText>
+        <BodyText>Du får alltid et konkret prisestimat via e-post før vi bekrefter booking.</BodyText>
+      </div>
+    ),
   },
   {
     title: 'Depositum og betalingsvilkår',
-    content: `Etter at vi er blitt enige om prosjektet og pris, betaler du et depositum på 500–1500 kr (avhengig av prosjektets størrelse). Depositumet:\n\n• Bekrefter din booking og sikrer at dato holdes for deg\n• Trekkes av den totale sluttprisen\n• Er ikke refunderbart ved avlysning uten minst 48 timers varsel\n\nResten av beløpet betales i studio på dagen. Vi aksepterer Vipps og kortbetaling.`,
+    highlighted: true,
+    content: (
+      <div className='flex flex-col gap-4'>
+        <BodyText>
+          Etter at vi er blitt enige om prosjektet og pris, betaler du et depositum på 500-1500 kr,
+          avhengig av prosjektets størrelse.
+        </BodyText>
+        <BulletList
+          items={[
+            'Bekrefter bookingen og sikrer at dato holdes for deg.',
+            'Trekkes av den totale sluttprisen.',
+            'Er ikke refunderbart ved avlysning uten minst 48 timers varsel.',
+          ]}
+        />
+        <BodyText>Resten av beløpet betales i studio på dagen. Vi aksepterer Vipps og kortbetaling.</BodyText>
+      </div>
+    ),
   },
   {
     title: 'Hva skjer etter at du har sendt inn?',
-    content: `1. Du sender forespørselen via skjemaet\n2. Jeg bekrefter mottak innen 2–5 virkedager\n3. Om prosjektet passer, sender jeg et estimat og forslag til datoer\n4. Vi diskuterer designet og gjør eventuelle justeringer\n5. Du betaler depositum og booking er bekreftet\n6. Ferdig design presenteres på tattoo-dagen\n7. Etter sesjonen sender jeg etterbehandlingsinstruksjoner på e-post`,
+    content: (
+      <NumberedList
+        items={[
+          'Du sender forespørselen via skjemaet.',
+          'Jeg bekrefter mottak innen 2-5 virkedager.',
+          'Om prosjektet passer, sender jeg et estimat og forslag til datoer.',
+          'Vi diskuterer designet og gjør eventuelle justeringer.',
+          'Du betaler depositum og bookingen er bekreftet.',
+          'Ferdig design presenteres på tattoo-dagen.',
+          'Etter sesjonen sender jeg etterbehandlingsinstruksjoner på e-post.',
+        ]}
+      />
+    ),
   },
 ]
 
@@ -68,10 +178,10 @@ export default function BookingInfoPage() {
             <h2 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-4'>
               {section.title}
             </h2>
-            {section.title === 'Depositum og betalingsvilkår' ? (
+            {section.highlighted ? (
               /* Highlighted info-celle for key information */
               <div
-                className='px-5 py-4 font-sans text-[14px] text-body leading-[1.8] whitespace-pre-line max-w-[48ch]'
+                className='px-5 py-4'
                 style={{
                   background: 'linear-gradient(180deg, rgba(237,233,230,0.045), rgba(237,233,230,0.02))',
                   borderTop: '1px solid rgba(237,233,230,0.1)',
@@ -81,9 +191,7 @@ export default function BookingInfoPage() {
                 {section.content}
               </div>
             ) : (
-              <p className='font-sans text-[14px] text-body leading-[1.8] whitespace-pre-line max-w-[48ch]'>
-                {section.content}
-              </p>
+              section.content
             )}
             {i < sections.length - 1 && <Rule className='mt-10' />}
           </section>
