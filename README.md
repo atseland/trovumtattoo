@@ -19,7 +19,7 @@ Notater:
 - Clerk maa ha en JWT-template med navnet `convex`, og `CLERK_JWT_ISSUER_DOMAIN` maa peke til samme Clerk-instans. Uten dette vil admin-sider med Convex-data ikke laste.
 - Aktiv Clerk issuer i dette prosjektet er `https://united-piranha-14.clerk.accounts.dev`.
 - Tilsvarende JWKS er `https://united-piranha-14.clerk.accounts.dev/.well-known/jwks.json`.
-- Mail er laast til one.com-kontoen `ellen@trovumtattoo.no` via server-side `MAIL_*`-variabler i Convex. Passord og endringer skal ikke lagres fra admin-UI.
+- Mail er laast til one.com-kontoen `kontakt@trovumtattoo.no` via server-side `MAIL_*`-variabler i Convex. Passord og endringer skal ikke lagres fra admin-UI.
 
 ## Verifikasjon
 

@@ -12,9 +12,9 @@
 - `tests/e2e/admin.spec.ts` dekker naa ogsaa prosjekt -> opprett booking, med verifisert bookingliste i admin.
 - Samme admin-spec verifiserer naa ogsaa at `mail`, `notifications` og `settings` renderer i autentisert runtime med forventede seksjoner eller empty states.
 - Samme admin-spec verifiserer naa ogsaa `templates` i autentisert runtime: opprett, rediger og slett av meldingsmal.
-- Mail er naa laast til one.com-kontoen `ellen@trovumtattoo.no` via server-side `MAIL_*` i Convex, og kan ikke redigeres fra admin-UI.
+- Mail er naa laast til one.com-kontoen `kontakt@trovumtattoo.no` via server-side `MAIL_*` i Convex, og kan ikke redigeres fra admin-UI.
 - `npx convex run mail/sync:syncMail '{}'` svarer no med `{ synced: 0 }` paa tom INBOX, etter at `syncMail` ble gjort trygg mot ugyldig `FETCH 1:50`.
-- Ekte innkommende mail til `ellen@trovumtattoo.no` er synkronisert inn i admin med `syncMail`.
+- Ekte innkommende mail til tidligere `ellen@trovumtattoo.no` er synkronisert inn i admin med `syncMail`; ny mailbox `kontakt@trovumtattoo.no` maa runtime-verifiseres etter at nytt `MAIL_PASSWORD` er satt.
 - Ekte reply sendt fra admin ble mottatt av avsender, og reply-flyten filtrerer no bort egen mailbox som mottaker.
 - Mail-thread UI viser no lesbar `text/plain` for den ekte testmailen i stedet for ra MIME/headers.
 - Historiske mail-dubletter i dev-dataene er ryddet med en auth-beskyttet cleanup-mutasjon (`deletedMessages: 1`, `deletedThreads: 1`, `mergedThreads: 1`).

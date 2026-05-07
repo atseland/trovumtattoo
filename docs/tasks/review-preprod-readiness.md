@@ -30,7 +30,7 @@ Det viktigste skillet er:
 
 ### Mail
 
-- one.com-kontoen `ellen@trovumtattoo.no` er konfigurert server-side i Convex.
+- one.com-kontoen `kontakt@trovumtattoo.no` er konfigurert server-side i Convex.
 - Ekte inbound sync er testet.
 - Ekte outbound reply er testet og mottatt.
 - Thread-visning er ryddet opp til lesbar tekst.

@@ -103,7 +103,7 @@ Per naa finnes:
 - meldingsmaler
 - one.com-oppsett laast server-side i Convex
 
-Mailkontoen som brukes er `ellen@trovumtattoo.no`, konfigurert via `MAIL_*` i Convex.
+Mailkontoen som brukes er `kontakt@trovumtattoo.no`, konfigurert via `MAIL_*` i Convex.
 
 ### 6. Templates, aftercare og review request
 
