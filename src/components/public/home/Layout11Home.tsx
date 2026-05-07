@@ -3,29 +3,39 @@ import { Btn } from '@/components/ui/Btn'
 
 const works = [
   {
-    src: '/artworks/Art1.png',
-    title: 'Ladybug / cathedral',
-    caption: 'Marihøne og katedral i ett motiv. En retning jeg gjerne gjør mer av.',
-  },
-  {
-    src: '/artworks/Art2.png',
-    title: 'Semi realistic skull',
-    caption: 'Halvt engel, halvt demon. Detaljert black and grey på arm.',
-  },
-  {
-    src: '/artworks/Art3.png',
-    title: 'Ghost',
-    caption: 'Papa Emeritus i black and grey. Bandrelaterte motiver gjør jeg gjerne mer av.',
-  },
-  {
-    src: '/artworks/Art4.png',
+    src: '/portfolio/Blomster.png',
     title: 'Blomster',
-    caption: 'Semi-realistiske blomster på underarm. Samme ro i uttrykket, bare mykere motiv.',
+    caption: 'Realistiske blomster på innside underarm, med myk black and grey og tydelig ramme.',
   },
   {
-    src: '/artworks/Art5.png',
+    src: '/portfolio/Semi realistic skull.png',
+    title: 'Semi realistic skull',
+    caption: 'Detaljert black and grey-hodeskalle med engel/demon-kontrast på arm.',
+  },
+  {
+    src: '/portfolio/Traditional bat.png',
     title: 'Traditional bat',
-    caption: 'Blackwork med tradisjonell form og mørk vri.',
+    caption: 'Tradisjonell flaggermus i blackwork på kne, med mørkere uttrykk og rene flater.',
+  },
+  {
+    src: '/portfolio/Ghost.png',
+    title: 'Ghost',
+    caption: 'Black and grey-portrett inspirert av Ghost, laget for innside arm.',
+  },
+  {
+    src: '/portfolio/Ladybug_cathedral mashup.png',
+    title: 'Ladybug/cathedral mashup',
+    caption: 'Marihøne og katedral i et dark art-motiv med feminin kontrast.',
+  },
+  {
+    src: '/portfolio/Flaggermuser.png',
+    title: 'Flaggermuser',
+    caption: 'Clean blackwork-flaggermuser på bryst, med enkel plassering og tydelig silhuett.',
+  },
+  {
+    src: '/portfolio/Rygg skalle.png',
+    title: 'Rygg skalle',
+    caption: 'Starten på et større ryggstykke med skalle, blader og black and grey-tyngde.',
   },
 ]
 
