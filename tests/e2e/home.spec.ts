@@ -7,6 +7,28 @@ test('home page loads', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
 })
 
+test('home page keeps images and layout intact on desktop and mobile', async ({ page }) => {
+  for (const viewport of [
+    { width: 1280, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+
+    await expect.poll(async () => {
+      return page.locator('img').evaluateAll((images) =>
+        images.filter((image) => image.complete && image.naturalWidth > 0).length
+      )
+    }).toBeGreaterThanOrEqual(7)
+
+    const hasHorizontalOverflow = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > document.documentElement.clientWidth
+    })
+
+    expect(hasHorizontalOverflow).toBe(false)
+  }
+})
+
 test('contact and booking entrypoints render expected actions', async ({ page }) => {
   await page.goto('/kontakt')
   await expect(page.getByRole('heading', { name: 'Send melding' })).toBeVisible()
