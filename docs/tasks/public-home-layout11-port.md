@@ -4,7 +4,7 @@
 
 Forsiden paa `https://trovumtattoo.no` viser naa en midlertidig placeholder etter commit `a8cf5a9`. Dette er tilsiktet for aa unngaa at en uferdig eller feil frontend ligger live.
 
-Den faktiske public-home-retningen som skal portes videre er `design/forsiden/Layout11Final.tsx`.
+Den faktiske public-home-retningen er portet videre til `src/components/public/home/Layout11Home.tsx`.
 
 ## Maal
 
@@ -12,7 +12,7 @@ Port Layout 11 til produksjonsklar public homepage uten aa gjeninnfoere tidliger
 
 ## Viktige kilder
 
-- `design/forsiden/Layout11Final.tsx` er designreferansen.
+- `src/components/public/home/Layout11Home.tsx` er produksjonskomponenten og gjeldende referanse etter cleanup.
 - `src/app/(public)/page.tsx` er naa placeholderen paa `/`.
 - `src/app/(public)/layout.tsx` og public header/footer maa vurderes mot Layout 11 slik at siden ikke faar dobbelt eller feil navigasjon.
 - `src/components/ui/Btn.tsx` har tidligere hatt responsive class-merge-feil; behold `cn(...)`/merge-oppfoerselen.
@@ -22,7 +22,7 @@ Port Layout 11 til produksjonsklar public homepage uten aa gjeninnfoere tidliger
 ## Foreslaatt arbeidsflyt
 
 1. Start med `git status --short` og `just session-start "public-home-layout11"`.
-2. Les denne tasken, siste relevante handoff i `docs/handoffs/`, og `design/forsiden/Layout11Final.tsx`.
+2. Les denne tasken, siste relevante handoff i `docs/handoffs/`, og `src/components/public/home/Layout11Home.tsx`.
 3. Port Layout 11 inn i appens public-home-struktur.
 4. Avklar om public header/footer skal beholdes, tones ned, eller skjules paa forsiden.
 5. Sjekk at bookingknapp peker til `/book`, og at eksisterende bookingflyt ikke berøres.
@@ -46,3 +46,8 @@ Port Layout 11 til produksjonsklar public homepage uten aa gjeninnfoere tidliger
 - Lokalt verifisert med Playwright desktop og mobil: ingen document horizontal overflow, ingen blanke bilder, og bookinglenker peker til `/book`.
 - `just verify` passer.
 - Ikke deployet. Placeholder forblir live i produksjon til UI er godkjent eller deploy eksplisitt avtales.
+
+## Status 2026-05-08
+
+- Den gamle `/design`-previewruten og `design/forsiden/`-prototypene er fjernet.
+- Videre arbeid skal ikke reintrodusere previewruten; oppdater heller `src/components/public/home/Layout11Home.tsx` direkte.

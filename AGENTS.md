@@ -70,7 +70,7 @@ Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 
 ### Public UI-arbeid
 
-- For neste public-home-iterasjon er godkjent designretning `design/forsiden/Layout11Final.tsx`, med mindre nyere task/handoff sier noe annet.
+- Public-home er nå portet inn i appen som `src/components/public/home/Layout11Home.tsx`; den gamle `/design`-previewen og `design/forsiden/`-prototypene er ikke lenger del av repoet.
 - Produksjon kan midlertidig vise placeholder paa `/`; ikke erstatt den med uferdig public UI.
 - Naar `design/`-prototyper flyttes til ekte app, port dem inn i `src/app/(public)/` og/eller `src/components/public/` i stedet for aa la produksjonsruter importere direkte fra `design/`.
 - Verifiser public UI med browser/Playwright paa baade mobil og desktop foer deploy.
