@@ -23,6 +23,7 @@ export default function BookPageClient() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
     defaultValues: {
@@ -62,7 +63,7 @@ export default function BookPageClient() {
       <form onSubmit={handleSubmit(submitInquiry)} noValidate className='flex flex-col gap-5'>
         <BookingContactSection register={register} errors={errors} />
         <BookingTattooDetailsSection register={register} errors={errors} />
-        <BookingFlagsSection register={register} />
+        <BookingFlagsSection setValue={setValue} />
         <BookingNotesSection register={register} errors={errors} />
         <BookingReferenceImagesSection
           error={errors.referenceImages?.message}

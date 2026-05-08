@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { ClerkProvider, UserButton } from '@clerk/nextjs'
 import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
+import { AdminNotificationButton } from '@/components/admin/AdminNotificationButton'
 import { AuthenticatedConvexClientProvider } from '@/components/ConvexClientProvider'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +20,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {/* Sticky header */}
             <header className='sticky top-0 z-40 flex items-center justify-between border-b border-rule bg-panel px-4 py-3 min-h-[56px]'>
               <span className='font-sans text-sm font-medium text-paper'>Admin</span>
-              <UserButton appearance={{ variables: { colorPrimary: 'var(--accent)' } }} />
+              <div className='flex items-center gap-3'>
+                <AdminNotificationButton />
+                <UserButton appearance={{ variables: { colorPrimary: 'var(--accent)' } }} />
+              </div>
             </header>
 
             {/* Main content - add bottom padding on mobile for nav bar */}

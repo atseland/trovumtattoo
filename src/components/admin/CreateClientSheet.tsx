@@ -37,10 +37,10 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
     try {
       const clientId = await createClient({ name, email, phone: phone || undefined, instagramHandle: instagram || undefined })
       await createProject({ clientId, inquiryId: inquiryId as Id<"inquiries"> })
-      toast.success('Klient og prosjekt opprettet')
+      toast.success('Kunde og prosjekt opprettet')
       onOpenChange(false)
       router.push(`/admin/clients/${clientId}`)
-    } catch { toast.error('Kunne ikke opprette klient') }
+    } catch { toast.error('Kunne ikke opprette kunde') }
     finally { setSaving(false) }
   }
 
@@ -48,7 +48,7 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent style={{ background: 'var(--panel)' }} className='border-l border-rule-heavy w-full sm:max-w-md'>
         <SheetHeader>
-          <SheetTitle className='font-serif italic text-paper'>Opprett klient</SheetTitle>
+          <SheetTitle className='font-serif italic text-paper'>Opprett kunde</SheetTitle>
         </SheetHeader>
         <div className='mt-6 flex flex-col gap-4 px-4'>
           {[
@@ -66,7 +66,7 @@ export function CreateClientSheet({ open, onOpenChange, inquiryId, defaultName =
             />
           ))}
           <Btn variant='action-primary' onClick={handleCreate} disabled={saving} className='mt-2'>
-            {saving ? 'Oppretter…' : 'Opprett klient og prosjekt'}
+            {saving ? 'Oppretter…' : 'Opprett kunde og prosjekt'}
           </Btn>
         </div>
       </SheetContent>

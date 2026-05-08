@@ -5,6 +5,7 @@ interface InquiryListFilters {
   status?: string
   coverUp?: boolean
   touchUp?: boolean
+  archived?: boolean
 }
 
 export interface ReferenceImageInput {
@@ -57,10 +58,23 @@ export async function listInquiries(ctx: QueryCtx, { status, coverUp, touchUp }:
       .collect()
   }
 
+  rows = rows.filter((row) => row.archivedAt === undefined)
   if (coverUp !== undefined) rows = rows.filter((row) => row.coverUp === coverUp)
   if (touchUp !== undefined) rows = rows.filter((row) => row.touchUp === touchUp)
 
   return rows
+}
+
+export async function listArchivedInquiries(ctx: QueryCtx) {
+  await requireIdentity(ctx)
+
+  const rows = await ctx.db
+    .query('inquiries')
+    .withIndex('by_createdAt')
+    .order('desc')
+    .collect()
+
+  return rows.filter((row) => row.archivedAt !== undefined)
 }
 
 export async function getInquiry(ctx: QueryCtx, id: Id<'inquiries'>) {
@@ -99,4 +113,83 @@ export async function addInquiryReferenceImages(
       }),
     ),
   )
+}
+
+export async function archiveInquiry(ctx: MutationCtx, id: Id<'inquiries'>, reason?: string) {
+  const identity = await ctx.auth.getUserIdentity()
+  if (!identity) throw new Error('Unauthorized')
+
+  const inquiry = await ctx.db.get(id)
+  if (!inquiry) throw new Error('Inquiry not found')
+
+  await ctx.db.patch(id, {
+    archivedAt: Date.now(),
+    archivedBy: identity.subject,
+    archiveReason: reason,
+  })
+  await ctx.db.insert('activityLog', {
+    entityType: 'inquiry',
+    entityId: id,
+    action: 'archived',
+    payload: reason ? { reason } : undefined,
+    createdAt: Date.now(),
+  })
+}
+
+export async function restoreInquiry(ctx: MutationCtx, id: Id<'inquiries'>) {
+  await requireIdentity(ctx)
+
+  const inquiry = await ctx.db.get(id)
+  if (!inquiry) throw new Error('Inquiry not found')
+
+  await ctx.db.patch(id, {
+    archivedAt: undefined,
+    archivedBy: undefined,
+    archiveReason: undefined,
+  })
+  await ctx.db.insert('activityLog', {
+    entityType: 'inquiry',
+    entityId: id,
+    action: 'restored',
+    createdAt: Date.now(),
+  })
+}
+
+export async function permanentlyDeleteInquiry(ctx: MutationCtx, id: Id<'inquiries'>) {
+  await requireIdentity(ctx)
+
+  const inquiry = await ctx.db.get(id)
+  if (!inquiry) throw new Error('Inquiry not found')
+
+  const linkedProjects = await ctx.db
+    .query('projects')
+    .filter((q) => q.eq(q.field('inquiryId'), id))
+    .first()
+  if (linkedProjects) {
+    throw new Error('Forespørselen er koblet til et prosjekt og kan ikke slettes permanent.')
+  }
+
+  const referenceImages = await ctx.db
+    .query('referenceImages')
+    .withIndex('by_inquiry', (query) => query.eq('inquiryId', id))
+    .collect()
+  for (const image of referenceImages) {
+    await ctx.storage.delete(image.storageId)
+    await ctx.db.delete(image._id)
+  }
+
+  const activityEntries = await ctx.db
+    .query('activityLog')
+    .withIndex('by_entity', (query) => query.eq('entityType', 'inquiry').eq('entityId', id))
+    .collect()
+  await Promise.all(activityEntries.map((entry) => ctx.db.delete(entry._id)))
+
+  const notifications = await ctx.db.query('notifications').collect()
+  await Promise.all(
+    notifications
+      .filter((notification) => notification.relatedEntityType === 'inquiry' && notification.relatedEntityId === id)
+      .map((notification) => ctx.db.delete(notification._id)),
+  )
+
+  await ctx.db.delete(id)
 }

@@ -95,7 +95,7 @@ export function Layout11Home() {
 
         <div className='flex gap-3'>
           <Btn href='/book' variant='default' className='min-w-[148px]'>
-            Send melding
+            Bookingforespørsel
           </Btn>
         </div>
 
@@ -218,6 +218,9 @@ export function Layout11Home() {
 
           <div className='mx-auto max-w-xs space-y-3'>
             <Btn href='/book' variant='action-cta' className='w-full'>
+              Bookingforespørsel
+            </Btn>
+            <Btn href='/kontakt' variant='action' className='w-full'>
               Send melding
             </Btn>
             <Btn

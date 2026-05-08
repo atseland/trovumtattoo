@@ -166,6 +166,49 @@ export const linkThread = mutation({
   },
 })
 
+export const archiveThread = mutation({
+  args: { threadId: v.id('mailThreads') },
+  handler: async (ctx, { threadId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    await ctx.db.patch(threadId, { status: 'archived', unreadCount: 0 })
+  },
+})
+
+export const restoreThread = mutation({
+  args: { threadId: v.id('mailThreads') },
+  handler: async (ctx, { threadId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    await ctx.db.patch(threadId, { status: 'active' })
+  },
+})
+
+export const permanentlyDeleteThread = mutation({
+  args: { threadId: v.id('mailThreads') },
+  handler: async (ctx, { threadId }) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
+    const messages = await ctx.db
+      .query('mailMessages')
+      .withIndex('by_thread', (q) => q.eq('threadId', threadId))
+      .collect()
+    await Promise.all(messages.map((message) => ctx.db.delete(message._id)))
+
+    const notifications = await ctx.db.query('notifications').collect()
+    await Promise.all(
+      notifications
+        .filter((notification) => notification.relatedEntityType === 'mailThread' && notification.relatedEntityId === threadId)
+        .map((notification) => ctx.db.delete(notification._id)),
+    )
+
+    await ctx.db.delete(threadId)
+  },
+})
+
 export const cleanupDuplicates = mutation({
   args: {},
   handler: async (ctx) => {

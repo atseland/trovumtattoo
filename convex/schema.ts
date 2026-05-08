@@ -18,10 +18,14 @@ export default defineSchema({
     coverUp: v.boolean(),
     touchUp: v.boolean(),
     extraNotes: v.optional(v.string()),
+    archivedAt: v.optional(v.number()),
+    archivedBy: v.optional(v.string()),
+    archiveReason: v.optional(v.string()),
     createdAt: v.number(),
   })
     .index('by_status', ['status'])
-    .index('by_createdAt', ['createdAt']),
+    .index('by_createdAt', ['createdAt'])
+    .index('by_archivedAt', ['archivedAt']),
 
   referenceImages: defineTable({
     inquiryId: v.id('inquiries'),

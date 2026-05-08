@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useMutation } from 'convex/react'
+import { useAction, useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
@@ -18,6 +18,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
   const createInquiry = useMutation(api.inquiries.create)
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const addReferenceImages = useMutation(api.inquiries.addReferenceImages)
+  const sendInquiryConfirmation = useAction(api.mail.sendInquiryConfirmation.sendInquiryConfirmation)
 
   async function submitInquiry(data: InquiryFormValues) {
     const files = data.referenceImages ? Array.from(data.referenceImages) : []
@@ -75,6 +76,12 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
             toast.error('Kunne ikke lagre referansebilder — forespørselen er likevel sendt')
           }
         }
+      }
+
+      try {
+        await sendInquiryConfirmation({ inquiryId })
+      } catch {
+        toast.error('Forespørselen er mottatt, men bekreftelsesmail kunne ikke sendes.')
       }
 
       onCompleted()

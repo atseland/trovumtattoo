@@ -11,22 +11,23 @@ export const getSummary = query({
         .query('inquiries')
         .withIndex('by_status', (q) => q.eq('status', 'Ny'))
         .collect()
-        .then((r) => r.length),
+        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
       ctx.db
         .query('inquiries')
         .withIndex('by_status', (q) => q.eq('status', 'Trenger mer info'))
         .collect()
-        .then((r) => r.length),
+        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
       ctx.db
         .query('inquiries')
         .withIndex('by_status', (q) => q.eq('status', 'Venter på depositum'))
         .collect()
-        .then((r) => r.length),
+        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
       ctx.db
         .query('inquiries')
         .withIndex('by_createdAt')
         .order('desc')
-        .take(5),
+        .collect()
+        .then((rows) => rows.filter((row) => row.archivedAt === undefined).slice(0, 5)),
     ])
 
     // Kommende bookinger denne uken

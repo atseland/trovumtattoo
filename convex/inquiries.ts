@@ -1,9 +1,13 @@
-import { mutation, query } from './_generated/server'
+import { internalQuery, mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import {
+  archiveInquiry,
   getInquiry,
   getInquiryReferenceImages,
   listInquiries,
+  listArchivedInquiries,
+  permanentlyDeleteInquiry,
+  restoreInquiry,
   updateInquiryStatus,
 } from './lib/inquiries/admin'
 import { addReferenceImagesToInquiry, createInquiryWithSideEffects } from './lib/inquiries/publicCreate'
@@ -46,9 +50,19 @@ export const list = query({
   handler: async (ctx, args) => await listInquiries(ctx, args),
 })
 
+export const listArchived = query({
+  args: {},
+  handler: async (ctx) => await listArchivedInquiries(ctx),
+})
+
 export const get = query({
   args: { id: v.id('inquiries') },
   handler: async (ctx, { id }) => await getInquiry(ctx, id),
+})
+
+export const getForConfirmation = internalQuery({
+  args: { id: v.id('inquiries') },
+  handler: async (ctx, { id }) => await ctx.db.get(id),
 })
 
 export const getReferenceImages = query({
@@ -68,4 +82,22 @@ export const addReferenceImages = mutation({
     ),
   },
   handler: async (ctx, { inquiryId, images }) => await addReferenceImagesToInquiry(ctx, inquiryId, images),
+})
+
+export const archive = mutation({
+  args: {
+    id: v.id('inquiries'),
+    reason: v.optional(v.string()),
+  },
+  handler: async (ctx, { id, reason }) => await archiveInquiry(ctx, id, reason),
+})
+
+export const restore = mutation({
+  args: { id: v.id('inquiries') },
+  handler: async (ctx, { id }) => await restoreInquiry(ctx, id),
+})
+
+export const permanentlyDelete = mutation({
+  args: { id: v.id('inquiries') },
+  handler: async (ctx, { id }) => await permanentlyDeleteInquiry(ctx, id),
 })

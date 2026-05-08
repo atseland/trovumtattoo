@@ -3,9 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useQuery, useConvexAuth } from 'convex/react'
-import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Bell, Search, MoreHorizontal } from 'lucide-react'
-import { api } from '@convex/_generated/api'
+import { LayoutDashboard, MessageSquare, Users, Calendar, Settings, Mail, Search, MoreHorizontal } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 
 type NavItem = {
@@ -25,7 +23,6 @@ const primaryMobileNavItems: NavItem[] = [
 const secondaryMobileNavItems: NavItem[] = [
   { href: '/admin/clients', label: 'Kunder', icon: Users },
   { href: '/admin/mail', label: 'Mail', icon: Mail },
-  { href: '/admin/notifications', label: 'Varsler', icon: Bell },
   { href: '/admin/settings', label: 'Innstillinger', icon: Settings },
 ]
 
@@ -33,10 +30,7 @@ const navItems = [...primaryMobileNavItems, ...secondaryMobileNavItems]
 
 export function AdminNav() {
   const pathname = usePathname()
-  const { isAuthenticated } = useConvexAuth()
   const [moreOpen, setMoreOpen] = useState(false)
-
-  const unreadCount = useQuery(api.notifications.countUnread, isAuthenticated ? {} : 'skip') ?? 0
 
   function isActive(item: (typeof navItems)[0]) {
     if (item.exact) return pathname === item.href
@@ -55,7 +49,6 @@ export function AdminNav() {
               {secondaryMobileNavItems.map((item) => {
                 const Icon = item.icon
                 const active = isActive(item)
-                const isBell = item.href === '/admin/notifications'
                 return (
                   <Link
                     key={item.href}
@@ -69,23 +62,6 @@ export function AdminNav() {
                   >
                     <span className='relative inline-flex'>
                       <Icon size={18} strokeWidth={1.5} />
-                      {isBell && unreadCount > 0 && (
-                        <span
-                          className='absolute font-sans font-bold text-center'
-                          style={{
-                            top: '-4px',
-                            right: '-6px',
-                            background: 'var(--accent)',
-                            color: 'var(--bg)',
-                            fontSize: '0.55rem',
-                            padding: '0 3px',
-                            borderRadius: '2px',
-                            minWidth: '13px',
-                          }}
-                        >
-                          {unreadCount}
-                        </span>
-                      )}
                     </span>
                     <span>{item.label}</span>
                   </Link>
@@ -129,23 +105,6 @@ export function AdminNav() {
           >
             <span className='relative inline-flex'>
               <MoreHorizontal size={22} strokeWidth={1.5} />
-              {unreadCount > 0 && (
-                <span
-                  className='absolute font-sans font-bold text-center'
-                  style={{
-                    top: '-4px',
-                    right: '-6px',
-                    background: 'var(--accent)',
-                    color: 'var(--bg)',
-                    fontSize: '0.6rem',
-                    padding: '0 4px',
-                    borderRadius: '2px',
-                    minWidth: '14px',
-                  }}
-                >
-                  {unreadCount}
-                </span>
-              )}
             </span>
             <span className='font-sans text-[7px] uppercase tracking-[0.08em]'>Mer</span>
           </button>
@@ -161,7 +120,6 @@ export function AdminNav() {
           {navItems.map((item) => {
             const Icon = item.icon
             const active = isActive(item)
-            const isBell = item.href === '/admin/notifications'
             return (
               <Link
                 key={item.href}
@@ -175,23 +133,6 @@ export function AdminNav() {
               >
                 <div className='relative inline-flex'>
                   <Icon size={18} strokeWidth={1.5} />
-                  {isBell && unreadCount > 0 && (
-                    <span
-                      className='absolute font-sans font-bold text-center'
-                      style={{
-                        top: '-4px',
-                        right: '-6px',
-                        background: 'var(--accent)',
-                        color: 'var(--bg)',
-                        fontSize: '0.55rem',
-                        padding: '0 3px',
-                        borderRadius: '2px',
-                        minWidth: '13px',
-                      }}
-                    >
-                      {unreadCount}
-                    </span>
-                  )}
                 </div>
                 <span>{item.label}</span>
               </Link>

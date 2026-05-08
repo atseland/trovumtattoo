@@ -24,11 +24,13 @@ function DetailField({ label, value }: { label: string; value?: string | boolean
 interface InquiryHeaderProps {
   name: string
   status: string
+  archivedAt?: number | null
   onChangeStatus: () => void
   onCreateClient: () => void
+  onArchive: () => void
 }
 
-export function InquiryHeader({ name, status, onChangeStatus, onCreateClient }: InquiryHeaderProps) {
+export function InquiryHeader({ name, status, archivedAt, onChangeStatus, onCreateClient, onArchive }: InquiryHeaderProps) {
   return (
     <>
       <div className='flex items-center justify-between flex-wrap gap-3 mb-6'>
@@ -43,8 +45,13 @@ export function InquiryHeader({ name, status, onChangeStatus, onCreateClient }: 
             Endre status
           </Btn>
           <Btn variant='sm' onClick={onCreateClient}>
-            Opprett klient
+            Opprett kunde
           </Btn>
+          {!archivedAt && (
+            <Btn variant='sm' onClick={onArchive}>
+              Arkiver forespørsel
+            </Btn>
+          )}
         </div>
       </div>
 

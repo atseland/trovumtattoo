@@ -35,7 +35,7 @@ export function PublicHeader() {
 
         <div className='flex shrink-0 items-center gap-3'>
           <Btn href='/book' variant='default' className='hidden sm:inline-flex'>
-            Book time
+            Bookingforespørsel
           </Btn>
 
           <button
@@ -87,7 +87,7 @@ export function PublicHeader() {
           ))}
           <div className='pt-4'>
             <Btn href='/book' variant='action-cta' className='w-full'>
-              Book time
+              Bookingforespørsel
             </Btn>
           </div>
         </nav>

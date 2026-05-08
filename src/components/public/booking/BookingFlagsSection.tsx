@@ -1,22 +1,48 @@
-import type { BookingFormSectionProps } from '@/components/public/booking/bookingFormTypes'
+import type { InquiryFormValues } from '@/lib/validators/inquiry'
+import type { UseFormSetValue } from 'react-hook-form'
 
-const bookingFlags = [
-  { name: 'firstTattoo', label: 'Dette er min første tatovering' },
-  { name: 'coverUp', label: 'Dette er en cover-up' },
-  { name: 'touchUp', label: 'Dette er en touch-up' },
+const requestTypes = [
+  { value: 'firstTattoo', label: 'Dette er min første tatovering' },
+  { value: 'newTattoo', label: 'Dette er en ny tatovering' },
+  { value: 'coverUp', label: 'Dette er en cover-up' },
+  { value: 'touchUp', label: 'Dette er en touch-up' },
 ] as const
 
-export function BookingFlagsSection({ register }: Pick<BookingFormSectionProps, 'register'>) {
+type TattooRequestType = (typeof requestTypes)[number]['value']
+
+function mapRequestType(value: TattooRequestType) {
+  return {
+    firstTattoo: value === 'firstTattoo',
+    coverUp: value === 'coverUp',
+    touchUp: value === 'touchUp',
+  }
+}
+
+interface BookingFlagsSectionProps {
+  setValue: UseFormSetValue<InquiryFormValues>
+}
+
+export function BookingFlagsSection({ setValue }: BookingFlagsSectionProps) {
+  function handleChange(value: TattooRequestType) {
+    const mapped = mapRequestType(value)
+    setValue('firstTattoo', mapped.firstTattoo, { shouldDirty: true, shouldValidate: true })
+    setValue('coverUp', mapped.coverUp, { shouldDirty: true, shouldValidate: true })
+    setValue('touchUp', mapped.touchUp, { shouldDirty: true, shouldValidate: true })
+  }
+
   return (
     <div className='flex flex-col gap-3'>
-      {bookingFlags.map(({ name, label }) => (
+      {requestTypes.map(({ value, label }) => (
         <label
-          key={name}
+          key={value}
           className='flex items-center gap-3 cursor-pointer font-sans text-[14px] text-body min-h-[44px]'
         >
           <input
-            {...register(name)}
-            type='checkbox'
+            name='tattooRequestType'
+            type='radio'
+            value={value}
+            defaultChecked={value === 'newTattoo'}
+            onChange={() => handleChange(value)}
             className='w-5 h-5 shrink-0 accent-accent'
           />
           {label}

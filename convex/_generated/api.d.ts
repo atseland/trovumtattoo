@@ -25,6 +25,7 @@ import type * as mail_config from "../mail/config.js";
 import type * as mail_mutations from "../mail/mutations.js";
 import type * as mail_queries from "../mail/queries.js";
 import type * as mail_sendAftercare from "../mail/sendAftercare.js";
+import type * as mail_sendInquiryConfirmation from "../mail/sendInquiryConfirmation.js";
 import type * as mail_sendPush from "../mail/sendPush.js";
 import type * as mail_sendReply from "../mail/sendReply.js";
 import type * as mail_sendReviewRequest from "../mail/sendReviewRequest.js";
@@ -60,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   "mail/mutations": typeof mail_mutations;
   "mail/queries": typeof mail_queries;
   "mail/sendAftercare": typeof mail_sendAftercare;
+  "mail/sendInquiryConfirmation": typeof mail_sendInquiryConfirmation;
   "mail/sendPush": typeof mail_sendPush;
   "mail/sendReply": typeof mail_sendReply;
   "mail/sendReviewRequest": typeof mail_sendReviewRequest;

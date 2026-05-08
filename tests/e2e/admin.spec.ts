@@ -138,8 +138,8 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(page.getByRole('heading', { name: inquiry.name })).toBeVisible()
   await expect(page.getByText(inquiry.email)).toBeVisible()
 
-  await page.getByRole('button', { name: 'Opprett klient' }).click()
-  await page.getByRole('button', { name: 'Opprett klient og prosjekt' }).click()
+  await page.getByRole('button', { name: 'Opprett kunde' }).click()
+  await page.getByRole('button', { name: 'Opprett kunde og prosjekt' }).click()
 
   await expect(page).toHaveURL(/\/admin\/clients\/.+/)
   await expect(page.getByRole('heading', { name: inquiry.name })).toBeVisible()
@@ -170,11 +170,17 @@ test('admin can create client and project from a public inquiry', async ({ page 
 
   await page.goto('/admin/mail')
   await expect(page.getByRole('heading', { name: 'Innboks' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Innboks' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Uleste' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Arkiv' })).toBeVisible()
   await expectOneVisible([
     page.getByText('Ingen e-poster ennå'),
-    page.locator('a[href*="/admin/mail/"]'),
+    page.locator('[role="link"]').filter({ hasText: /.+/ }),
+  ])
+  await page.getByRole('button', { name: 'Arkiv' }).click()
+  await expectOneVisible([
+    page.getByText('Ingen arkiverte e-poster'),
+    page.getByRole('button', { name: 'Gjenopprett' }),
   ])
 
   await page.goto('/admin/notifications')
@@ -198,6 +204,29 @@ test('admin can create client and project from a public inquiry', async ({ page 
     page.getByText('Mail er ikke konfigurert i servermiljoet.'),
     page.getByText('Mailkontoen er laast til serverkonfigurasjon og styres ikke fra admin-UI.'),
   ])
+})
+
+test('admin can archive and restore an inquiry', async ({ page }) => {
+  const inquiry = await createInquiry()
+
+  await signInAsAdmin(page)
+
+  await page.goto(`/admin/inquiries/${inquiry.id}`)
+  await expect(page.getByRole('heading', { name: inquiry.name })).toBeVisible()
+  await page.getByRole('button', { name: 'Arkiver forespørsel' }).click()
+  await page.getByRole('button', { name: 'Arkiver', exact: true }).click()
+  await expect(page.getByText('Forespørsel arkivert')).toBeVisible()
+
+  await page.goto('/admin/inquiries')
+  await expect(page.getByText(inquiry.email)).not.toBeVisible()
+
+  await page.getByRole('button', { name: 'Arkiv' }).click()
+  await expect(page.getByText(inquiry.email)).toBeVisible()
+  await page.getByRole('button', { name: 'Gjenopprett' }).first().click()
+  await expect(page.getByText('Forespørsel gjenopprettet')).toBeVisible()
+
+  await page.goto('/admin/inquiries')
+  await expect(page.getByText(inquiry.email)).toBeVisible()
 })
 
 test('admin can create edit and delete a message template', async ({ page }) => {

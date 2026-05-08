@@ -120,7 +120,7 @@ interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', children, id, ...props }, ref) => {
+  ({ label, optional, error, wrapperClassName, className = '', children, id, style, ...props }, ref) => {
     const generatedId = useId()
     const inputId = id ?? generatedId
 
@@ -130,7 +130,8 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           <select
             ref={ref}
             id={inputId}
-            className={`${fieldInputClasses} appearance-none pr-9 ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+            className={`${fieldInputClasses} appearance-none pr-9 bg-panel text-paper [&_option]:bg-panel [&_option]:text-paper ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
+            style={{ colorScheme: 'dark', ...style }}
             {...props}
           >
             {children}
