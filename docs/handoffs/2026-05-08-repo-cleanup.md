@@ -50,6 +50,14 @@
 - `pnpm test:run` passerte etter ny inquiry-validator-test.
 - `pnpm typecheck` passerte etter ny inquiry-validator-test.
 - `pnpm typecheck`, `pnpm test:run` og `pnpm build` passerte etter dependency cleanup.
+- Final `pnpm typecheck` passerte.
+- Final `pnpm lint` passerte med eksisterende Convex generated-file warnings.
+- Final `pnpm test:run` passerte.
+- Final `pnpm build` passerte.
+- Final `pnpm playwright test tests/e2e/home.spec.ts` passerte.
+- Final `pnpm playwright test tests/e2e/admin.spec.ts` skip'et rent på Clerk/Convex-preconditions.
+- Final `just verify` passerte.
+- Browser smoke passerte for `/`, `/book`, `/kontakt`, `/faq`, `/aftercare`, `/admin` redirect til sign-in og `/api/health`.
 
 ## Neste anbefalte arbeid
 

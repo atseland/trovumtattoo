@@ -36,17 +36,22 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 - `pnpm remove @radix-ui/react-slot class-variance-authority zustand concurrently @testing-library/dom @testing-library/react @types/react-dom`
 - `pnpm build`
 - `find docs -type f | sort`
+- `pnpm lint`
+- `pnpm playwright test tests/e2e/home.spec.ts`
+- `pnpm playwright test tests/e2e/admin.spec.ts`
+- `just verify`
+- Browser smoke for `/`, `/book`, `/kontakt`, `/faq`, `/aftercare`, `/admin`, `/api/health`.
 
 ## Verification Checklist
 
-- [ ] `pnpm typecheck`
-- [ ] `pnpm lint`
-- [ ] `pnpm test:run`
-- [ ] `pnpm build`
-- [ ] `pnpm playwright test tests/e2e/home.spec.ts`
-- [ ] `pnpm playwright test tests/e2e/admin.spec.ts`
-- [ ] `just verify`
-- [ ] Browser smoke for `/`, `/book`, `/kontakt`, `/faq`, `/aftercare`, `/admin`, `/api/health`.
+- [x] `pnpm typecheck`
+- [x] `pnpm lint`
+- [x] `pnpm test:run`
+- [x] `pnpm build`
+- [x] `pnpm playwright test tests/e2e/home.spec.ts`
+- [x] `pnpm playwright test tests/e2e/admin.spec.ts` skipped cleanly due Clerk/Convex preconditions.
+- [x] `just verify`
+- [x] Browser smoke for `/`, `/book`, `/kontakt`, `/faq`, `/aftercare`, `/admin`, `/api/health`.
 
 ## Final File Removals
 

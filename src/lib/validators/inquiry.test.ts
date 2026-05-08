@@ -51,13 +51,18 @@ describe('inquirySchema', () => {
   })
 
   it('accepts missing optional fields', () => {
-    const {
-      budget: _budget,
-      desiredTiming: _desiredTiming,
-      extraNotes: _extraNotes,
-      instagramHandle: _instagramHandle,
-      ...requiredInquiry
-    } = validInquiry
+    const requiredInquiry = {
+      name: validInquiry.name,
+      email: validInquiry.email,
+      phone: validInquiry.phone,
+      description: validInquiry.description,
+      bodyPlacement: validInquiry.bodyPlacement,
+      size: validInquiry.size,
+      style: validInquiry.style,
+      firstTattoo: validInquiry.firstTattoo,
+      coverUp: validInquiry.coverUp,
+      touchUp: validInquiry.touchUp,
+    }
 
     expect(inquirySchema.safeParse(requiredInquiry).success).toBe(true)
   })
