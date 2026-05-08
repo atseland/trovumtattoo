@@ -5,7 +5,7 @@
 - Next.js (App Router) + TypeScript
 - Tailwind CSS
 - Vitest + Playwright
-- Zod + React Hook Form + Zustand
+- Zod + React Hook Form
 - shadcn/ui + Sonner + next-themes
 - Convex (reaktiv backend)
 - Clerk (autentisering)
@@ -34,7 +34,7 @@ just deploy-prod    # Convex produksjons-deploy
 
 For oppgaver storre enn en liten patch:
 
-1. Les relevant spec i `docs/specs/` for det oppgaven handler om.
+1. Les relevant spec/task for det oppgaven handler om. Eksisterende produktkontekst ligger i `PRD.md`, `PRD_UI.md`, `PROSJEKTBESKRIVELSE.md` og aktive filer i `docs/tasks/`.
 2. Bryt arbeid ned i smaa, testbare steg. Skriv dem i `docs/tasks/`.
 3. Implementer ett steg om gangen. Kjor smalest nyttig verifikasjon etter hvert steg.
 4. Naar du stopper: skriv handoff-fil i `docs/handoffs/` med hva som er gjort, hva som gjenstaar, og viktige beslutninger.
@@ -70,7 +70,7 @@ Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 
 ### Public UI-arbeid
 
-- Public-home er nå portet inn i appen som `src/components/public/home/Layout11Home.tsx`; den gamle `/design`-previewen og `design/forsiden/`-prototypene er ikke lenger del av repoet.
+- Public-home er nå portet inn i appen som `src/components/public/home/Layout11Home.tsx`; den gamle previewflaten er ikke lenger del av repoet.
 - Produksjon kan midlertidig vise placeholder paa `/`; ikke erstatt den med uferdig public UI.
 - Naar `design/`-prototyper flyttes til ekte app, port dem inn i `src/app/(public)/` og/eller `src/components/public/` i stedet for aa la produksjonsruter importere direkte fra `design/`.
 - Verifiser public UI med browser/Playwright paa baade mobil og desktop foer deploy.
@@ -96,9 +96,8 @@ Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 
 ```
 docs/
-  specs/      # Feature-spesifikasjoner
-  tasks/      # Oppgavelister og review-notater
-  handoffs/   # Kontekstoverfoering mellom sesjoner
+  tasks/      # Aktive oppgavespor og cleanup-logg
+  handoffs/   # Gjeldende kontekstoverfoering mellom sesjoner
   RULES.md    # Prosjektregler (preview, deploy, launch)
 .agents/skills/ # Repo-spesifikke Codex-skills
 .vscode/       # Workspace MCP-konfig

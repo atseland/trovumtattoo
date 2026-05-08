@@ -72,21 +72,27 @@ just deploy-prod
 ## Struktur
 
 ```text
-docs/specs/        # feature-specs og audit/spec-drevne arbeidsdokumenter
-docs/tasks/        # review-notater og oppgavespor
-docs/handoffs/     # handoff mellom sesjoner
-docs/RULES.md      # prosjektregler for preview/deploy/launch
-.agents/skills/    # repo-spesifikke Codex-skills
-.vscode/mcp.json   # workspace MCP-konfig
-scripts/devlog.sh  # session-logging til ekstern DevLogs-mappe
-convex/            # backendfunksjoner og schema
-src/               # Next.js-applikasjonen
-tests/             # Playwright e2e
+src/                         # Next.js App Router, komponenter og lib-kode
+convex/                      # Convex backendfunksjoner, schema og genererte bindings
+public/                      # Runtime-assets, PWA manifest, service worker og bilder som brukes av appen
+tests/e2e/                   # Playwright e2e
+docs/RULES.md                # preview/deploy/launch-regler
+docs/tasks/                  # aktive eller nylig relevante oppgavespor
+docs/handoffs/               # gjeldende handoff mellom sesjoner
+.agents/skills/              # repo-spesifikke Codex-skills
+.vscode/mcp.json             # workspace MCP-konfig
+scripts/devlog.sh            # session-logging til ekstern DevLogs-mappe
 ```
+
+## Gjeldende docs
+
+- `PRD.md`, `PRD_UI.md` og `PROSJEKTBESKRIVELSE.md` gir produkt- og designkontekst.
+- `docs/tasks/admin-ux-remediation.md` er eneste åpne task-spor etter cleanupen.
+- `docs/tasks/repo-cleanup-2026-05-08.md` og `docs/handoffs/2026-05-08-repo-cleanup.md` dokumenterer oppryddingen.
 
 ## AI tooling
 
 - Playwright MCP er konfigurert i `.vscode/mcp.json` for klienter som stoetter workspace-MCP.
 - Bruk MCP/Playwright CLI til UI-repro og frontend-feilsoeking, men behold repeterbar verifikasjon i committed tester.
 
-Se [AGENTS.md](/Users/33selale/Documents/Dev_Prosjekter/trovumtattoo_v2/AGENTS.md) for arbeidsmaate og repo-regler.
+Se `AGENTS.md` for arbeidsmaate og repo-regler.

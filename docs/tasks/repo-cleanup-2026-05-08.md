@@ -17,7 +17,7 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 ## Remove Candidates
 
 - Ignored local artifacts: `.playwright-cli/`, `playwright-report/`, `test-results/`, `.next/`, `tsconfig.tsbuildinfo`, `.DS_Store`.
-- Old homepage design preview route and prototypes: `src/app/(public)/design/page.tsx`, `design/forsiden/`.
+- Old homepage preview route and design prototypes.
 - Old modular homepage components superseded by `src/components/public/home/Layout11Home.tsx`.
 - Unused public assets from Next starter files, old design prototypes, and obsolete profile/artwork variants.
 - Scaffold validator example files.
@@ -29,12 +29,13 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 - `git status --short`
 - `just session-start "repo-cleanup"`
 - `git status --short --ignored`
-- `rg -n "design/forsiden|PreviewPage|Layout11Final|/design" src docs README.md AGENTS.md`
-- `rg -n "HomeHero|HomeAbout|homeContent|/artworks|Bilde1_more|profilbilde_v3|next.svg|vercel.svg|window.svg|file.svg|globe.svg" src public docs`
+- Search for stale design-preview references.
+- Search for stale old-home and removed-asset references.
 - `pnpm test:run`
 - `pnpm typecheck`
 - `pnpm remove @radix-ui/react-slot class-variance-authority zustand concurrently @testing-library/dom @testing-library/react @types/react-dom`
 - `pnpm build`
+- `find docs -type f | sort`
 
 ## Verification Checklist
 
@@ -50,9 +51,11 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 ## Final File Removals
 
 - Removed ignored local artifacts: `.playwright-cli/`, `playwright-report/`, `test-results/`, `.next/`, `tsconfig.tsbuildinfo`, `public/.DS_Store`, `public/portfolio/.DS_Store`.
-- Removed old design preview surface: `src/app/(public)/design/page.tsx`, `design/forsiden/`.
+- Removed old design preview surface and its prototype files.
 - Removed old home modules superseded by `Layout11Home`: `HomeAbout.tsx`, `HomeCta.tsx`, `HomeHero.tsx`, `HomePortfolio.tsx`, `HomeProcess.tsx`, `HomeStyles.tsx`, `homeContent.ts`.
 - Removed unused static assets: `public/artworks/`, `public/Bilde1_more.png`, `public/profilbilde.jpeg`, `public/profilbilde_v3.png`, Next starter SVGs, `public/portfolio/.gitkeep`, `public/portfolio/image_descriptions.txt`.
 - Removed scaffold validator files: `src/lib/validators/example.ts`, `src/lib/validators/example.test.ts`.
 - Added real inquiry validator coverage in `src/lib/validators/inquiry.test.ts`.
 - Removed confirmed-unused dependencies: `@radix-ui/react-slot`, `class-variance-authority`, `zustand`, `concurrently`, `@testing-library/dom`, `@testing-library/react`, `@types/react-dom`.
+- Consolidated docs to `README.md`, `AGENTS.md`, `docs/RULES.md`, `docs/tasks/admin-ux-remediation.md`, this cleanup task, and `docs/handoffs/2026-05-08-repo-cleanup.md`.
+- Removed stale root task ledgers and completed audit/review/handoff docs: `TASKS.md`, `TASKS_UI.md`, old `docs/handoffs/*`, `docs/specs/release-readiness-audit.md`, and completed review/task notes under `docs/tasks/`.
