@@ -126,24 +126,21 @@ export function Layout11Home() {
 
       <section id='arbeider' className='py-14 md:py-24'>
         <div className='mx-auto max-w-xl px-6 text-center md:px-12'>
-          <span className='mb-3 block font-mono text-[9px] uppercase tracking-[0.22em] text-index-num'>
-            Portefølje
-          </span>
           <p className='mb-8 font-serif text-[22px] italic leading-[1.15] tracking-[-0.02em] text-paper md:mb-12 md:text-[28px]'>
-            Et utvalg arbeider som viser retningen jeg jobber i.
+            Utvalgte arbeider som viser stilen min
           </p>
         </div>
 
         <div className='overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-          <div className='flex w-max gap-4 px-6 md:gap-6 md:px-12'>
+          <div className='mx-auto flex w-max gap-4 px-6 md:gap-6 md:px-12'>
             {works.map((work, index) => (
-              <div key={work.src} className='w-[280px] shrink-0 md:w-[340px]'>
+              <div key={work.src} className='w-[250px] shrink-0 md:w-[300px]'>
                 <div className='aspect-[3/4] overflow-hidden bg-panel'>
                   <Image
                     src={work.src}
                     alt={work.title}
-                    width={340}
-                    height={453}
+                    width={300}
+                    height={400}
                     className='h-full w-full object-cover transition-transform duration-700 hover:scale-[1.03]'
                     style={{ filter: 'grayscale(20%) contrast(1.05)' }}
                     priority={index === 0}
@@ -166,12 +163,6 @@ export function Layout11Home() {
             ))}
             <div className='w-6 shrink-0 md:w-12' />
           </div>
-        </div>
-
-        <div className='mt-6 flex justify-center'>
-          <span className='font-mono text-[8px] uppercase tracking-[0.22em] text-index-num opacity-50'>
-            Scroll for mer
-          </span>
         </div>
       </section>
 
