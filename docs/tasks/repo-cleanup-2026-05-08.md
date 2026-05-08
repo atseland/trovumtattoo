@@ -33,6 +33,8 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 - `rg -n "HomeHero|HomeAbout|homeContent|/artworks|Bilde1_more|profilbilde_v3|next.svg|vercel.svg|window.svg|file.svg|globe.svg" src public docs`
 - `pnpm test:run`
 - `pnpm typecheck`
+- `pnpm remove @radix-ui/react-slot class-variance-authority zustand concurrently @testing-library/dom @testing-library/react @types/react-dom`
+- `pnpm build`
 
 ## Verification Checklist
 
@@ -53,3 +55,4 @@ Production-first cleanup of the active Trovum Tattoo repo. The goal is to keep t
 - Removed unused static assets: `public/artworks/`, `public/Bilde1_more.png`, `public/profilbilde.jpeg`, `public/profilbilde_v3.png`, Next starter SVGs, `public/portfolio/.gitkeep`, `public/portfolio/image_descriptions.txt`.
 - Removed scaffold validator files: `src/lib/validators/example.ts`, `src/lib/validators/example.test.ts`.
 - Added real inquiry validator coverage in `src/lib/validators/inquiry.test.ts`.
+- Removed confirmed-unused dependencies: `@radix-ui/react-slot`, `class-variance-authority`, `zustand`, `concurrently`, `@testing-library/dom`, `@testing-library/react`, `@types/react-dom`.
