@@ -52,7 +52,7 @@ function Ornament({ className = '' }: { className?: string }) {
 export function Layout11Home() {
   return (
     <div className='min-h-screen bg-bg text-paper'>
-      <section className='flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center md:min-h-screen md:px-12 md:py-20'>
+      <section className='relative flex min-h-[100svh] flex-col items-center justify-center px-6 pb-24 pt-16 text-center md:min-h-screen md:px-12 md:py-20'>
         <span className='mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12'>
           Tigr Tattoo &middot; Sandvika
         </span>
@@ -101,7 +101,7 @@ export function Layout11Home() {
 
         <a
           href='#arbeider'
-          className='mt-10 flex w-full max-w-xs flex-col items-center gap-2 transition-opacity duration-200 hover:opacity-60'
+          className='absolute inset-x-6 bottom-6 mx-auto flex w-auto max-w-xs flex-col items-center gap-2 transition-opacity duration-200 hover:opacity-60 md:static md:inset-auto md:mt-10 md:w-full'
         >
           <span className='flex w-full items-center gap-3'>
             <span className='block h-px flex-1 bg-rule-heavy' />
