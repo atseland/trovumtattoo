@@ -17,7 +17,10 @@ test('home page keeps images and layout intact on desktop and mobile', async ({ 
 
     await expect.poll(async () => {
       return page.locator('img').evaluateAll((images) =>
-        images.filter((image) => image.complete && image.naturalWidth > 0).length
+        images.filter((image) => {
+          const img = image as HTMLImageElement
+          return img.complete && img.naturalWidth > 0
+        }).length
       )
     }).toBeGreaterThanOrEqual(7)
 

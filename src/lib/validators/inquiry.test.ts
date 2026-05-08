@@ -1,0 +1,64 @@
+import { describe, expect, it } from 'vitest'
+import { inquirySchema } from './inquiry'
+
+const validInquiry = {
+  name: 'Ola Nordmann',
+  email: 'ola@example.com',
+  phone: '99999999',
+  instagramHandle: '@ola',
+  description: 'Jeg ønsker en dark art tatovering på underarmen.',
+  bodyPlacement: 'Underarm',
+  size: 'Middels',
+  style: 'Black and grey',
+  budget: '8000',
+  desiredTiming: 'Våren',
+  firstTattoo: false,
+  coverUp: false,
+  touchUp: false,
+  extraNotes: 'Helst en hverdag.',
+}
+
+describe('inquirySchema', () => {
+  it('accepts a valid booking inquiry payload', () => {
+    expect(inquirySchema.safeParse(validInquiry).success).toBe(true)
+  })
+
+  it('rejects invalid email', () => {
+    const result = inquirySchema.safeParse({
+      ...validInquiry,
+      email: 'ikke-en-epost',
+    })
+
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects descriptions shorter than 10 characters', () => {
+    const result = inquirySchema.safeParse({
+      ...validInquiry,
+      description: 'Kort',
+    })
+
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects unsupported size values', () => {
+    const result = inquirySchema.safeParse({
+      ...validInquiry,
+      size: 'Tiny',
+    })
+
+    expect(result.success).toBe(false)
+  })
+
+  it('accepts missing optional fields', () => {
+    const {
+      budget: _budget,
+      desiredTiming: _desiredTiming,
+      extraNotes: _extraNotes,
+      instagramHandle: _instagramHandle,
+      ...requiredInquiry
+    } = validInquiry
+
+    expect(inquirySchema.safeParse(requiredInquiry).success).toBe(true)
+  })
+})
