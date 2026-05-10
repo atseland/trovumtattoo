@@ -71,6 +71,23 @@ function formatDatetimeLocal(date: Date) {
 }
 
 async function expectOneVisible(locators: ReturnType<Page['locator']>[]) {
+  const deadline = Date.now() + 5_000
+
+  while (Date.now() < deadline) {
+    for (const locator of locators) {
+      if (await locator.count()) {
+        try {
+          await expect(locator.first()).toBeVisible({ timeout: 250 })
+          return
+        } catch {
+          // Continue polling the other accepted states until one becomes visible.
+        }
+      }
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+
   for (const locator of locators) {
     if (await locator.count()) {
       await expect(locator.first()).toBeVisible()
@@ -187,7 +204,7 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(page.getByText('Booking arkivert')).toBeVisible()
   await expect(page.getByText('Ingen bookinger ennå.')).toBeVisible()
 
-  await page.getByRole('button', { name: 'Arkiv' }).click()
+  await page.getByRole('button', { name: 'Arkiv', exact: true }).click()
   await expect(page.getByText('completed')).toBeVisible()
   await expect(page.getByText('Playwright opprettet booking fra prosjektflyt')).toBeVisible()
 
@@ -195,15 +212,16 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(page.getByRole('heading', { name: 'Innboks' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Innboks' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Uleste' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Arkiv' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Arkiv', exact: true })).toBeVisible()
   await expectOneVisible([
     page.getByText('Ingen e-poster ennå'),
     page.locator('[role="link"]').filter({ hasText: /.+/ }),
   ])
-  await page.getByRole('button', { name: 'Arkiv' }).click()
+  await page.getByRole('button', { name: 'Arkiv', exact: true }).click()
   await expectOneVisible([
     page.getByText('Ingen arkiverte e-poster'),
     page.getByRole('button', { name: 'Gjenopprett' }),
+    page.getByRole('button', { name: 'Slett permanent' }),
   ])
 
   await page.goto('/admin/notifications')
@@ -222,6 +240,7 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expectOneVisible([
     page.getByText('Push-varsler er aktivert'),
     page.getByText('Push-varsler er ikke aktivert'),
+    page.getByText('Push-varsler er ikke konfigurert'),
   ])
   await expectOneVisible([
     page.getByText('Mail er ikke konfigurert i servermiljoet.'),
@@ -244,12 +263,12 @@ test('admin can archive and restore an inquiry', async ({ page }) => {
   await expect(page.getByText(inquiry.email)).not.toBeVisible()
 
   await page.getByRole('button', { name: 'Arkiv' }).click()
-  await expect(page.getByText(inquiry.email)).toBeVisible()
+  await expect(page.getByText(inquiry.email).first()).toBeVisible()
   await page.getByRole('button', { name: 'Gjenopprett' }).first().click()
   await expect(page.getByText('Forespørsel gjenopprettet')).toBeVisible()
 
   await page.goto('/admin/inquiries')
-  await expect(page.getByText(inquiry.email)).toBeVisible()
+  await expect(page.getByText(inquiry.email).first()).toBeVisible()
 })
 
 test('admin can create edit and delete a message template', async ({ page }) => {

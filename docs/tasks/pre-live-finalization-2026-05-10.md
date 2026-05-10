@@ -21,7 +21,7 @@ This file tracks launch-readiness gaps discovered after the repo cleanup and pos
 
 ### 1. Booking Archive For Actual Bookings
 
-Status: implemented 2026-05-10; pending authenticated admin smoke in configured Clerk/Convex test env.
+Status: implemented and authenticated-admin-smoked 2026-05-10.
 
 Implement archive support for actual `bookings` rows.
 
@@ -36,11 +36,11 @@ Verification:
 - Unit/backend policy tests added for allowed and disallowed archive states.
 - Admin UI smoke added to Playwright for complete -> archive action becomes available, archive hides the booking from active project list, and archive filter shows it.
 - Upcoming/calendar/dashboard/notification booking queries now filter archived bookings out.
-- Local `tests/e2e/admin.spec.ts` skipped because Clerk/Convex e2e preconditions were not present; run again in configured admin e2e env before final deploy.
+- Authenticated `tests/e2e/admin.spec.ts` passed after resolving `E2E_CLERK_USER_EMAIL` from the Clerk dev instance and syncing Convex dev functions with `npx convex dev --once --tail-logs disable`.
 
 ### 2. Customer-Scoped New Mail
 
-Status: implemented 2026-05-10; pending SMTP smoke in configured mail env.
+Status: implemented 2026-05-10; SMTP send smoke blocked by Convex mail credential auth failure.
 
 Implement a way to compose a new outbound email from the app only for established customers.
 
@@ -56,7 +56,8 @@ Verification:
 - Sent mail is stored as a linked `mailThreads` + `mailMessages` outbound record after SMTP succeeds.
 - SMTP errors are rethrown and surfaced in the sheet without writing a success thread/message.
 - Policy tests added for required customer context, valid customer email, and required subject/body.
-- Local admin e2e has a UI smoke for fixed recipient/disabled empty send, but skipped because Clerk/Convex e2e preconditions were not present.
+- Authenticated admin e2e passed the UI smoke for fixed recipient/disabled empty send.
+- SMTP smoke reached the real one.com SMTP send path but failed with `535 Authentication failed`; no success thread was created. Update Convex `MAIL_PASSWORD`/mail credentials before final deploy and rerun the smoke.
 
 ### 3. Instagram Contact Target
 
