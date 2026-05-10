@@ -111,7 +111,7 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
   await page.keyboard.press('Shift+Tab')
-  await expect(dialog.getByRole('link', { name: 'Se på Instagram' })).toBeFocused()
+  await expect(dialog.getByRole('link', { name: 'Se på instagram' })).toBeFocused()
   await page.keyboard.press('Tab')
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
@@ -227,7 +227,7 @@ test('portfolio cards include exact Instagram post links', async ({ page }) => {
     'https://www.instagram.com/p/DU2p7I5DF35/?igsh=YnVicTRrYnQxZTJr',
   ]
 
-  const portfolioLinks = page.getByRole('link', { name: '-> se på instagram' })
+  const portfolioLinks = page.getByRole('link', { name: 'Se på instagram' })
   await expect(portfolioLinks).toHaveCount(7)
   for (const [index, expectedUrl] of expectedUrls.entries()) {
     await expect(portfolioLinks.nth(index)).toHaveAttribute('href', expectedUrl)

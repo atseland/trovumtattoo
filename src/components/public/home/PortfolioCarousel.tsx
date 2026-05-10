@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react'
+import { FaInstagram } from 'react-icons/fa6'
 import { instagramProfileUrl } from '@/lib/seo'
 
 type PortfolioWork = {
@@ -161,9 +162,10 @@ export function PortfolioCarousel() {
                     href={work.instagramUrl ?? instagramProfileUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='mt-2 inline-flex font-sans text-[11px] leading-none text-accent transition-colors duration-200 hover:text-paper'
+                    className='mt-3 inline-flex items-center gap-1.5 border-b border-accent/55 pb-1 font-sans text-[9px] uppercase leading-none tracking-[0.12em] text-accent transition-colors duration-200 hover:border-paper/70 hover:text-paper'
                   >
-                    -&gt; se på instagram
+                    <FaInstagram size={12} aria-hidden='true' />
+                    Se på instagram
                   </a>
                 </div>
               </div>
@@ -242,7 +244,8 @@ export function PortfolioCarousel() {
                 rel='noopener noreferrer'
                 className='mt-5 inline-flex min-h-10 items-center gap-2 border border-rule px-3 font-sans text-[9px] uppercase tracking-[0.12em] text-nav transition-colors duration-200 hover:text-paper'
               >
-                Se på Instagram
+                <FaInstagram size={13} aria-hidden='true' />
+                Se på instagram
                 <ExternalLink size={13} aria-hidden='true' />
               </a>
             </aside>
