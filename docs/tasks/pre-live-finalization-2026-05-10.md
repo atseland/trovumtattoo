@@ -40,7 +40,7 @@ Verification:
 
 ### 2. Customer-Scoped New Mail
 
-Status: implemented 2026-05-10; SMTP send smoke blocked by Convex mail credential auth failure.
+Status: implemented and production SMTP-smoked 2026-05-10.
 
 Implement a way to compose a new outbound email from the app only for established customers.
 
@@ -57,7 +57,8 @@ Verification:
 - SMTP errors are rethrown and surfaced in the sheet without writing a success thread/message.
 - Policy tests added for required customer context, valid customer email, and required subject/body.
 - Authenticated admin e2e passed the UI smoke for fixed recipient/disabled empty send.
-- SMTP smoke reached the real one.com SMTP send path but failed with `535 Authentication failed`; no success thread was created. Update Convex `MAIL_PASSWORD`/mail credentials before final deploy and rerun the smoke.
+- Initial SMTP smoke reached the real one.com SMTP send path but failed with `535 Authentication failed`; no false success thread was created.
+- After production Convex mail credentials were updated and production functions deployed, production smoke returned `sent=true` and recorded an outbound thread.
 
 ### 3. Instagram Contact Target
 
