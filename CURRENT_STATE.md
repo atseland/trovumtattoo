@@ -124,6 +124,15 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Prosesslisten avsluttes med at etter timen får kunden med et etterbehandlingsskjema som hjelper gjennom helningsprosessen.
 - Videre endringer i booking info layout, CTA-er, pris-, depositum- eller prosesscopy krever eksplisitt brukerbeskjed om å åpne booking info-scope igjen.
 
+### Public Navigation Og Hamburgermeny
+
+- Public navigation i `src/components/public/PublicHeader.tsx` er ferdig justert og låst.
+- FAQ-label er `Spørsmål og svar`.
+- Hamburgermenyen viser ikke beskrivelser under menypunktene og har ikke `Informasjon til gjennomgang`-boksen.
+- Hamburgermenyens vanlige lenkeliste viser ikke `Kontakt`; kontakt ligger som egen CTA-knapp.
+- Hamburgermenyens CTA-er er like brede og står i rekkefølgen `Kontakt` før `Bookingforespørsel`.
+- Videre endringer i public navigation, hamburgermeny, nav-labels eller CTA-rekkefølge krever eksplisitt brukerbeskjed om å åpne navigation-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
