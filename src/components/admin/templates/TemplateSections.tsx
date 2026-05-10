@@ -5,7 +5,7 @@ import { InputField, SelectField, TextareaField } from '@/components/ui/FormFiel
 import { Skeleton } from '@/components/ui/Skeleton'
 import type { TemplateFormState } from '@/components/admin/templates/useTemplateEditor'
 
-export const TEMPLATE_TYPES: Array<{ value: string; label: string }> = [
+const TEMPLATE_TYPES: Array<{ value: string; label: string }> = [
   { value: 'received', label: 'Mottatt forespørsel' },
   { value: 'needs-info', label: 'Trenger mer info' },
   { value: 'estimate', label: 'Prisestimat' },

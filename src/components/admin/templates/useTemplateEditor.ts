@@ -13,7 +13,7 @@ export interface TemplateFormState {
   content: string
 }
 
-export const emptyTemplateForm: TemplateFormState = {
+const emptyTemplateForm: TemplateFormState = {
   id: null,
   type: 'received',
   title: '',

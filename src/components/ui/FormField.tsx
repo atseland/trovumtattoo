@@ -12,7 +12,7 @@ export const fieldInputClasses = [
   'disabled:opacity-40',
 ].join(' ')
 
-export const fieldLabelClasses = 'block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[6px]'
+const fieldLabelClasses = 'block font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-[6px]'
 const errorClasses = 'font-sans text-[12px] mt-1 text-[#af8c87]'
 
 interface LabelOptionalProps {
@@ -157,30 +157,3 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
   }
 )
 SelectField.displayName = 'SelectField'
-
-// File upload
-interface FileUploadFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  optional?: boolean
-  error?: string
-  wrapperClassName?: string
-}
-
-export const FileUploadField = forwardRef<HTMLInputElement, FileUploadFieldProps>(
-  ({ label, optional, error, wrapperClassName, className = '', id, ...props }, ref) => {
-    const generatedId = useId()
-    const inputId = id ?? generatedId
-
-    return (
-      <FieldWrapper label={label} optional={optional} error={error} className={wrapperClassName} inputId={inputId}>
-        <div
-          className={`min-h-[80px] border border-dashed border-[rgba(237,233,230,0.18)] flex flex-col items-center justify-center p-5 cursor-pointer transition-[border-color,background] duration-[200ms] hover:border-[rgba(237,233,230,0.30)] hover:bg-[rgba(237,233,230,0.03)] ${error ? 'border-[rgba(175,140,135,0.5)]' : ''} ${className}`}
-        >
-          <input ref={ref} id={inputId} type='file' className='sr-only' {...props} />
-          <span className='font-sans text-[12px] text-mast-left'>Klikk for å velge filer</span>
-        </div>
-      </FieldWrapper>
-    )
-  }
-)
-FileUploadField.displayName = 'FileUploadField'

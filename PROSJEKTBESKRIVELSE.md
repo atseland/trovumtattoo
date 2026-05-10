@@ -4,7 +4,7 @@
 
 Dette dokumentet er en kort prosjektbeskrivelse av hva produktet faktisk er per naa.
 
-- [PRD.md](/Users/33selale/Documents/Dev_Prosjekter/trovumtattoo_v2/PRD.md) er fortsatt autoritativt for scope og produktkrav.
+- `PRD.md` er fortsatt autoritativt for scope og produktkrav.
 - Denne filen beskriver produktet slik det naa fremstar i kodebasen og den verifiserte runtime-flyten.
 
 ## Kort beskrivelse
