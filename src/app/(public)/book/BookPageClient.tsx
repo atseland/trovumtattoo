@@ -57,7 +57,7 @@ export default function BookPageClient() {
         Send bookingforespørsel
       </h1>
       <p className='font-sans text-[14px] text-body mb-10 leading-[1.8]'>
-        Fyll ut skjemaet så tar vi kontakt innen 2 virkedager.
+        Fyll ut skjemaet, så tar jeg kontakt så fort jeg kan (innen 3 virkedager).
       </p>
 
       <form onSubmit={handleSubmit(submitInquiry)} noValidate className='flex flex-col gap-5'>

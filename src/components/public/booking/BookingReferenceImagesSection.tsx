@@ -26,7 +26,7 @@ export function BookingReferenceImagesSection({
         </span>
       </label>
       <p id={helpId} className='mb-2 font-sans text-[12px] leading-[1.6] text-mast-left'>
-        Last opp JPG, PNG eller WebP hvis du har referanser.
+        Last opp bilder her hvis du har referanser.
       </p>
       <div className='min-h-[80px] border border-dashed border-[rgba(237,233,230,0.18)] flex flex-col items-center justify-center p-5 transition-[border-color,background] duration-[200ms] hover:border-[rgba(237,233,230,0.30)] hover:bg-[rgba(237,233,230,0.03)]'>
         <label htmlFor={inputId} className='cursor-pointer font-sans text-[13px] text-mast-left hover:text-nav transition-colors duration-[200ms]'>

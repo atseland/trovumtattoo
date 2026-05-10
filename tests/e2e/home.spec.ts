@@ -185,10 +185,15 @@ test('contact and booking entrypoints render expected actions', async ({ page })
   await expect(page.getByRole('link', { name: 'Ring' })).toHaveAttribute('href', 'tel:+4797090414')
 
   await page.goto('/book')
+  await expect(page.getByText('Fyll ut skjemaet, så tar jeg kontakt så fort jeg kan (innen 3 virkedager).')).toBeVisible()
   await expect(page.getByText('Dette er en ny tatovering')).toBeVisible()
   const sizeSelect = page.getByLabel('Størrelse *')
   await expect(sizeSelect).toBeVisible()
   await expect(sizeSelect).toHaveCSS('color-scheme', 'dark')
+  await expect(sizeSelect.locator('option').first()).toHaveText('Velg omtrentlig størrelse')
+  await expect(page.getByPlaceholder('F.eks. maks 2500 kr')).toBeVisible()
+  await expect(page.getByPlaceholder('F.eks. innen 15. juni eller uke 28')).toBeVisible()
+  await expect(page.getByText('Last opp bilder her hvis du har referanser.')).toBeVisible()
 })
 
 test('faq and aftercare copy use updated contact wording', async ({ page }) => {

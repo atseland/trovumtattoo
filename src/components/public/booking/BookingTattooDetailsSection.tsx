@@ -23,7 +23,7 @@ export function BookingTattooDetailsSection({ register, errors }: BookingFormSec
         error={errors.size?.message}
         {...register('size')}
       >
-        <option value=''>Velg størrelse</option>
+        <option value=''>Velg omtrentlig størrelse</option>
         <option>Liten</option>
         <option>Middels</option>
         <option>Stor</option>
@@ -41,7 +41,7 @@ export function BookingTattooDetailsSection({ register, errors }: BookingFormSec
         label='Budsjett'
         optional
         error={errors.budget?.message}
-        placeholder='F.eks. 2 000–5 000 kr'
+        placeholder='F.eks. maks 2500 kr'
         {...register('budget')}
       />
 
@@ -49,7 +49,7 @@ export function BookingTattooDetailsSection({ register, errors }: BookingFormSec
         label='Ønsket tidsrom'
         optional
         error={errors.desiredTiming?.message}
-        placeholder='F.eks. sommer 2025, fleksibel'
+        placeholder='F.eks. innen 15. juni eller uke 28'
         {...register('desiredTiming')}
       />
     </>

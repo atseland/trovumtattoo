@@ -13,7 +13,7 @@ export function BookingSuccessState({ onReset }: BookingSuccessStateProps) {
         Takk for forespørselen!
       </h2>
       <p className='font-sans text-[14px] text-body mt-3 leading-[1.8]'>
-        Vi tar kontakt innen 2 virkedager med estimat og mulige tidspunkter.
+        Jeg tar kontakt så fort jeg kan (innen 3 virkedager) med estimat og mulige tidspunkter.
       </p>
       <div className='mt-8 flex justify-center'>
         <Btn variant='sm' onClick={onReset}>
