@@ -24,12 +24,12 @@ const faqItems = [
   {
     question: 'Hva koster en tatovering?',
     answer:
-      'Prisen avhenger av størrelse, kompleksitet og plassering. Enkle, små design starter fra 1000 kr. Større prosjekter prises etter time eller som en total pris for hele jobben. Du får alltid et estimat før vi avtaler noe.',
+      'Prisen avhenger av størrelse, kompleksitet, plassering og tidsbruk. Send inn en bookingforespørsel med motiv, ønsket størrelse, plassering og referanser, så får du et konkret estimat før vi avtaler noe.',
   },
   {
     question: 'Hvordan fungerer depositum?',
     answer:
-      'Etter at vi har blitt enige om prosjektet og pris, betaler du et depositum — vanligvis 500–1000 kr avhengig av prosjektets størrelse. Depositumet går av den totale prisen og bekrefter din booking. Det er ikke refunderbart om du avlyser uten varsel, men vi kan flytte timen mot et gebyr.',
+      'Etter at vi har blitt enige om prosjektet, pris og tidspunkt, betaler du et depositum. Beløpet avklares sammen med prisestimatet for prosjektet. Depositumet går av den totale prisen og bekrefter din booking. Det er ikke refunderbart om du avlyser uten varsel, men vi kan flytte timen mot et gebyr.',
   },
   {
     question: 'Hvor lang tid tar det å få svar?',

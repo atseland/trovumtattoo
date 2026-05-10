@@ -112,8 +112,8 @@ const sections = [
           ]}
         />
         <BodyText>
-          Små, enkle design starter rundt 1000 kr. Mellomstore prosjekter ligger ofte på
-          2500-5000 kr. Store, komplekse prosjekter starter rundt 6000 kr og kan gå over flere sesjoner.
+          Pris vurderes etter informasjonen du sender inn i bookingforespørselen. Jo tydeligere motiv,
+          størrelse, plassering og referanser er beskrevet, desto bedre kan estimatet bli.
         </BodyText>
         <BodyText>Du får alltid et konkret prisestimat via e-post før vi bekrefter booking.</BodyText>
       </div>
@@ -125,8 +125,8 @@ const sections = [
     content: (
       <div className='flex flex-col gap-4'>
         <BodyText>
-          Etter at vi er blitt enige om prosjektet og pris, betaler du et depositum på 500-1500 kr,
-          avhengig av prosjektets størrelse.
+          Etter at vi er blitt enige om prosjektet, pris og tidspunkt, betaler du et depositum.
+          Beløpet avklares sammen med prisestimatet for prosjektet.
         </BodyText>
         <BulletList
           items={[
