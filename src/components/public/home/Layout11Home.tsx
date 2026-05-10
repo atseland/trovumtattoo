@@ -5,37 +5,38 @@ const works = [
   {
     src: '/portfolio/Blomster.png',
     title: 'Blomster',
-    caption: 'Realistiske blomster på innside underarm, med myk black and grey og tydelig ramme.',
+    caption: 'Realistisk black and grey blomster innrammet med dekor.',
   },
   {
     src: '/portfolio/Semi realistic skull.png',
     title: 'Semi realistic skull',
-    caption: 'Detaljert black and grey-hodeskalle med engel/demon-kontrast på arm.',
+    caption: 'Detaljert black and grey-hodeskalle med engel/djevel-kontrast.',
   },
   {
     src: '/portfolio/Traditional bat.png',
     title: 'Traditional bat',
-    caption: 'Tradisjonell flaggermus i blackwork på kne, med mørkere uttrykk og rene flater.',
+    caption: 'Traditional blackwork flaggermus med roser.',
   },
   {
     src: '/portfolio/Ghost.png',
     title: 'Ghost',
-    caption: 'Black and grey-portrett inspirert av Ghost, laget for innside arm.',
+    caption: 'Half \'n\' half black and grey portrett av papa emeritus IV og V fra bandet Ghost.',
   },
   {
     src: '/portfolio/Ladybug_cathedral mashup.png',
     title: 'Ladybug/cathedral mashup',
-    caption: 'Marihøne og katedral i et dark art-motiv med feminin kontrast.',
+    caption:
+      'En kreativ mashup som kombinerer en marihøne med gotiske katedral-elementer i et feminint dark-art design.',
   },
   {
     src: '/portfolio/Flaggermuser.png',
-    title: 'Flaggermuser',
-    caption: 'Clean blackwork-flaggermuser på bryst, med enkel plassering og tydelig silhuett.',
+    title: 'Flaggermus',
+    caption: 'Clean blackwork-flaggermusdesign.',
   },
   {
     src: '/portfolio/Rygg skalle.png',
-    title: 'Rygg skalle',
-    caption: 'Starten på et større ryggstykke med skalle, blader og black and grey-tyngde.',
+    title: 'Backpiece',
+    caption: 'Starten på en større backpiece med dyrekranium og blomster.',
   },
 ]
 
