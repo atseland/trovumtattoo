@@ -22,6 +22,7 @@ export default function ThreadPage() {
   const router = useRouter()
   const { isAuthenticated } = useConvexAuth()
   const [linkSheetOpen, setLinkSheetOpen] = useState(false)
+  const [deletePending, setDeletePending] = useState(false)
   const restoreThread = useMutation(api.mail.mutations.restoreThread)
   const permanentlyDeleteThread = useMutation(api.mail.mutations.permanentlyDeleteThread)
 
@@ -57,6 +58,7 @@ export default function ThreadPage() {
   async function handleRestore() {
     try {
       await restoreThread({ threadId: threadId as Id<'mailThreads'> })
+      setDeletePending(false)
       toast.success('Mail gjenopprettet')
     } catch {
       toast.error('Kunne ikke gjenopprette mail')
@@ -64,6 +66,11 @@ export default function ThreadPage() {
   }
 
   async function handleDelete() {
+    if (!deletePending) {
+      setDeletePending(true)
+      return
+    }
+
     try {
       await permanentlyDeleteThread({ threadId: threadId as Id<'mailThreads'> })
       toast.success('Mail slettet permanent')
@@ -83,7 +90,8 @@ export default function ThreadPage() {
           {thread.status === 'archived' && (
             <>
               <Btn variant='sm' onClick={handleRestore}>Gjenopprett</Btn>
-              <Btn variant='sm' onClick={handleDelete}>Slett permanent</Btn>
+              <Btn variant='sm' onClick={handleDelete}>{deletePending ? 'Bekreft slett' : 'Slett permanent'}</Btn>
+              {deletePending && <Btn variant='sm' onClick={() => setDeletePending(false)}>Avbryt</Btn>}
             </>
           )}
           <Btn variant='sm' onClick={() => setLinkSheetOpen(true)}>Koble til kunde</Btn>

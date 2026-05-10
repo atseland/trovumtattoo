@@ -31,14 +31,17 @@ export function MailThreadRow({ thread, mode, onArchive, onRestore, onDelete }: 
   const dragged = useRef(false)
   const [offset, setOffset] = useState(0)
   const [dragging, setDragging] = useState(false)
+  const [deletePending, setDeletePending] = useState(false)
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse') return
     startX.current = event.clientX
     dragged.current = false
     setDragging(true)
   }
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse') return
     if (startX.current === null) return
     const delta = event.clientX - startX.current
     if (delta < -8) dragged.current = true
@@ -60,9 +63,18 @@ export function MailThreadRow({ thread, mode, onArchive, onRestore, onDelete }: 
     router.push(`/admin/mail/${thread._id}`)
   }
 
+  function handleArchivedDeleteAction() {
+    if (!deletePending) {
+      setDeletePending(true)
+      setOffset(0)
+      return
+    }
+    onDelete(thread._id)
+  }
+
   return (
     <div className='relative overflow-hidden border border-rule bg-panel'>
-      <div className='absolute inset-y-0 right-0 flex w-[88px] items-stretch'>
+      <div className='absolute inset-y-0 right-0 flex w-[88px] items-stretch sm:hidden'>
         {mode === 'active' ? (
           <button
             type='button'
@@ -70,16 +82,16 @@ export function MailThreadRow({ thread, mode, onArchive, onRestore, onDelete }: 
             className='w-full bg-transparent font-sans text-[8.5px] uppercase tracking-[0.12em]'
             style={{ color: '#af8c87', borderLeft: '1px solid rgba(175,140,135,0.25)' }}
           >
-            Slett
+            Arkiver
           </button>
         ) : (
           <button
             type='button'
-            onClick={() => onDelete(thread._id)}
+            onClick={handleArchivedDeleteAction}
             className='w-full bg-transparent font-sans text-[8.5px] uppercase tracking-[0.12em]'
             style={{ color: '#af8c87', borderLeft: '1px solid rgba(175,140,135,0.25)' }}
           >
-            Slett
+            {deletePending ? 'Bekreft' : 'Slett'}
           </button>
         )}
       </div>
@@ -129,6 +141,7 @@ export function MailThreadRow({ thread, mode, onArchive, onRestore, onDelete }: 
               type='button'
               onClick={(event) => {
                 event.stopPropagation()
+                setDeletePending(false)
                 onRestore(thread._id)
               }}
               className='min-h-[34px] border border-rule bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em] text-nav transition-colors duration-[200ms] hover:text-paper'
@@ -141,13 +154,25 @@ export function MailThreadRow({ thread, mode, onArchive, onRestore, onDelete }: 
             onClick={(event) => {
               event.stopPropagation()
               if (mode === 'active') onArchive(thread._id)
-              else onDelete(thread._id)
+              else handleArchivedDeleteAction()
             }}
             className='ml-2 min-h-[34px] border bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em]'
             style={{ borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}
           >
-            {mode === 'active' ? 'Arkiver' : 'Slett permanent'}
+            {mode === 'active' ? 'Arkiver' : deletePending ? 'Bekreft slett' : 'Slett permanent'}
           </button>
+          {mode === 'archived' && deletePending && (
+            <button
+              type='button'
+              onClick={(event) => {
+                event.stopPropagation()
+                setDeletePending(false)
+              }}
+              className='ml-2 min-h-[34px] border border-rule bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em] text-nav transition-colors duration-[200ms] hover:text-paper'
+            >
+              Avbryt
+            </button>
+          )}
         </div>
       </div>
     </div>

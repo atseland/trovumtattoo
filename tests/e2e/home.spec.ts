@@ -33,11 +33,23 @@ test('home page keeps images and layout intact on desktop and mobile', async ({ 
 })
 
 test('contact and booking entrypoints render expected actions', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async () => undefined },
+    })
+  })
+
   await page.goto('/kontakt')
   await expect(page.getByRole('heading', { name: 'Send melding' })).toBeVisible()
   await expect(page.getByText('kontakt@trovumtattoo.no')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Send e-post' })).toHaveAttribute('href', 'mailto:kontakt@trovumtattoo.no')
-  await expect(page.getByRole('button', { name: 'Kopier e-postadresse' })).toBeVisible()
+  const copyButton = page.getByRole('button', { name: 'Kopier e-postadresse' })
+  await expect(copyButton).toBeVisible()
+  await copyButton.click()
+  await expect(page.getByRole('button', { name: 'E-post er kopiert' })).toBeVisible()
+  await expect(page.getByText('E-postadressen er kopiert.')).not.toBeVisible()
+  await expect(page.getByRole('button', { name: 'Kopier e-postadresse' })).toBeVisible({ timeout: 6000 })
   await expect(page.getByRole('link', { name: 'Send melding på Instagram' })).toHaveAttribute('href', 'https://www.instagram.com/m/trovumtattoo/')
 
   await page.goto('/book')

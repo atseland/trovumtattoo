@@ -13,6 +13,7 @@ interface ProjectBookingsSectionProps {
   onArchiveBooking: (booking: ProjectBookingSummary) => void
   onRestoreBooking: (booking: ProjectBookingSummary) => void
   onPermanentDeleteBooking: (booking: ProjectBookingSummary) => void
+  onCancelPermanentDeleteBooking: () => void
   pendingDeleteBookingId: string | null
 }
 
@@ -26,6 +27,7 @@ export function ProjectBookingsSection({
   onArchiveBooking,
   onRestoreBooking,
   onPermanentDeleteBooking,
+  onCancelPermanentDeleteBooking,
   pendingDeleteBookingId,
 }: ProjectBookingsSectionProps) {
   const bookingItems = bookings ?? []
@@ -119,6 +121,16 @@ export function ProjectBookingsSection({
                         >
                           {pendingDeleteBookingId === booking._id ? 'Bekreft slett' : 'Slett permanent'}
                         </button>
+                        {pendingDeleteBookingId === booking._id && (
+                          <button
+                            type='button'
+                            onClick={onCancelPermanentDeleteBooking}
+                            className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                            style={{ background: 'transparent' }}
+                          >
+                            Avbryt
+                          </button>
+                        )}
                       </>
                     ) : (
                       <>

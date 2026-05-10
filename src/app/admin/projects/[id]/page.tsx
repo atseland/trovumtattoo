@@ -215,6 +215,7 @@ export default function ProjectDetailPage() {
         onArchiveBooking={archiveProjectBooking}
         onRestoreBooking={restoreProjectBooking}
         onPermanentDeleteBooking={permanentlyDeleteProjectBooking}
+        onCancelPermanentDeleteBooking={() => setPendingDeleteBookingId(null)}
         pendingDeleteBookingId={pendingDeleteBookingId}
       />
       <ProjectActivitySection entries={activityLog} />

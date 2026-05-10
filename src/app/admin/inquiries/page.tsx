@@ -172,14 +172,23 @@ export default function InquiriesPage() {
                     Gjenopprett
                   </button>
                   {pendingDeleteId === inq._id ? (
-                    <button
-                      type='button'
-                      onClick={() => handlePermanentDelete(inq._id)}
-                      className='min-h-[36px] border bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em]'
-                      style={{ borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}
-                    >
-                      Bekreft slett
-                    </button>
+                    <>
+                      <button
+                        type='button'
+                        onClick={() => handlePermanentDelete(inq._id)}
+                        className='min-h-[36px] border bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em]'
+                        style={{ borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}
+                      >
+                        Bekreft slett
+                      </button>
+                      <button
+                        type='button'
+                        onClick={() => setPendingDeleteId(null)}
+                        className='min-h-[36px] border border-rule bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em] text-nav transition-colors duration-[200ms] hover:text-paper'
+                      >
+                        Avbryt
+                      </button>
+                    </>
                   ) : (
                     <button
                       type='button'
