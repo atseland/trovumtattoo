@@ -41,7 +41,7 @@ export function BookingTattooDetailsSection({ register, errors }: BookingFormSec
         label='Budsjett'
         optional
         error={errors.budget?.message}
-        placeholder='F.eks. maks 2500 kr'
+        placeholder='F.eks. ca 2500 kr'
         {...register('budget')}
       />
 
