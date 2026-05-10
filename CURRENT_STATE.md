@@ -87,6 +87,15 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - `se arbeider`-lenken ligger fortsatt nederst i hero-viewporten.
 - Videre endringer i hero layout, copy, ikonvalg eller CTA-plassering krever eksplisitt brukerbeskjed om å åpne hero-scope igjen.
 
+### Public Home Portfolio
+
+- Public home portfolio i `src/components/public/home/PortfolioCarousel.tsx` er ferdig justert og låst.
+- Titler, captions og bilderekkefølge er owner-godkjent og skal ikke endres uten eksplisitt beskjed.
+- Hvert porteføljekort har en `Se på instagram`-lenke med Instagram-ikon og korrekt post/reel-URL.
+- Klikk/tap på bilde åpner fullscreen preview via body-level portal, med mobil fullscreen-regresjonstest.
+- Modalens `Se på instagram`-lenke bruker samme post/reel-URL som kortet.
+- Videre endringer i portfolio layout, captions, rekkefølge, modal eller Instagram-lenker krever eksplisitt brukerbeskjed om å åpne portfolio-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
@@ -114,8 +123,7 @@ Videre arbeid skal behandles som siste UI/UX- og innholdsfasen.
 ### UI/UX Og Owner Review
 
 - Public copy approval, spesielt aftercare og helserelatert tekst.
-- Visuell gjennomgang av public homepage utenom låst hero, booking, kontakt, FAQ, aftercare og privacy.
-- Portfolio carousel/fullscreen preview owner review.
+- Visuell gjennomgang av public homepage utenom låst hero og låst portfolio, booking, kontakt, FAQ, aftercare og privacy.
 - Mobile/desktop polish etter faktisk gjennomgang.
 - Admin UX polish der det ikke krever backend-kontraktendring.
 
@@ -138,6 +146,7 @@ Ikke gjør disse automatisk i videre UI/UX-økter:
 - Gjøre admin-søk til all-history/global search.
 - Legge til ny public backend API-overflate.
 - Endre låst public home hero uten eksplisitt beskjed om å åpne hero-scope igjen.
+- Endre låst public home portfolio uten eksplisitt beskjed om å åpne portfolio-scope igjen.
 - Deploye til production hvis oppgaven bare var lokal UI-iterasjon, med mindre bruker ber om live.
 
 ## Tillatt Videre Arbeid Uten Ny Backend-Avklaring
