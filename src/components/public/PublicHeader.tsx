@@ -18,8 +18,8 @@ const navLinks = [
   },
   {
     href: '/aftercare',
-    label: 'Etterpleie',
-    description: 'Kort og konservativ veiledning for de første ukene etter timen.',
+    label: 'Etterbehandling',
+    description: 'Informasjon om skjemaet du får etter timen.',
   },
   {
     href: '/kontakt',
@@ -98,7 +98,7 @@ export function PublicHeader() {
               Informasjon til gjennomgang
             </p>
             <p className='mt-2 font-sans text-[13px] leading-[1.65] text-body'>
-              Kort oversikt over booking, FAQ og etterpleie før publisering.
+              Kort oversikt over booking, FAQ og etterbehandling før publisering.
             </p>
           </div>
           {navLinks.map((link) => (

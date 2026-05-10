@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check } from 'lucide-react'
 import { Btn } from '@/components/ui/Btn'
-import { businessEmail, instagramMessageUrl } from '@/lib/seo'
+import { businessEmail, businessPhoneHref, facebookProfileUrl, instagramMessageUrl } from '@/lib/seo'
 
 const contactEmail = businessEmail
 
@@ -58,6 +58,17 @@ export function ContactActions() {
         rel='noopener noreferrer'
       >
         Send melding på Instagram
+      </Btn>
+      <Btn
+        href={facebookProfileUrl}
+        variant='action'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        Send melding på Facebook
+      </Btn>
+      <Btn href={businessPhoneHref} variant='action'>
+        Ring
       </Btn>
       <Btn href='/book' variant='action'>
         Bookingforespørsel

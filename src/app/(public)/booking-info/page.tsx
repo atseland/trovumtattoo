@@ -92,13 +92,13 @@ const sections = [
         <BulletList
           items={[
             'Referansebilder: stiler du liker eller motiver som inspirerer.',
-            'Bilde av plasseringen på kroppen, gjerne fra flere vinkler.',
+            'Beskrivelse av ønsket plassering på kroppen.',
             'Beskrivelse av motivet. Jo mer konkret, jo bedre.',
             'Ønsket størrelse og om du er fleksibel på dette.',
             'Eventuelle spesielle krav, som cover-up eller eksisterende tatoveringer i nærheten.',
           ]}
         />
-        <BodyText>Du trenger ikke ha alt klart. Vi kan utvikle konseptet sammen gjennom dialog.</BodyText>
+        <BodyText>Du trenger ikke ha alt klart. En kort beskrivelse holder for å starte.</BodyText>
       </div>
     ),
   },
@@ -149,12 +149,12 @@ const sections = [
       <NumberedList
         items={[
           'Du sender forespørselen via skjemaet.',
-          'Jeg bekrefter mottak innen 2-5 virkedager.',
+          'Jeg bekrefter mottak innen 1-3 virkedager.',
           'Om prosjektet passer, sender jeg et estimat og forslag til datoer.',
           'Vi diskuterer designet og gjør eventuelle justeringer.',
           'Du betaler depositum og bookingen er bekreftet.',
           'Ferdig design presenteres på tattoo-dagen.',
-          'Etter sesjonen sender jeg etterbehandlingsinstruksjoner på e-post.',
+          'Etter sesjonen får du med et etterbehandlingsskjema.',
         ]}
       />
     ),

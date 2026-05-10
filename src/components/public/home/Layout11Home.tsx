@@ -1,7 +1,15 @@
+import type { ReactNode } from 'react'
 import Image from 'next/image'
+import { AtSign, MessageCircle, Phone } from 'lucide-react'
 import { Btn } from '@/components/ui/Btn'
 import { PortfolioCarousel } from '@/components/public/home/PortfolioCarousel'
-import { businessAddress, coreServiceLabels } from '@/lib/seo'
+import {
+  businessAddress,
+  businessPhoneHref,
+  coreServiceLabels,
+  facebookProfileUrl,
+  instagramMessageUrl,
+} from '@/lib/seo'
 
 function Ornament({ className = '' }: { className?: string }) {
   return (
@@ -10,6 +18,30 @@ function Ornament({ className = '' }: { className?: string }) {
       <span className='block h-1 w-1 rotate-45 border border-rule-heavy' />
       <span className='block h-px w-8 bg-rule-heavy md:w-12' />
     </div>
+  )
+}
+
+function SocialIconLink({
+  href,
+  label,
+  children,
+  external = false,
+}: {
+  href: string
+  label: string
+  children: ReactNode
+  external?: boolean
+}) {
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      className='flex h-9 w-9 items-center justify-center border border-rule text-nav transition-colors duration-200 hover:border-[rgba(237,233,230,0.34)] hover:text-paper'
+    >
+      {children}
+    </a>
   )
 }
 
@@ -57,9 +89,24 @@ export function Layout11Home() {
           Custom dark art, blackwork og black and grey-tatoveringer i Sandvika
         </p>
 
-        <div className='flex gap-3'>
+        <div className='mb-4 flex items-center justify-center gap-3'>
+          <SocialIconLink href={instagramMessageUrl} label='Send melding på Instagram' external>
+            <AtSign size={16} strokeWidth={1.6} aria-hidden='true' />
+          </SocialIconLink>
+          <SocialIconLink href={facebookProfileUrl} label='Send melding på Facebook' external>
+            <MessageCircle size={16} strokeWidth={1.6} aria-hidden='true' />
+          </SocialIconLink>
+          <SocialIconLink href={businessPhoneHref} label='Ring Trovum Tattoo'>
+            <Phone size={15} strokeWidth={1.7} aria-hidden='true' />
+          </SocialIconLink>
+        </div>
+
+        <div className='flex flex-wrap justify-center gap-3'>
           <Btn href='/book' variant='default' className='min-w-[148px]'>
             Bookingforespørsel
+          </Btn>
+          <Btn href='/kontakt' variant='default' className='min-w-[112px]'>
+            Kontakt
           </Btn>
         </div>
 

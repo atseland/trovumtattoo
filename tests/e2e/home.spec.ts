@@ -4,7 +4,16 @@ test('home page loads', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('body')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Bookingforespørsel' }).first()).toHaveAttribute('href', '/book')
-  await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
+  await expect(page.getByRole('link', { name: 'Kontakt' }).first()).toHaveAttribute('href', '/kontakt')
+  await expect(page.getByRole('link', { name: 'Send melding på Instagram' }).first()).toHaveAttribute(
+    'href',
+    'https://www.instagram.com/m/trovumtattoo/',
+  )
+  await expect(page.getByRole('link', { name: 'Send melding på Facebook' }).first()).toHaveAttribute(
+    'href',
+    'https://www.facebook.com/profile.php?id=100090196337976',
+  )
+  await expect(page.getByRole('link', { name: 'Ring Trovum Tattoo' })).toHaveAttribute('href', 'tel:+4797090414')
 })
 
 test('public SEO metadata and structured data render', async ({ page, request }) => {
@@ -76,6 +85,19 @@ test('home page keeps images and layout intact on desktop and mobile', async ({ 
   }
 })
 
+test('mobile hero keeps work anchor pinned at bottom of first viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const workAnchor = page.getByRole('link', { name: /se arbeider/i })
+  await expect(workAnchor).toBeVisible()
+
+  const box = await workAnchor.boundingBox()
+  expect(box).toBeTruthy()
+  expect(box!.y + box!.height).toBeLessThanOrEqual(844 - 12)
+  expect(box!.y).toBeGreaterThan(844 - 96)
+})
+
 test('home page portfolio opens fullscreen preview with keyboard close', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/')
@@ -89,7 +111,7 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
   await page.keyboard.press('Shift+Tab')
-  await expect(dialog.getByRole('button', { name: 'Neste bilde' })).toBeFocused()
+  await expect(dialog.getByRole('link', { name: 'Se på Instagram' })).toBeFocused()
   await page.keyboard.press('Tab')
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
@@ -106,8 +128,8 @@ test('home page mobile menu exposes informational copy for review', async ({ pag
   const menu = page.getByRole('navigation', { name: 'Mobilmeny' })
   await expect(menu).toBeVisible()
   await expect(menu.getByText('Informasjon til gjennomgang')).toBeVisible()
-  await expect(menu.getByText('Kort oversikt over booking, FAQ og etterpleie før publisering.')).toBeVisible()
-  await expect(menu.getByRole('link', { name: /Etterpleie/ })).toBeVisible()
+  await expect(menu.getByText('Kort oversikt over booking, FAQ og etterbehandling før publisering.')).toBeVisible()
+  await expect(menu.getByRole('link', { name: /Etterbehandling/ })).toBeVisible()
 })
 
 test('contact and booking entrypoints render expected actions', async ({ page }) => {
@@ -120,7 +142,9 @@ test('contact and booking entrypoints render expected actions', async ({ page })
 
   await page.goto('/kontakt')
   await expect(page.getByRole('heading', { name: 'Send melding' })).toBeVisible()
+  await expect(page.getByText('Velg kanalen som passer best.')).not.toBeVisible()
   await expect(page.getByRole('main').getByText('kontakt@trovumtattoo.no')).toBeVisible()
+  await expect(page.getByRole('main').getByText('+47 970 90 414')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Send e-post' })).toHaveAttribute('href', 'mailto:kontakt@trovumtattoo.no')
   const copyButton = page.getByRole('button', { name: 'Kopier e-postadresse' })
   await expect(copyButton).toBeVisible()
@@ -129,10 +153,46 @@ test('contact and booking entrypoints render expected actions', async ({ page })
   await expect(page.getByText('E-postadressen er kopiert.')).not.toBeVisible()
   await expect(page.getByRole('button', { name: 'Kopier e-postadresse' })).toBeVisible({ timeout: 6000 })
   await expect(page.getByRole('link', { name: 'Send melding på Instagram' })).toHaveAttribute('href', 'https://www.instagram.com/m/trovumtattoo/')
+  await expect(page.getByRole('link', { name: 'Send melding på Facebook' })).toHaveAttribute(
+    'href',
+    'https://www.facebook.com/profile.php?id=100090196337976',
+  )
+  await expect(page.getByRole('link', { name: 'Ring' })).toHaveAttribute('href', 'tel:+4797090414')
 
   await page.goto('/book')
   await expect(page.getByText('Dette er en ny tatovering')).toBeVisible()
   const sizeSelect = page.getByLabel('Størrelse *')
   await expect(sizeSelect).toBeVisible()
   await expect(sizeSelect).toHaveCSS('color-scheme', 'dark')
+})
+
+test('faq and aftercare copy use updated contact wording', async ({ page }) => {
+  await page.goto('/faq')
+  await page.getByRole('button', { name: 'Hvordan booker jeg en tatovering?' }).click()
+  await expect(page.getByText('1-3 virkedager')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
+    'href',
+    'https://www.instagram.com/m/trovumtattoo/',
+  )
+  await expect(page.getByRole('link', { name: 'Facebook' })).toHaveAttribute(
+    'href',
+    'https://www.facebook.com/profile.php?id=100090196337976',
+  )
+  await expect(page.getByRole('link', { name: '+47 970 90 414' })).toHaveAttribute('href', 'tel:+4797090414')
+  await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
+
+  await page.goto('/aftercare')
+  await expect(page.getByRole('heading', { name: 'Etterbehandling' })).toBeVisible()
+  await expect(page.getByText('Du får med et eget etterbehandlingsskjema etter timen.')).toBeVisible()
+  await expect(page.getByText('Dag 1')).not.toBeVisible()
+  await expect(page.getByText('Unngå dette under heling')).not.toBeVisible()
+  await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
+})
+
+test('portfolio cards include Instagram profile links', async ({ page }) => {
+  await page.goto('/')
+
+  const portfolioLinks = page.getByRole('link', { name: '-> se på instagram' })
+  await expect(portfolioLinks.first()).toHaveAttribute('href', 'https://instagram.com/trovumtattoo')
+  await expect(portfolioLinks).toHaveCount(7)
 })

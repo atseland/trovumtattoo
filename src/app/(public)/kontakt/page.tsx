@@ -2,7 +2,15 @@ import type { Metadata } from 'next'
 import { ContactActions } from '@/components/public/ContactActions'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Rule } from '@/components/ui/Rule'
-import { absoluteUrl, businessAddress, businessEmail, getPublicRoute, instagramMessageUrl } from '@/lib/seo'
+import {
+  absoluteUrl,
+  businessAddress,
+  businessEmail,
+  businessPhoneDisplay,
+  facebookProfileUrl,
+  getPublicRoute,
+  instagramMessageUrl,
+} from '@/lib/seo'
 
 const route = getPublicRoute('/kontakt')!
 
@@ -31,15 +39,16 @@ export default function ContactPage() {
       <h1 className='mb-2 font-serif text-[clamp(32px,5vw,48px)] italic leading-[1.1] tracking-[-0.02em] text-paper'>
         Send melding
       </h1>
-      <p className='mb-8 font-sans text-[14px] leading-[1.8] text-body'>
-        Velg kanalen som passer best. For nye tatoveringsprosjekter bør du sende en bookingforespørsel.
-      </p>
-      <div className='mb-8 border border-rule bg-panel px-5 py-5'>
+      <div className='mb-8 mt-8 border border-rule bg-panel px-5 py-5'>
         <p className='font-sans text-[10px] uppercase tracking-[0.14em] text-nav'>E-post og studio</p>
         <p className='mt-2 font-sans text-[15px] text-paper'>{businessEmail}</p>
+        <p className='mt-2 font-sans text-[15px] text-paper'>{businessPhoneDisplay}</p>
         <p className='mt-2 font-sans text-[13px] leading-[1.6] text-body'>
           Tigr Tattoo, {businessAddress.streetAddress}, {businessAddress.postalCode} {businessAddress.addressLocality}.
           Instagram DM: {instagramMessageUrl}
+        </p>
+        <p className='mt-2 font-sans text-[13px] leading-[1.6] text-body'>
+          Facebook: {facebookProfileUrl}
         </p>
       </div>
       <Rule className='mb-8' />

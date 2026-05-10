@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react'
+import { instagramProfileUrl } from '@/lib/seo'
 
 type PortfolioWork = {
   src: string
@@ -147,6 +148,14 @@ export function PortfolioCarousel() {
                   <p className='mt-1 max-w-[28ch] font-sans text-[12px] leading-[1.5] text-body'>
                     {work.caption}
                   </p>
+                  <a
+                    href={work.instagramUrl ?? instagramProfileUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='mt-2 inline-flex font-sans text-[11px] leading-none text-accent transition-colors duration-200 hover:text-paper'
+                  >
+                    -&gt; se på instagram
+                  </a>
                 </div>
               </div>
             </article>
@@ -218,17 +227,15 @@ export function PortfolioCarousel() {
               <p className='font-sans text-[14px] leading-[1.75] text-body'>
                 {activeWork.caption}
               </p>
-              {activeWork.instagramUrl && (
-                <a
-                  href={activeWork.instagramUrl}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='mt-5 inline-flex min-h-10 items-center gap-2 border border-rule px-3 font-sans text-[9px] uppercase tracking-[0.12em] text-nav transition-colors duration-200 hover:text-paper'
-                >
-                  Åpne Instagram-post
-                  <ExternalLink size={13} aria-hidden='true' />
-                </a>
-              )}
+              <a
+                href={activeWork.instagramUrl ?? instagramProfileUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='mt-5 inline-flex min-h-10 items-center gap-2 border border-rule px-3 font-sans text-[9px] uppercase tracking-[0.12em] text-nav transition-colors duration-200 hover:text-paper'
+              >
+                Se på Instagram
+                <ExternalLink size={13} aria-hidden='true' />
+              </a>
             </aside>
           </div>
         </div>

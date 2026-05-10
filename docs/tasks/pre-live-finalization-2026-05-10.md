@@ -157,6 +157,7 @@ Verification:
 - Carousel uses `sizes` for display assets and full-screen `object-contain` image in the modal.
 - Missing Instagram post URL does not render a broken link.
 - Local Playwright coverage added for opening the fullscreen preview and closing it with Escape.
+- Instagram feed is deferred until exact feed approach/post source is chosen. Current public-copy slice only adds profile links under portfolio images.
 
 ### 7. Public Copy Approval
 

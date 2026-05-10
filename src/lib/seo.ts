@@ -1,8 +1,11 @@
 export const siteUrl = 'https://trovumtattoo.no'
 export const siteName = 'Trovum Tattoo'
 export const businessEmail = 'kontakt@trovumtattoo.no'
+export const businessPhoneDisplay = '+47 970 90 414'
+export const businessPhoneHref = 'tel:+4797090414'
 export const instagramProfileUrl = 'https://instagram.com/trovumtattoo'
 export const instagramMessageUrl = 'https://www.instagram.com/m/trovumtattoo/'
+export const facebookProfileUrl = 'https://www.facebook.com/profile.php?id=100090196337976'
 export const businessMapUrl =
   'https://www.google.com/maps/place/Tigr+Tattoo/@59.8916435,10.5127811,476m/data=!3m2!1e3!4b1!4m6!3m5!1s0x46411364221947e3:0xb607aa7ea16c44d!8m2!3d59.8916408!4d10.515356!16s%2Fg%2F11h0bkyjry'
 
@@ -71,7 +74,7 @@ export const publicRoutes = [
     path: '/aftercare',
     title: 'Etterbehandling av tatovering | Trovum Tattoo',
     description:
-      'Konservativ etterbehandlingsguide for ny tatovering med vask, fukt, heling og hva du bør unngå de første ukene.',
+      'Informasjon om etterbehandlingsskjemaet du får etter tatoveringstimen hos Trovum Tattoo.',
     priority: 0.7,
   },
   {
@@ -109,8 +112,9 @@ export function createLocalBusinessJsonLd() {
     image: absoluteUrl('/og-image.jpg'),
     logo: absoluteUrl('/logo.png'),
     email: businessEmail,
+    telephone: businessPhoneDisplay,
     hasMap: businessMapUrl,
-    sameAs: [instagramProfileUrl],
+    sameAs: [instagramProfileUrl, facebookProfileUrl],
     address: {
       '@type': 'PostalAddress',
       ...businessAddress,
