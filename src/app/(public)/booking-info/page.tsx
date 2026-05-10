@@ -128,17 +128,17 @@ const sections = [
     ),
   },
   {
-    title: 'Hva skjer etter at du har sendt inn?',
+    title: 'Hva skjer etter at du har sendt inn forespørsel?',
     content: (
       <NumberedList
         items={[
           'Du sender forespørselen via skjemaet.',
           'Jeg bekrefter mottak innen 1-3 virkedager.',
-          'Om prosjektet passer, sender jeg et estimat og forslag til datoer.',
-          'Vi diskuterer designet og gjør eventuelle justeringer.',
+          'Jeg sender et estimat og forslag til datoer.',
+          'Vi diskuterer designet.',
           'Du betaler depositum og bookingen er bekreftet.',
           'Ferdig design presenteres på tattoo-dagen.',
-          'Etter sesjonen får du med et etterbehandlingsskjema.',
+          'Etter timen får du med et etterbehandlingsskjema som hjelper deg gjennom helningsprosessen.',
         ]}
       />
     ),
