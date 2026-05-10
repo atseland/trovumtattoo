@@ -36,13 +36,22 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/')
 
-  await page.getByRole('button', { name: 'Åpne Blomster i fullscreen' }).click()
+  const trigger = page.getByRole('button', { name: 'Åpne Blomster i fullscreen' })
+  await trigger.focus()
+  await trigger.click()
   const dialog = page.getByRole('dialog', { name: 'Blomster' })
   await expect(dialog).toBeVisible()
   await expect(dialog.getByText('Realistisk black and grey blomster innrammet med dekor.')).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(dialog.getByRole('button', { name: 'Neste bilde' })).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
   await page.keyboard.press('Escape')
   await expect(dialog).not.toBeVisible()
+  await expect(trigger).toBeFocused()
 })
 
 test('home page mobile menu exposes informational copy for review', async ({ page }) => {

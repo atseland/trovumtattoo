@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react'
 
 type PortfolioWork = {
@@ -58,19 +58,49 @@ function wrapIndex(index: number) {
 
 export function PortfolioCarousel() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const dialogRef = useRef<HTMLDivElement | null>(null)
+  const triggerRefs = useRef<Array<HTMLButtonElement | null>>([])
   const activeWork = activeIndex === null ? null : works[activeIndex]
   const activePosition = activeIndex ?? 0
+
+  const closePreview = useCallback(() => {
+    const returnIndex = activeIndex
+    setActiveIndex(null)
+    if (returnIndex !== null) {
+      window.requestAnimationFrame(() => triggerRefs.current[returnIndex]?.focus())
+    }
+  }, [activeIndex])
 
   useEffect(() => {
     if (activeIndex === null) return
 
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setActiveIndex(null)
+      if (event.key === 'Escape') closePreview()
       if (event.key === 'ArrowRight') setActiveIndex((current) => wrapIndex((current ?? 0) + 1))
       if (event.key === 'ArrowLeft') setActiveIndex((current) => wrapIndex((current ?? 0) - 1))
+      if (event.key !== 'Tab') return
+
+      const focusable = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      )
+      const first = focusable[0]
+      const last = focusable.at(-1)
+      if (!first || !last) return
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -78,7 +108,7 @@ export function PortfolioCarousel() {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [activeIndex])
+  }, [activeIndex, closePreview])
 
   return (
     <>
@@ -87,6 +117,9 @@ export function PortfolioCarousel() {
           {works.map((work, index) => (
             <article key={work.src} className='w-[250px] shrink-0 md:w-[300px]'>
               <button
+                ref={(node) => {
+                  triggerRefs.current[index] = node
+                }}
                 type='button'
                 onClick={() => setActiveIndex(index)}
                 className='group block aspect-[3/4] w-full cursor-zoom-in overflow-hidden border border-transparent bg-panel text-left transition-colors duration-300 hover:border-[rgba(237,233,230,0.22)] focus:outline-none focus-visible:border-accent'
@@ -124,6 +157,7 @@ export function PortfolioCarousel() {
 
       {activeWork && (
         <div
+          ref={dialogRef}
           role='dialog'
           aria-modal='true'
           aria-label={activeWork.title}
@@ -139,8 +173,9 @@ export function PortfolioCarousel() {
               </h2>
             </div>
             <button
+              ref={closeButtonRef}
               type='button'
-              onClick={() => setActiveIndex(null)}
+              onClick={closePreview}
               className='flex h-11 w-11 shrink-0 items-center justify-center border border-rule text-nav transition-colors duration-200 hover:border-[rgba(237,233,230,0.34)] hover:text-paper'
               aria-label='Lukk fullscreen'
             >
