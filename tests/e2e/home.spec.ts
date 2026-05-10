@@ -215,6 +215,7 @@ test('booking info page points users to the booking form before price details', 
   await expect(page.getByRole('heading', { name: 'Hva skjer etter at du har sendt inn forespørsel?' })).toBeVisible()
   await expect(page.getByText('Om prosjektet passer, sender jeg et estimat og forslag til datoer.')).toHaveCount(0)
   await expect(page.getByText('Vi diskuterer designet.')).toBeVisible()
+  await expect(page.getByText('Vi blir enige og bookingen bekreftes ved innbetaling av depositum.')).toBeVisible()
   await expect(page.getByText('Etter timen får du med et etterbehandlingsskjema som hjelper deg gjennom helningsprosessen.')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Hva slags prosjekter passer?' })).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Hva kunden bør sende inn' })).toHaveCount(0)

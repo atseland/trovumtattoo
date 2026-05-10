@@ -136,7 +136,7 @@ const sections = [
           'Jeg bekrefter mottak innen 1-3 virkedager.',
           'Jeg sender et estimat og forslag til datoer.',
           'Vi diskuterer designet.',
-          'Du betaler depositum og bookingen er bekreftet.',
+          'Vi blir enige og bookingen bekreftes ved innbetaling av depositum.',
           'Ferdig design presenteres på tattoo-dagen.',
           'Etter timen får du med et etterbehandlingsskjema som hjelper deg gjennom helningsprosessen.',
         ]}
