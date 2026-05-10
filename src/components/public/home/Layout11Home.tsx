@@ -82,13 +82,6 @@ export function Layout11Home() {
           />
         </div>
 
-        <p
-          className='mb-8 max-w-[36ch] font-serif text-[16px] italic leading-[1.6] md:mb-12 md:text-[19px]'
-          style={{ color: 'rgba(237,233,230,0.45)' }}
-        >
-          Custom dark art, blackwork og black and grey-tatoveringer i Sandvika
-        </p>
-
         <div className='mb-4 flex items-center justify-center gap-3'>
           <SocialIconLink href={instagramMessageUrl} label='Send melding på Instagram' external>
             <AtSign size={16} strokeWidth={1.6} aria-hidden='true' />
