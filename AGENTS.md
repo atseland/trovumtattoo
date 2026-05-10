@@ -76,6 +76,17 @@ Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 - Ikke erstatt produksjonsforsiden med uferdig public UI.
 - Public Instagram contact-lenker skal vurderes mot pre-live tasken; direct message URL er `https://www.instagram.com/m/trovumtattoo/`.
 - Verifiser public UI med browser/Playwright paa baade mobil og desktop foer deploy.
+- Public-flaten skal ikke vaere PWA. Ikke registrer service worker, ikke eksponer install-manifest, og ikke legg push-subscription UI paa public routes.
+
+### Admin PWA / Push
+
+- PWA-laget er kun for admin-flaten under `/admin`.
+- Gammel/global PWA-funksjonalitet kan fjernes naar admin-only PWA bygges.
+- Service worker-registrering skal skje fra admin-only client component, ikke global root layout.
+- Manifest/scope/start_url skal peke mot `/admin` og ikke gjøre `/`, `/book`, `/kontakt` eller andre public routes installable.
+- Push notifications skal aapne admin-ruter, med `/admin/notifications` som trygg default ved notification click.
+- VAPID-konfig maa valideres eksplisitt for baade browser/public key og Convex/server send path.
+- Hvis gammel root-scoped service worker kan henge igjen hos brukere, implementer eller dokumenter trygg cleanup/migrering.
 
 ## Repo-skills
 

@@ -14,6 +14,8 @@ This file tracks launch-readiness gaps discovered after the repo cleanup and pos
 - New outbound mail from the app should be possible only for established customers. This is not a general-purpose mail service.
 - Public Instagram contact links should use `https://www.instagram.com/m/trovumtattoo/`.
 - PWA push notifications are required before final project closeout, but should be handled in a dedicated implementation round.
+- PWA is admin-only. Public routes must not register a service worker, expose install metadata, or include push subscription UI.
+- It is acceptable to remove the old/global PWA implementation and rebuild PWA around `/admin` only.
 - SEO/GEO readiness should be handled in a dedicated implementation round.
 - Portfolio carousel images should be optimized for carousel display while keeping full-size images available for a tap/click fullscreen modal.
 
@@ -79,17 +81,28 @@ Verification:
 
 Status: open, dedicated round.
 
-Push notifications are a must before final project closeout.
+Push notifications are a must before final project closeout. PWA scope is admin-only.
+
+Architecture decision:
+- Public-facing routes (`/`, `/book`, `/kontakt`, `/booking-info`, `/faq`, `/aftercare`, `/privacy`) are not part of the PWA.
+- Remove the current global/root PWA registration and root-scoped manifest behavior before rebuilding push.
+- Admin PWA should use `/admin` as `start_url` and an admin-limited scope where the platform allows it.
+- Service worker registration should happen only from the admin surface.
+- Existing users may have a root-scoped service worker from earlier builds; implementation must either unregister it safely or document the migration/cleanup path.
 
 Known gap:
-- Subscription UI and backend send action exist.
-- Service worker must handle `push` and `notificationclick` events.
-- VAPID environment variables must be verified for both frontend and Convex runtime.
+- Subscription UI and backend send action exist, but need review against admin-only scope.
+- Current `src/components/ServiceWorkerRegistration.tsx` is global and current `public/manifest.json` is root-scoped; both must be removed or replaced.
+- Service worker must handle `push` and `notificationclick` events for admin routes.
+- VAPID environment variables must be verified for both frontend/public key and Convex/server runtime.
+- Admin settings should make missing or invalid push config visible instead of silently failing.
 
 Verification:
+- Public routes do not register a service worker and do not advertise a PWA manifest.
+- Admin route registers the admin-only service worker and exposes install/push capability only there.
 - Admin can subscribe in production over HTTPS.
 - Test push displays a native notification.
-- Clicking notification opens the intended admin route.
+- Clicking notification opens the intended admin route, defaulting to `/admin/notifications`.
 - Missing/invalid VAPID config fails visibly in admin.
 
 ### 5. SEO/GEO Readiness

@@ -5,6 +5,7 @@
 - Preview foer prod naar mulig (`just preview`)
 - Push alene er ikke ferdig; verifiser Vercel/runtime etter deploy naar mulig.
 - Observability foer launch — sett Sentry DSN i `.env.local`
+- PWA/push er admin-only. Public routes skal ikke bli installable PWA-flater.
 - Ikke batch mange urelaterte features i en endring
 - Hold deploy-flyt enkel og repeterbar
 - Polish skal ikke blokkere shipping av fungerende kjerneverdi
