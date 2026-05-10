@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
-import { FaFacebookF, FaInstagram } from 'react-icons/fa6'
+import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa6'
 import { Btn } from '@/components/ui/Btn'
 import { PortfolioCarousel } from '@/components/public/home/PortfolioCarousel'
 import {
@@ -10,6 +10,7 @@ import {
   coreServiceLabels,
   facebookProfileUrl,
   instagramProfileUrl,
+  tiktokProfileUrl,
 } from '@/lib/seo'
 
 function Ornament({ className = '' }: { className?: string }) {
@@ -89,6 +90,9 @@ export function Layout11Home() {
           </SocialIconLink>
           <SocialIconLink href={facebookProfileUrl} label='Send melding på Facebook' external>
             <FaFacebookF size={14} aria-hidden='true' />
+          </SocialIconLink>
+          <SocialIconLink href={tiktokProfileUrl} label='Se Trovum Tattoo på TikTok' external>
+            <FaTiktok size={14} aria-hidden='true' />
           </SocialIconLink>
           <SocialIconLink href={businessPhoneHref} label='Ring Trovum Tattoo'>
             <Phone size={15} strokeWidth={1.7} aria-hidden='true' />

@@ -13,6 +13,10 @@ test('home page loads', async ({ page }) => {
     'href',
     'https://www.facebook.com/profile.php?id=100090196337976',
   )
+  await expect(page.getByRole('link', { name: 'Se Trovum Tattoo på TikTok' })).toHaveAttribute(
+    'href',
+    'https://www.tiktok.com/@ellenkristinetrovum',
+  )
   await expect(page.getByRole('link', { name: 'Ring Trovum Tattoo' })).toHaveAttribute('href', 'tel:+4797090414')
 })
 
