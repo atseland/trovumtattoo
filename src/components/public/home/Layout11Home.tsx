@@ -74,12 +74,12 @@ export function Layout11Home() {
           <Image
             src='/profilbilde_v2.jpeg'
             alt='Trovum Tattoo'
-            width={96}
-            height={96}
+            width={144}
+            height={144}
             className='rounded-full object-cover'
             style={{
-              width: 96,
-              height: 96,
+              width: 144,
+              height: 144,
               filter: 'grayscale(20%) contrast(1.05)',
               border: '1px solid rgba(237,233,230,0.10)',
             }}
