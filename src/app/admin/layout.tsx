@@ -5,10 +5,19 @@ import { ClerkProvider, UserButton } from '@clerk/nextjs'
 import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import { AdminNotificationButton } from '@/components/admin/AdminNotificationButton'
+import { AdminServiceWorkerRegistration } from '@/components/admin/AdminServiceWorkerRegistration'
 import { AuthenticatedConvexClientProvider } from '@/components/ConvexClientProvider'
+import { ADMIN_PWA_MANIFEST_PATH } from '@/lib/admin/pwa'
 
 export const metadata: Metadata = {
   title: 'Admin | Trovum Tattoo',
+  applicationName: 'Trovum Tattoo Admin',
+  manifest: ADMIN_PWA_MANIFEST_PATH,
+  appleWebApp: {
+    capable: true,
+    title: 'Trovum Admin',
+    statusBarStyle: 'black-translucent',
+  },
   robots: {
     index: false,
     follow: false,
@@ -41,6 +50,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </main>
           </div>
         </div>
+        <AdminServiceWorkerRegistration />
       </AuthenticatedConvexClientProvider>
     </ClerkProvider>
   )

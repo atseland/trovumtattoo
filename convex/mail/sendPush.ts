@@ -12,12 +12,14 @@ export const sendPush = action({
     url: v.optional(v.string()),
   },
   handler: async (ctx, { title, body, url }): Promise<{ sent: number }> => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) throw new Error('Unauthorized')
+
     const vapidPublicKey = process.env.VAPID_PUBLIC_KEY
     const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
 
     if (!vapidPublicKey || !vapidPrivateKey) {
-      console.warn('[sendPush] VAPID keys not configured — skipping push')
-      return { sent: 0 }
+      throw new Error('Push server VAPID keys are not configured')
     }
 
     webpush.setVapidDetails(

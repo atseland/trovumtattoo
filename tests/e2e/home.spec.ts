@@ -11,6 +11,7 @@ test('public SEO metadata and structured data render', async ({ page, request })
   await page.goto('/')
 
   await expect(page).toHaveTitle('Trovum Tattoo | Dark art, blackwork og black and grey i Sandvika')
+  await expect(page.locator('link[rel="manifest"]')).toHaveCount(0)
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
     /custom dark art, blackwork, black and grey og semi realistic tatoveringer/i,
@@ -39,6 +40,9 @@ test('public SEO metadata and structured data render', async ({ page, request })
 
   const robots = await request.get('/robots.txt')
   expect(await robots.text()).toContain('Sitemap: https://trovumtattoo.no/sitemap.xml')
+
+  const rootManifest = await request.get('/manifest.json')
+  expect(rootManifest.status()).toBe(404)
 
   const sitemap = await request.get('/sitemap.xml')
   const sitemapXml = await sitemap.text()

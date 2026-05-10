@@ -79,7 +79,7 @@ Verification:
 
 ### 4. PWA Push Notifications
 
-Status: open, dedicated round.
+Status: implemented locally 2026-05-10; pending production HTTPS/VAPID smoke after next deploy.
 
 Push notifications are a must before final project closeout. PWA scope is admin-only.
 
@@ -90,20 +90,28 @@ Architecture decision:
 - Service worker registration should happen only from the admin surface.
 - Existing users may have a root-scoped service worker from earlier builds; implementation must either unregister it safely or document the migration/cleanup path.
 
-Known gap:
-- Subscription UI and backend send action exist, but need review against admin-only scope.
-- Current `src/components/ServiceWorkerRegistration.tsx` is global and current `public/manifest.json` is root-scoped; both must be removed or replaced.
-- Service worker must handle `push` and `notificationclick` events for admin routes.
-- VAPID environment variables must be verified for both frontend/public key and Convex/server runtime.
-- Admin settings should make missing or invalid push config visible instead of silently failing.
+Implementation notes:
+- Removed the global/root service worker registration from the root layout.
+- Removed the old root-scoped `public/manifest.json`, `public/sw.js`, and `public/offline.html` assets.
+- Added admin-only install metadata at `/admin/manifest.webmanifest` with `/admin` start URL and scope.
+- Added admin-only service worker route at `/admin/service-worker.js` with `push` and `notificationclick` handling.
+- Notification clicks are clamped to admin routes and fall back to `/admin/notifications`.
+- Admin layout is the only app surface that advertises the manifest and mounts service worker registration.
+- Admin service worker registration unregisters legacy root-scope workers and clears old browser caches before registering the admin worker in production.
+- Push subscription now uses the admin service worker registration explicitly.
+- Admin settings now includes a test-push action.
+- Push send action now requires authentication and throws on missing server VAPID config instead of silently returning a false success.
 
 Verification:
 - Public routes do not register a service worker and do not advertise a PWA manifest.
+- Local `/manifest.json` and `/sw.js` return 404 after removing the root PWA assets.
 - Admin route registers the admin-only service worker and exposes install/push capability only there.
-- Admin can subscribe in production over HTTPS.
-- Test push displays a native notification.
-- Clicking notification opens the intended admin route, defaulting to `/admin/notifications`.
-- Missing/invalid VAPID config fails visibly in admin.
+- Service worker script handles push and notification click routing, defaulting to `/admin/notifications`.
+- Missing frontend VAPID config disables subscribe/test controls visibly in admin.
+- Missing Convex/server VAPID config throws from the test-push action and is surfaced in admin as an error toast.
+- Local verification: `pnpm typecheck`, `pnpm lint`, `pnpm test:run`, `pnpm build`, `tests/e2e/home.spec.ts`, and Playwright CLI public-home smoke passed.
+- Admin e2e was invoked locally but skipped by the existing Clerk/Convex skip condition in this environment.
+- Pending production verification: admin can subscribe over HTTPS, test push displays a native notification, and clicking it opens the intended admin route.
 
 ### 5. SEO/GEO Readiness
 

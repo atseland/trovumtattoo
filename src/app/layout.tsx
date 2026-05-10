@@ -3,7 +3,6 @@ import { EB_Garamond, IBM_Plex_Sans, Jost } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 import { absoluteUrl, siteName, siteUrl } from '@/lib/seo'
 
 const ebGaramond = EB_Garamond({
@@ -39,12 +38,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    title: 'Trovum',
-    statusBarStyle: 'black-translucent',
-  },
   icons: {
     icon: { url: '/logo.png', type: 'image/png' },
     apple: '/icons/icon-192.svg',
@@ -79,7 +72,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider>
           {children}
           <Toaster richColors />
-          <ServiceWorkerRegistration />
         </ThemeProvider>
       </body>
     </html>
