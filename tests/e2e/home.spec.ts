@@ -161,10 +161,15 @@ test('home page mobile menu exposes informational copy for review', async ({ pag
   await expect(menu.getByText('Svar på vanlige spørsmål om motiv, alder, pris og forberedelser.')).toHaveCount(0)
   await expect(menu.getByRole('link', { name: 'Spørsmål og svar' })).toHaveAttribute('href', '/faq')
   await expect(menu.getByRole('link', { name: /Etterbehandling/ })).toBeVisible()
-  await expect(menu.getByRole('link', { name: 'Bookingforespørsel' })).toHaveAttribute('href', '/book')
   const contactLinks = menu.getByRole('link', { name: 'Kontakt' })
   await expect(contactLinks).toHaveCount(1)
   await expect(contactLinks).toHaveAttribute('href', '/kontakt')
+  const ctaLinks = menu.locator('div.pt-4').getByRole('link')
+  await expect(ctaLinks).toHaveCount(2)
+  await expect(ctaLinks.first()).toHaveText('Kontakt')
+  await expect(ctaLinks.first()).toHaveAttribute('href', '/kontakt')
+  await expect(ctaLinks.nth(1)).toHaveText('Bookingforespørsel')
+  await expect(ctaLinks.nth(1)).toHaveAttribute('href', '/book')
 })
 
 test('contact and booking entrypoints render expected actions', async ({ page }) => {

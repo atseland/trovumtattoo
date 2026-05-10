@@ -104,11 +104,11 @@ export function PublicHeader() {
             </Link>
           ))}
           <div className='flex flex-col gap-3 pt-4'>
-            <Btn href='/book' variant='action-cta' className='w-full'>
-              Bookingforespørsel
-            </Btn>
             <Btn href='/kontakt' variant='action-cta' className='w-full'>
               Kontakt
+            </Btn>
+            <Btn href='/book' variant='action-cta' className='w-full'>
+              Bookingforespørsel
             </Btn>
           </div>
         </nav>
