@@ -1,44 +1,6 @@
 import Image from 'next/image'
 import { Btn } from '@/components/ui/Btn'
-
-const works = [
-  {
-    src: '/portfolio/Blomster.png',
-    title: 'Blomster',
-    caption: 'Realistisk black and grey blomster innrammet med dekor.',
-  },
-  {
-    src: '/portfolio/Semi realistic skull.png',
-    title: 'Semi realistic skull',
-    caption: 'Detaljert black and grey-hodeskalle med engel/djevel-kontrast.',
-  },
-  {
-    src: '/portfolio/Traditional bat.png',
-    title: 'Traditional bat',
-    caption: 'Traditional blackwork flaggermus med roser.',
-  },
-  {
-    src: '/portfolio/Ghost.png',
-    title: 'Ghost',
-    caption: 'Half \'n\' half black and grey portrett av papa emeritus IV og V fra bandet Ghost.',
-  },
-  {
-    src: '/portfolio/Ladybug_cathedral mashup.png',
-    title: 'Ladybug/cathedral mashup',
-    caption:
-      'En kreativ mashup som kombinerer en marihøne med gotiske katedral-elementer i et feminint dark-art design.',
-  },
-  {
-    src: '/portfolio/Flaggermuser.png',
-    title: 'Flaggermus',
-    caption: 'Clean blackwork-flaggermusdesign.',
-  },
-  {
-    src: '/portfolio/Rygg skalle.png',
-    title: 'Backpiece',
-    caption: 'Starten på en større backpiece med dyrekranium og blomster.',
-  },
-]
+import { PortfolioCarousel } from '@/components/public/home/PortfolioCarousel'
 
 function Ornament({ className = '' }: { className?: string }) {
   return (
@@ -53,7 +15,7 @@ function Ornament({ className = '' }: { className?: string }) {
 export function Layout11Home() {
   return (
     <div className='min-h-screen bg-bg text-paper'>
-      <section className='relative flex min-h-[100svh] flex-col items-center justify-center px-6 pb-24 pt-16 text-center md:min-h-screen md:px-12 md:py-20'>
+      <section className='relative flex min-h-[calc(100svh-56px)] flex-col items-center justify-center px-6 pb-24 pt-16 text-center md:min-h-[calc(100vh-64px)] md:px-12 md:py-20'>
         <span className='mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12'>
           Tigr Tattoo &middot; Sandvika
         </span>
@@ -132,39 +94,7 @@ export function Layout11Home() {
           </p>
         </div>
 
-        <div className='overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-          <div className='mx-auto flex w-max gap-4 px-6 md:gap-6 md:px-12'>
-            {works.map((work, index) => (
-              <div key={work.src} className='w-[250px] shrink-0 md:w-[300px]'>
-                <div className='aspect-[3/4] overflow-hidden bg-panel'>
-                  <Image
-                    src={work.src}
-                    alt={work.title}
-                    width={300}
-                    height={400}
-                    className='h-full w-full object-cover transition-transform duration-700 hover:scale-[1.03]'
-                    style={{ filter: 'grayscale(20%) contrast(1.05)' }}
-                    priority={index === 0}
-                  />
-                </div>
-                <div className='mt-3 flex items-start gap-2.5'>
-                  <span className='mt-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-index-num'>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <div>
-                    <h3 className='font-serif text-[15px] italic leading-tight text-paper'>
-                      {work.title}
-                    </h3>
-                    <p className='mt-1 max-w-[28ch] font-sans text-[12px] leading-[1.5] text-body'>
-                      {work.caption}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className='w-6 shrink-0 md:w-12' />
-          </div>
-        </div>
+        <PortfolioCarousel />
       </section>
 
       <section className='border-t border-rule px-6 py-14 md:px-12 md:py-24'>

@@ -6,9 +6,26 @@ import { Logo } from '@/components/Logo'
 import { Btn } from '@/components/ui/Btn'
 
 const navLinks = [
-  { href: '/booking-info', label: 'Booking info' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/aftercare', label: 'Etterpleie' },
+  {
+    href: '/booking-info',
+    label: 'Booking info',
+    description: 'Hvordan bookingforespørsel, depositum og timeavtale fungerer.',
+  },
+  {
+    href: '/faq',
+    label: 'FAQ',
+    description: 'Svar på vanlige spørsmål om motiv, alder, pris og forberedelser.',
+  },
+  {
+    href: '/aftercare',
+    label: 'Etterpleie',
+    description: 'Kort og konservativ veiledning for de første ukene etter timen.',
+  },
+  {
+    href: '/kontakt',
+    label: 'Kontakt',
+    description: 'E-post, Instagram-melding og riktig kanal for nye prosjekter.',
+  },
 ]
 
 export function PublicHeader() {
@@ -73,16 +90,30 @@ export function PublicHeader() {
       {open && (
         <nav
           id='public-mobile-nav'
+          aria-label='Mobilmeny'
           className='flex flex-col border-t border-rule bg-bg px-pad py-5 md:hidden'
         >
+          <div className='mb-4 border border-rule bg-panel px-4 py-4'>
+            <p className='font-mono text-[9px] uppercase tracking-[0.22em] text-index-num'>
+              Informasjon til gjennomgang
+            </p>
+            <p className='mt-2 font-sans text-[13px] leading-[1.65] text-body'>
+              Kort oversikt over booking, FAQ og etterpleie før publisering.
+            </p>
+          </div>
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className='border-b border-rule-light py-3.5 font-sans text-[12px] tracking-[0.12em] uppercase text-nav transition-colors duration-200 last:border-b-0 hover:text-paper'
+              className='border-b border-rule-light py-3.5 text-nav transition-colors duration-200 last:border-b-0 hover:text-paper'
             >
-              {link.label}
+              <span className='block font-sans text-[12px] uppercase tracking-[0.12em]'>
+                {link.label}
+              </span>
+              <span className='mt-1 block font-sans text-[12px] normal-case leading-[1.55] tracking-normal text-body'>
+                {link.description}
+              </span>
             </Link>
           ))}
           <div className='pt-4'>

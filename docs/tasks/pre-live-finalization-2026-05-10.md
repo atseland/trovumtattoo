@@ -114,7 +114,7 @@ Verification:
 
 ### 6. Portfolio Carousel Optimization And Fullscreen Preview
 
-Status: open.
+Status: implemented locally 2026-05-10; pending owner visual review and next deploy batch.
 
 Optimize portfolio carousel display while preserving access to full-size images in a fullscreen modal.
 
@@ -128,12 +128,14 @@ Expected behavior:
 Verification:
 - Desktop and mobile carousel images load without horizontal layout bugs.
 - Modal opens/closes via pointer, keyboard, and escape.
-- Full-size image is loaded only when preview is opened or otherwise justified.
-- Instagram link opens the correct post when present.
+- Fullscreen preview shows title/caption and supports previous/next controls.
+- Carousel uses `sizes` for display assets and full-screen `object-contain` image in the modal.
+- Missing Instagram post URL does not render a broken link.
+- Local Playwright coverage added for opening the fullscreen preview and closing it with Escape.
 
 ### 7. Public Copy Approval
 
-Status: open.
+Status: open; public info-copy is now exposed in the mobile hamburger menu for owner/artist review.
 
 Aftercare and other public informational text exists, but final approval is not documented.
 
@@ -143,3 +145,4 @@ Expected behavior:
 
 Verification:
 - Approval is recorded in a task or handoff before final project closeout.
+- Mobile hamburger menu shows a review note plus booking info, FAQ, aftercare, and contact copy snippets for walkthrough.

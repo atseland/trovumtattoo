@@ -32,6 +32,31 @@ test('home page keeps images and layout intact on desktop and mobile', async ({ 
   }
 })
 
+test('home page portfolio opens fullscreen preview with keyboard close', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+
+  await page.getByRole('button', { name: 'Åpne Blomster i fullscreen' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Blomster' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByText('Realistisk black and grey blomster innrammet med dekor.')).toBeVisible()
+
+  await page.keyboard.press('Escape')
+  await expect(dialog).not.toBeVisible()
+})
+
+test('home page mobile menu exposes informational copy for review', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  await page.getByRole('button', { name: 'Åpne meny' }).click()
+  const menu = page.getByRole('navigation', { name: 'Mobilmeny' })
+  await expect(menu).toBeVisible()
+  await expect(menu.getByText('Informasjon til gjennomgang')).toBeVisible()
+  await expect(menu.getByText('Kort oversikt over booking, FAQ og etterpleie før publisering.')).toBeVisible()
+  await expect(menu.getByRole('link', { name: /Etterpleie/ })).toBeVisible()
+})
+
 test('contact and booking entrypoints render expected actions', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
@@ -42,7 +67,7 @@ test('contact and booking entrypoints render expected actions', async ({ page })
 
   await page.goto('/kontakt')
   await expect(page.getByRole('heading', { name: 'Send melding' })).toBeVisible()
-  await expect(page.getByText('kontakt@trovumtattoo.no')).toBeVisible()
+  await expect(page.getByRole('main').getByText('kontakt@trovumtattoo.no')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Send e-post' })).toHaveAttribute('href', 'mailto:kontakt@trovumtattoo.no')
   const copyButton = page.getByRole('button', { name: 'Kopier e-postadresse' })
   await expect(copyButton).toBeVisible()

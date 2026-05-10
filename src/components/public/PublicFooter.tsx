@@ -19,10 +19,10 @@ export function PublicFooter() {
                 @trovumtattoo
               </Link>
               <a
-                href='mailto:kontakt@trovum.no'
+                href='mailto:kontakt@trovumtattoo.no'
                 className='font-sans text-[12px] text-accent no-underline transition-colors duration-200 hover:text-paper sm:text-[13px]'
               >
-                kontakt@trovum.no
+                kontakt@trovumtattoo.no
               </a>
             </div>
           </div>
