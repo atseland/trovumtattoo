@@ -110,6 +110,7 @@ Verification:
 - Robots and sitemap metadata routes added for public pages, with admin/auth surfaces excluded.
 - Shared SEO constants now ground public route titles/descriptions, canonical URLs, OG/Twitter metadata, and JSON-LD.
 - LocalBusiness/TattooParlor JSON-LD renders on the public layout with Sandvika/Tigr Tattoo service context.
+- JSON-LD includes Tigr Tattoo Google Maps URL and studio coordinates from the confirmed Maps listing.
 - Homepage, contact, booking info and portfolio copy now include clearer local/service signals and stronger portfolio alt/captions.
 - Local Playwright coverage checks homepage metadata, JSON-LD, robots.txt and sitemap.xml.
 - Build passes locally.

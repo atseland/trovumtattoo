@@ -23,12 +23,18 @@ test('public SEO metadata and structured data render', async ({ page, request })
     '@type': string[]
     name: string
     address: { addressLocality: string }
+    geo: { latitude: number; longitude: number }
+    containedInPlace: { name: string; hasMap: string }
     makesOffer: unknown[]
   }
   expect(localBusiness['@type']).toContain('LocalBusiness')
   expect(localBusiness['@type']).toContain('TattooParlor')
   expect(localBusiness.name).toBe('Trovum Tattoo')
   expect(localBusiness.address.addressLocality).toBe('Sandvika')
+  expect(localBusiness.geo.latitude).toBe(59.8916408)
+  expect(localBusiness.geo.longitude).toBe(10.515356)
+  expect(localBusiness.containedInPlace.name).toBe('Tigr Tattoo')
+  expect(localBusiness.containedInPlace.hasMap).toContain('google.com/maps/place/Tigr+Tattoo')
   expect(localBusiness.makesOffer.length).toBeGreaterThanOrEqual(4)
 
   const robots = await request.get('/robots.txt')
