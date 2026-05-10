@@ -107,7 +107,7 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await trigger.click()
   const dialog = page.getByRole('dialog', { name: 'Blomster' })
   await expect(dialog).toBeVisible()
-  await expect(dialog.getByText('Black and grey blomster-tatovering med myke skygger')).toBeVisible()
+  await expect(dialog.getByText('Realistisk black and grey blomster innrammet med dekor.')).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
   await page.keyboard.press('Shift+Tab')
