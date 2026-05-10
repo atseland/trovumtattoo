@@ -71,11 +71,11 @@ export async function listArchivedInquiries(ctx: QueryCtx) {
 
   const rows = await ctx.db
     .query('inquiries')
-    .withIndex('by_createdAt')
+    .withIndex('by_archived_createdAt', (query) => query.gt('archivedAt', 0))
     .order('desc')
     .collect()
 
-  return rows.filter((row) => row.archivedAt !== undefined)
+  return rows
 }
 
 export async function getInquiry(ctx: QueryCtx, id: Id<'inquiries'>) {

@@ -2,6 +2,13 @@ import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { assertNonNegative, assertOptionalStringLength } from './lib/validate'
 import { requireAdmin } from './lib/adminAuth'
+import {
+  adminSearchHasQuery,
+  ADMIN_SEARCH_SCAN_LIMIT,
+  limitAdminSearchResults,
+  matchesAdminSearch,
+  normalizeAdminSearchQuery,
+} from './lib/adminSearch'
 
 export const create = mutation({
   args: {
@@ -110,10 +117,14 @@ export const searchWithClient = query({
   handler: async (ctx, { searchQuery }) => {
     await requireAdmin(ctx)
 
-    const normalizedQuery = searchQuery.trim().toLowerCase()
-    if (normalizedQuery.length < 2) return []
+    const normalizedQuery = normalizeAdminSearchQuery(searchQuery)
+    if (!adminSearchHasQuery(normalizedQuery)) return []
 
-    const projects = await ctx.db.query('projects').withIndex('by_updatedAt').order('desc').take(250)
+    const projects = await ctx.db
+      .query('projects')
+      .withIndex('by_updatedAt')
+      .order('desc')
+      .take(ADMIN_SEARCH_SCAN_LIMIT)
     const rows = await Promise.all(
       projects.map(async (project) => {
         const client = await ctx.db.get(project.clientId)
@@ -122,9 +133,9 @@ export const searchWithClient = query({
       }),
     )
 
-    return rows
-      .filter((row) => {
-        const haystack = [
+    return limitAdminSearchResults(
+      rows.filter((row) =>
+        matchesAdminSearch(normalizedQuery, [
           row.status,
           row.client?.name,
           row.client?.email,
@@ -133,13 +144,8 @@ export const searchWithClient = query({
           row.inquiry?.name,
           row.inquiry?.email,
           row.inquiry?.description,
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase()
-
-        return haystack.includes(normalizedQuery)
-      })
-      .slice(0, 20)
+        ])
+      ),
+    )
   },
 })

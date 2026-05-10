@@ -92,6 +92,12 @@ function normalizeAddress(value: string) {
   return value.trim().toLowerCase()
 }
 
+export const MANUAL_MAIL_SYNC_THROTTLE_MS = 60_000
+
+export function shouldThrottleManualMailSync(lastSyncAt: number | null | undefined, now = Date.now()) {
+  return Boolean(lastSyncAt && now - lastSyncAt < MANUAL_MAIL_SYNC_THROTTLE_MS)
+}
+
 /**
  * performMailSync — henter e-post fra IMAP og lagrer i Convex.
  * Krever at MAIL_* miljøvariabler er satt (se convex/mail/config.ts).
@@ -196,7 +202,7 @@ export const syncMail = action({
     await requireAdmin(ctx)
 
     const lastSyncAt = await ctx.runQuery(internal.mail.account.getLastSyncAt, {})
-    if (lastSyncAt && Date.now() - lastSyncAt < 60_000) {
+    if (shouldThrottleManualMailSync(lastSyncAt)) {
       return { synced: 0, throttled: true }
     }
 

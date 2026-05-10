@@ -1,7 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { requireAdmin } from './lib/adminAuth'
-import { MAX_REFERENCE_IMAGES } from './lib/inquiries/publicCreate'
+import { assertReferenceUploadToken, MAX_REFERENCE_IMAGES } from './lib/inquiries/publicCreate'
 
 export const generateUploadUrl = mutation({
   args: {
@@ -11,12 +11,7 @@ export const generateUploadUrl = mutation({
   handler: async (ctx, { inquiryId, uploadToken }) => {
     const inquiry = await ctx.db.get(inquiryId)
     if (!inquiry) throw new Error('Inquiry not found')
-    if (!inquiry.referenceUploadToken || inquiry.referenceUploadToken !== uploadToken) {
-      throw new Error('Invalid upload token')
-    }
-    if (!inquiry.referenceUploadTokenExpiresAt || inquiry.referenceUploadTokenExpiresAt < Date.now()) {
-      throw new Error('Upload token expired')
-    }
+    assertReferenceUploadToken(inquiry, uploadToken)
 
     const issuedCount = inquiry.referenceUploadUrlIssuedCount ?? 0
     if (issuedCount >= MAX_REFERENCE_IMAGES) {

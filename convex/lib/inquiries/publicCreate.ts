@@ -62,6 +62,41 @@ export function assertPublicReferenceImages(images: PublicReferenceImageInput[])
   }
 }
 
+export function assertReferenceUploadToken(
+  inquiry: {
+    referenceUploadToken?: string
+    referenceUploadTokenExpiresAt?: number
+  },
+  uploadToken: string,
+  now = Date.now(),
+) {
+  if (!inquiry.referenceUploadToken || inquiry.referenceUploadToken !== uploadToken) {
+    throw new Error('Invalid upload token')
+  }
+  if (!inquiry.referenceUploadTokenExpiresAt || inquiry.referenceUploadTokenExpiresAt < now) {
+    throw new Error('Upload token expired')
+  }
+}
+
+export function assertReferenceImageAttachLimit(
+  existingStorageIds: Array<Id<'_storage'>>,
+  images: PublicReferenceImageInput[],
+) {
+  const existing = new Set(existingStorageIds)
+  const incoming = new Set<Id<'_storage'>>()
+
+  if (existing.size + images.length > MAX_REFERENCE_IMAGES) {
+    throw new Error('Du kan maks laste opp 10 referansebilder')
+  }
+
+  for (const image of images) {
+    if (existing.has(image.storageId) || incoming.has(image.storageId)) {
+      throw new Error('Referansebildet er allerede lagt til')
+    }
+    incoming.add(image.storageId)
+  }
+}
+
 export function assertPublicReferenceImageMetadata(metadata: { size: number; contentType: string | null }) {
   if (!metadata.contentType || !ALLOWED_REFERENCE_IMAGE_TYPES.has(metadata.contentType)) {
     throw new Error('Kun JPG, PNG eller WebP bilder er tillatt')
@@ -123,6 +158,10 @@ export async function createInquiryWithSideEffects(ctx: MutationCtx, args: Creat
   return { inquiryId, uploadToken: referenceUploadToken }
 }
 
+async function deleteReferenceUploads(ctx: MutationCtx, images: PublicReferenceImageInput[]) {
+  await Promise.allSettled(images.map((image) => ctx.storage.delete(image.storageId)))
+}
+
 export async function addReferenceImagesToInquiry(
   ctx: MutationCtx,
   inquiryId: Id<'inquiries'>,
@@ -133,30 +172,42 @@ export async function addReferenceImagesToInquiry(
 
   const inquiry = await ctx.db.get(inquiryId)
   if (!inquiry) throw new Error('Inquiry not found')
-  if (!inquiry.referenceUploadToken || inquiry.referenceUploadToken !== uploadToken) {
-    throw new Error('Invalid upload token')
-  }
-  if (!inquiry.referenceUploadTokenExpiresAt || inquiry.referenceUploadTokenExpiresAt < Date.now()) {
-    throw new Error('Upload token expired')
+  assertReferenceUploadToken(inquiry, uploadToken)
+
+  const existingReferences = await ctx.db
+    .query('referenceImages')
+    .withIndex('by_inquiry', (query) => query.eq('inquiryId', inquiryId))
+    .collect()
+  const existingStorageIds = existingReferences.map((reference) => reference.storageId)
+
+  try {
+    assertReferenceImageAttachLimit(
+      existingStorageIds,
+      images,
+    )
+  } catch (error) {
+    const existingStorageIdSet = new Set(existingStorageIds)
+    await deleteReferenceUploads(ctx, images.filter((image) => !existingStorageIdSet.has(image.storageId)))
+    throw error
   }
 
   const uploadedAt = Date.now()
   const validatedImages: Array<PublicReferenceImageInput & { url: string }> = []
 
-  for (const image of images) {
-    const metadata = await ctx.storage.getMetadata(image.storageId)
-    if (!metadata) throw new Error('Reference image not found')
+  try {
+    for (const image of images) {
+      const metadata = await ctx.storage.getMetadata(image.storageId)
+      if (!metadata) throw new Error('Reference image not found')
 
-    try {
       assertPublicReferenceImageMetadata(metadata)
-    } catch (error) {
-      await ctx.storage.delete(image.storageId)
-      throw error
-    }
 
-    const url = await ctx.storage.getUrl(image.storageId)
-    if (!url) throw new Error('Reference image URL not found')
-    validatedImages.push({ ...image, url })
+      const url = await ctx.storage.getUrl(image.storageId)
+      if (!url) throw new Error('Reference image URL not found')
+      validatedImages.push({ ...image, url })
+    }
+  } catch (error) {
+    await deleteReferenceUploads(ctx, images)
+    throw error
   }
 
   await Promise.all(
@@ -170,4 +221,9 @@ export async function addReferenceImagesToInquiry(
       }),
     ),
   )
+
+  await ctx.db.patch(inquiryId, {
+    referenceUploadToken: undefined,
+    referenceUploadTokenExpiresAt: undefined,
+  })
 }

@@ -15,6 +15,13 @@ import {
   listUpcomingBookingsWithDetails,
 } from './lib/bookings/queries'
 import { requireAdmin } from './lib/adminAuth'
+import {
+  adminSearchHasQuery,
+  ADMIN_SEARCH_SCAN_LIMIT,
+  limitAdminSearchResults,
+  matchesAdminSearch,
+  normalizeAdminSearchQuery,
+} from './lib/adminSearch'
 
 export const create = mutation({
   args: {
@@ -77,10 +84,14 @@ export const searchWithDetails = query({
   handler: async (ctx, { searchQuery }) => {
     await requireAdmin(ctx)
 
-    const normalizedQuery = searchQuery.trim().toLowerCase()
-    if (normalizedQuery.length < 2) return []
+    const normalizedQuery = normalizeAdminSearchQuery(searchQuery)
+    if (!adminSearchHasQuery(normalizedQuery)) return []
 
-    const bookings = await ctx.db.query('bookings').withIndex('by_startAt').order('desc').take(250)
+    const bookings = await ctx.db
+      .query('bookings')
+      .withIndex('by_startAt')
+      .order('desc')
+      .take(ADMIN_SEARCH_SCAN_LIMIT)
     const rows = await Promise.all(
       bookings.filter((booking) => booking.archivedAt === undefined).map(async (booking) => {
         const project = await ctx.db.get(booking.projectId)
@@ -89,9 +100,9 @@ export const searchWithDetails = query({
       }),
     )
 
-    return rows
-      .filter((row) => {
-        const haystack = [
+    return limitAdminSearchResults(
+      rows.filter((row) =>
+        matchesAdminSearch(normalizedQuery, [
           row.status,
           row.notes,
           row.project?.status,
@@ -99,14 +110,9 @@ export const searchWithDetails = query({
           row.client?.email,
           row.client?.phone,
           row.client?.instagramHandle,
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase()
-
-        return haystack.includes(normalizedQuery)
-      })
-      .slice(0, 20)
+        ])
+      ),
+    )
   },
 })
 

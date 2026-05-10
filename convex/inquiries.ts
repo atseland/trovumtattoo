@@ -12,6 +12,32 @@ import {
 } from './lib/inquiries/admin'
 import { addReferenceImagesToInquiry, createInquiryWithSideEffects } from './lib/inquiries/publicCreate'
 import { requireAdmin } from './lib/adminAuth'
+import {
+  adminSearchHasQuery,
+  ADMIN_SEARCH_SCAN_LIMIT,
+  limitAdminSearchResults,
+  matchesAdminSearch,
+  normalizeAdminSearchQuery,
+} from './lib/adminSearch'
+
+export const CONFIRMATION_EMAIL_COOLDOWN_MS = 10 * 60 * 1000
+
+export function getConfirmationEmailAttemptStatus(
+  inquiry: {
+    confirmationEmailSentAt?: number
+    confirmationEmailLastAttemptAt?: number
+  },
+  now: number,
+) {
+  if (inquiry.confirmationEmailSentAt) return 'already_sent' as const
+  if (
+    inquiry.confirmationEmailLastAttemptAt &&
+    now - inquiry.confirmationEmailLastAttemptAt < CONFIRMATION_EMAIL_COOLDOWN_MS
+  ) {
+    return 'rate_limited' as const
+  }
+  return 'allowed' as const
+}
 
 export const create = mutation({
   args: {
@@ -55,31 +81,27 @@ export const search = query({
   args: { searchQuery: v.string() },
   handler: async (ctx, { searchQuery }) => {
     await requireAdmin(ctx)
-    const normalizedQuery = searchQuery.trim().toLowerCase()
-    if (normalizedQuery.length < 2) return []
+    const normalizedQuery = normalizeAdminSearchQuery(searchQuery)
+    if (!adminSearchHasQuery(normalizedQuery)) return []
 
     const rows = await ctx.db
       .query('inquiries')
       .withIndex('by_archived_createdAt', (q) => q.eq('archivedAt', undefined))
       .order('desc')
-      .take(250)
+      .take(ADMIN_SEARCH_SCAN_LIMIT)
 
-    return rows
-      .filter((inquiry) =>
-        [
+    return limitAdminSearchResults(
+      rows.filter((inquiry) =>
+        matchesAdminSearch(normalizedQuery, [
           inquiry.name,
           inquiry.email,
           inquiry.phone,
           inquiry.instagramHandle,
           inquiry.description,
           inquiry.status,
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase()
-          .includes(normalizedQuery)
-      )
-      .slice(0, 20)
+        ])
+      ),
+    )
   },
 })
 
@@ -103,15 +125,8 @@ export const beginConfirmationEmailAttempt = internalMutation({
   handler: async (ctx, { id, now }) => {
     const inquiry = await ctx.db.get(id)
     if (!inquiry) throw new Error('Inquiry not found')
-    if (inquiry.confirmationEmailSentAt) return { status: 'already_sent' as const }
-
-    const cooldownMs = 10 * 60 * 1000
-    if (
-      inquiry.confirmationEmailLastAttemptAt &&
-      now - inquiry.confirmationEmailLastAttemptAt < cooldownMs
-    ) {
-      return { status: 'rate_limited' as const }
-    }
+    const status = getConfirmationEmailAttemptStatus(inquiry, now)
+    if (status !== 'allowed') return { status }
 
     await ctx.db.patch(id, { confirmationEmailLastAttemptAt: now })
     return { status: 'allowed' as const }
