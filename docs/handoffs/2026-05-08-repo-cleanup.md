@@ -61,6 +61,7 @@
 
 ## Neste anbefalte arbeid
 
-1. Kjør full final verification før videre endringer: `pnpm typecheck`, `pnpm lint`, `pnpm test:run`, `pnpm build`, home e2e, admin e2e og `just verify`.
-2. Dersom UX-opprydding fortsetter, start med `docs/tasks/admin-ux-remediation.md` og task `ux-admin-07`.
-3. Ikke bruk gamle task-ledgers som statuskilde; de er fjernet fordi de beskrev implementeringshistorikk som allerede er committet.
+1. Bruk `docs/tasks/pre-live-finalization-2026-05-10.md` som aktiv sjekkliste før prosjektet sluttføres eller pushes live på nytt.
+2. Kjør full final verification før videre deploy: `pnpm typecheck`, `pnpm lint`, `pnpm test:run`, `pnpm build`, home e2e, admin e2e og `just verify`.
+3. Dersom UX-opprydding fortsetter, start med `docs/tasks/admin-ux-remediation.md` og task `ux-admin-07`.
+4. Ikke bruk gamle task-ledgers som statuskilde; de er fjernet fordi de beskrev implementeringshistorikk som allerede er committet.
