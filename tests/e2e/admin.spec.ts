@@ -31,6 +31,7 @@ function loadLocalEnv() {
 const localEnv = loadLocalEnv()
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL ?? localEnv.NEXT_PUBLIC_CONVEX_URL
 const adminEmail = process.env.E2E_CLERK_USER_EMAIL ?? localEnv.E2E_CLERK_USER_EMAIL
+const nonAdminEmail = process.env.E2E_CLERK_NON_ADMIN_EMAIL ?? localEnv.E2E_CLERK_NON_ADMIN_EMAIL
 const canRunAdminE2E = Boolean(convexUrl && adminEmail)
 
 const convex = convexUrl ? new ConvexHttpClient(convexUrl, { logger: false }) : null
@@ -41,7 +42,7 @@ async function createInquiry() {
   const unique = `Audit ${Date.now()}`
   const email = `aleks+${Date.now()}@example.com`
 
-  const id = await convex.mutation(api.inquiries.create, {
+  const result = await convex.mutation(api.inquiries.create, {
     name: unique,
     email,
     phone: '12345678',
@@ -57,7 +58,7 @@ async function createInquiry() {
     extraNotes: 'Verifiserer inquiry -> client -> project-flyt',
   })
 
-  return { id, name: unique, email }
+  return { id: result.inquiryId, name: unique, email }
 }
 
 function formatDatetimeLocal(date: Date) {
@@ -106,6 +107,17 @@ test.skip(
   !canRunAdminE2E,
   'Admin e2e requires NEXT_PUBLIC_CONVEX_URL and E2E_CLERK_USER_EMAIL.',
 )
+
+test('authenticated non-admin cannot access admin', async ({ page }) => {
+  test.skip(!nonAdminEmail, 'Set E2E_CLERK_NON_ADMIN_EMAIL to run non-admin authz coverage.')
+
+  await page.goto('/sign-in')
+  await clerk.loaded({ page })
+  await clerk.signIn({ page, emailAddress: nonAdminEmail })
+
+  await page.goto('/admin')
+  await expect(page.getByRole('heading', { name: /not found|404|ikke funnet/i })).toBeVisible()
+})
 
 async function getConvexTemplateStatus(page: Page) {
   return await page.evaluate(async () => {

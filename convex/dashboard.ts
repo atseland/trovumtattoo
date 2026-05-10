@@ -1,33 +1,36 @@
 import { query } from './_generated/server'
+import { requireAdmin } from './lib/adminAuth'
 
 export const getSummary = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const [nyCount, trengermInfoCount, venterDepositumCount, recentInquiries] = await Promise.all([
       ctx.db
         .query('inquiries')
-        .withIndex('by_status', (q) => q.eq('status', 'Ny'))
+        .withIndex('by_status_archived_createdAt', (q) => q.eq('status', 'Ny').eq('archivedAt', undefined))
         .collect()
-        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
+        .then((r) => r.length),
       ctx.db
         .query('inquiries')
-        .withIndex('by_status', (q) => q.eq('status', 'Trenger mer info'))
+        .withIndex('by_status_archived_createdAt', (q) =>
+          q.eq('status', 'Trenger mer info').eq('archivedAt', undefined)
+        )
         .collect()
-        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
+        .then((r) => r.length),
       ctx.db
         .query('inquiries')
-        .withIndex('by_status', (q) => q.eq('status', 'Venter på depositum'))
+        .withIndex('by_status_archived_createdAt', (q) =>
+          q.eq('status', 'Venter på depositum').eq('archivedAt', undefined)
+        )
         .collect()
-        .then((r) => r.filter((row) => row.archivedAt === undefined).length),
+        .then((r) => r.length),
       ctx.db
         .query('inquiries')
-        .withIndex('by_createdAt')
+        .withIndex('by_archived_createdAt', (q) => q.eq('archivedAt', undefined))
         .order('desc')
-        .collect()
-        .then((rows) => rows.filter((row) => row.archivedAt === undefined).slice(0, 5)),
+        .take(5),
     ])
 
     // Kommende bookinger denne uken

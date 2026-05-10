@@ -8,6 +8,7 @@ import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
 import { Btn } from '@/components/ui/Btn'
 import { InputField, TextareaField } from '@/components/ui/FormField'
+import { fromDatetimeLocal, toDatetimeLocal } from '@/lib/admin/datetimeLocal'
 
 interface Props {
   open: boolean
@@ -19,14 +20,6 @@ interface Props {
   existingNotes?: string
   mode?: 'create' | 'edit' | 'rebook'
   onSuccess?: () => void
-}
-
-function toDatetimeLocal(ts: number) {
-  return new Date(ts).toISOString().slice(0, 16)
-}
-
-function fromDatetimeLocal(s: string): number {
-  return new Date(s).getTime()
 }
 
 export function BookingSheet({

@@ -44,17 +44,15 @@ export function useProjectDetailForm(project: ProjectDetailFormProject | null | 
   const [savingDeposit, setSavingDeposit] = useState(false)
   const [savingAccounting, setSavingAccounting] = useState(false)
 
-  let activeFormState = formState
-  let activeSavedState = savedState
-  if (formState.projectId !== projectId) {
-    activeFormState = createProjectFormState(project)
-    activeSavedState = activeFormState
-    setFormState(activeFormState)
-    setSavedState(activeSavedState)
-  }
+  const activeFormState = formState.projectId === projectId ? formState : createProjectFormState(project)
+  const activeSavedState = savedState.projectId === projectId ? savedState : activeFormState
 
   function updateField(field: keyof Omit<typeof activeFormState, 'projectId'>, value: string) {
-    setFormState((current) => ({ ...current, projectId, [field]: value }))
+    setFormState((current) => ({
+      ...(current.projectId === projectId ? current : createProjectFormState(project)),
+      projectId,
+      [field]: value,
+    }))
   }
 
   const estimateDirty = activeFormState.estimate !== activeSavedState.estimate

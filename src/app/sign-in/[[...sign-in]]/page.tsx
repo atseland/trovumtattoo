@@ -19,7 +19,6 @@ export default function SignInPage() {
           <SignIn
             routing='path'
             path='/sign-in'
-            signUpUrl='/sign-up'
             fallbackRedirectUrl='/admin'
             appearance={{
               variables: {

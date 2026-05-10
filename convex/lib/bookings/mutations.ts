@@ -1,5 +1,6 @@
 import type { Id } from '../../_generated/dataModel'
 import type { MutationCtx } from '../../_generated/server'
+import { requireAdmin } from '../adminAuth'
 import { assertBookingCanBeArchived } from './archivePolicy'
 
 interface CreateBookingArgs {
@@ -17,9 +18,7 @@ interface UpdateBookingArgs {
 }
 
 async function requireIdentity(ctx: MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity()
-  if (!identity) throw new Error('Unauthorized')
-  return identity
+  return await requireAdmin(ctx)
 }
 
 function assertBookingRange(startAt: number, endAt: number) {
@@ -161,11 +160,14 @@ export async function permanentlyDeleteArchivedBooking(ctx: MutationCtx, id: Id<
     .collect()
   await Promise.all(activityEntries.map((entry) => ctx.db.delete(entry._id)))
 
-  const notifications = await ctx.db.query('notifications').collect()
+  const notifications = await ctx.db
+    .query('notifications')
+    .withIndex('by_related_entity', (query) =>
+      query.eq('relatedEntityType', 'booking').eq('relatedEntityId', id)
+    )
+    .collect()
   await Promise.all(
-    notifications
-      .filter((notification) => notification.relatedEntityType === 'booking' && notification.relatedEntityId === id)
-      .map((notification) => ctx.db.delete(notification._id)),
+    notifications.map((notification) => ctx.db.delete(notification._id)),
   )
 
   await ctx.db.delete(id)

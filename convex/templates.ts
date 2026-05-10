@@ -1,12 +1,12 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { assertStringLength } from './lib/validate'
+import { requireAdmin } from './lib/adminAuth'
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const all = await ctx.db.query('messageTemplates').order('asc').collect()
     return all.filter((t) => !t.isDeleted)
@@ -20,8 +20,7 @@ export const create = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     assertStringLength(args.title, 'title', 1, 200)
     assertStringLength(args.content, 'content', 1, 50_000)
@@ -42,8 +41,7 @@ export const update = mutation({
     content: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...fields }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (fields.title !== undefined) assertStringLength(fields.title, 'title', 1, 200)
     if (fields.content !== undefined) assertStringLength(fields.content, 'content', 1, 50_000)
@@ -59,8 +57,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { id: v.id('messageTemplates') },
   handler: async (ctx, { id }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(id, { isDeleted: true, updatedAt: Date.now() })
   },

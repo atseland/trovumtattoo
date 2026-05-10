@@ -5,6 +5,7 @@ import {
   assertOptionalStringLength,
   assertEmailFormat,
 } from './lib/validate'
+import { requireAdmin } from './lib/adminAuth'
 
 export const create = mutation({
   args: {
@@ -15,8 +16,7 @@ export const create = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     assertStringLength(args.name, 'name', 1, 200)
     assertEmailFormat(args.email, 'email')
@@ -36,8 +36,7 @@ export const create = mutation({
 export const get = query({
   args: { id: v.id('clients') },
   handler: async (ctx, { id }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db.get(id)
   },
@@ -46,14 +45,13 @@ export const get = query({
 export const list = query({
   args: { searchQuery: v.optional(v.string()) },
   handler: async (ctx, { searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (searchQuery && searchQuery.trim()) {
       return await ctx.db
         .query('clients')
         .withSearchIndex('search_clients', (q) => q.search('name', searchQuery))
-        .collect()
+        .take(20)
     }
 
     return await ctx.db
@@ -73,8 +71,7 @@ export const update = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...fields }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (fields.name !== undefined) assertStringLength(fields.name, 'name', 1, 200)
     if (fields.email !== undefined) assertEmailFormat(fields.email, 'email')

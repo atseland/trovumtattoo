@@ -21,11 +21,18 @@ export default defineSchema({
     archivedAt: v.optional(v.number()),
     archivedBy: v.optional(v.string()),
     archiveReason: v.optional(v.string()),
+    confirmationEmailSentAt: v.optional(v.number()),
+    confirmationEmailLastAttemptAt: v.optional(v.number()),
+    referenceUploadToken: v.optional(v.string()),
+    referenceUploadTokenExpiresAt: v.optional(v.number()),
+    referenceUploadUrlIssuedCount: v.optional(v.number()),
     createdAt: v.number(),
   })
     .index('by_status', ['status'])
     .index('by_createdAt', ['createdAt'])
-    .index('by_archivedAt', ['archivedAt']),
+    .index('by_archivedAt', ['archivedAt'])
+    .index('by_archived_createdAt', ['archivedAt', 'createdAt'])
+    .index('by_status_archived_createdAt', ['status', 'archivedAt', 'createdAt']),
 
   referenceImages: defineTable({
     inquiryId: v.id('inquiries'),
@@ -69,6 +76,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index('by_client', ['clientId'])
+    .index('by_inquiry', ['inquiryId'])
     .index('by_status', ['status'])
     .index('by_updatedAt', ['updatedAt']),
 
@@ -85,6 +93,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index('by_project', ['projectId'])
+    .index('by_project_archived', ['projectId', 'archivedAt'])
     .index('by_startAt', ['startAt'])
     .index('by_archivedAt', ['archivedAt']),
 
@@ -122,8 +131,11 @@ export default defineSchema({
     status: v.string(), // 'active' | 'archived'
   })
     .index('by_lastMessageAt', ['lastMessageAt'])
+    .index('by_status_lastMessageAt', ['status', 'lastMessageAt'])
     .index('by_client', ['linkedClientId'])
+    .index('by_client_status', ['linkedClientId', 'status'])
     .index('by_project', ['linkedProjectId'])
+    .index('by_project_status', ['linkedProjectId', 'status'])
     .index('by_externalThreadId', ['externalThreadId']),
 
   mailMessages: defineTable({
@@ -155,7 +167,8 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index('by_isRead', ['isRead'])
-    .index('by_createdAt', ['createdAt']),
+    .index('by_createdAt', ['createdAt'])
+    .index('by_related_entity', ['relatedEntityType', 'relatedEntityId']),
 
   pushSubscriptions: defineTable({
     endpoint: v.string(),

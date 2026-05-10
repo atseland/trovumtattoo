@@ -1,11 +1,11 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireAdmin } from './lib/adminAuth'
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db
       .query('notifications')
@@ -18,8 +18,7 @@ export const list = query({
 export const countUnread = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return 0
+    await requireAdmin(ctx)
 
     const unread = await ctx.db
       .query('notifications')
@@ -33,8 +32,7 @@ export const countUnread = query({
 export const markRead = mutation({
   args: { id: v.id('notifications') },
   handler: async (ctx, { id }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(id, { isRead: true })
   },
@@ -43,8 +41,7 @@ export const markRead = mutation({
 export const markAllRead = mutation({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const unread = await ctx.db
       .query('notifications')

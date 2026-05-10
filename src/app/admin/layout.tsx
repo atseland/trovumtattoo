@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { notFound, redirect } from 'next/navigation'
 import { ClerkProvider, UserButton } from '@clerk/nextjs'
 import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
@@ -8,6 +8,7 @@ import { AdminNotificationButton } from '@/components/admin/AdminNotificationBut
 import { AdminServiceWorkerRegistration } from '@/components/admin/AdminServiceWorkerRegistration'
 import { AuthenticatedConvexClientProvider } from '@/components/ConvexClientProvider'
 import { ADMIN_PWA_MANIFEST_PATH } from '@/lib/admin/pwa'
+import { isAllowedAdminEmail } from '@/lib/adminAccess'
 
 export const metadata: Metadata = {
   title: 'Admin | Trovum Tattoo',
@@ -27,6 +28,10 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
+
+  const user = await currentUser()
+  const email = user?.primaryEmailAddress?.emailAddress ?? user?.emailAddresses[0]?.emailAddress
+  if (!isAllowedAdminEmail(email)) notFound()
 
   return (
     <ClerkProvider>

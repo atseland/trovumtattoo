@@ -1,5 +1,6 @@
 import { mutation, query, internalQuery } from './_generated/server'
 import { v } from 'convex/values'
+import { requireAdmin } from './lib/adminAuth'
 
 export const save = mutation({
   args: {
@@ -7,8 +8,7 @@ export const save = mutation({
     keys: v.object({ p256dh: v.string(), auth: v.string() }),
   },
   handler: async (ctx, { endpoint, keys }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (endpoint.length > 2_000) throw new Error('Endpoint URL too long')
 
@@ -34,8 +34,7 @@ export const save = mutation({
 export const getCurrent = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return null
+    await requireAdmin(ctx)
 
     const subs = await ctx.db.query('pushSubscriptions').collect()
     return subs.map((s) => ({ _id: s._id, _creationTime: s._creationTime, endpoint: s.endpoint }))

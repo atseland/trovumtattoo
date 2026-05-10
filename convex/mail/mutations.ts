@@ -1,6 +1,7 @@
 import { mutation, internalMutation } from '../_generated/server'
 import { v } from 'convex/values'
 import type { Id } from '../_generated/dataModel'
+import { requireAdmin } from '../lib/adminAuth'
 
 function normalizeAddress(value: string) {
   return value.trim().toLowerCase()
@@ -175,8 +176,7 @@ export const createCustomerOutboundThread = internalMutation({
 export const markThreadRead = mutation({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(threadId, { unreadCount: 0 })
 
@@ -196,8 +196,7 @@ export const linkThread = mutation({
     linkedProjectId: v.optional(v.id('projects')),
   },
   handler: async (ctx, { threadId, linkedClientId, linkedProjectId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(threadId, { linkedClientId, linkedProjectId })
   },
@@ -206,8 +205,7 @@ export const linkThread = mutation({
 export const archiveThread = mutation({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(threadId, { status: 'archived', unreadCount: 0 })
   },
@@ -216,8 +214,7 @@ export const archiveThread = mutation({
 export const restoreThread = mutation({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     await ctx.db.patch(threadId, { status: 'active' })
   },
@@ -226,8 +223,7 @@ export const restoreThread = mutation({
 export const permanentlyDeleteThread = mutation({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const messages = await ctx.db
       .query('mailMessages')
@@ -235,11 +231,14 @@ export const permanentlyDeleteThread = mutation({
       .collect()
     await Promise.all(messages.map((message) => ctx.db.delete(message._id)))
 
-    const notifications = await ctx.db.query('notifications').collect()
+    const notifications = await ctx.db
+      .query('notifications')
+      .withIndex('by_related_entity', (q) =>
+        q.eq('relatedEntityType', 'mailThread').eq('relatedEntityId', threadId)
+      )
+      .collect()
     await Promise.all(
-      notifications
-        .filter((notification) => notification.relatedEntityType === 'mailThread' && notification.relatedEntityId === threadId)
-        .map((notification) => ctx.db.delete(notification._id)),
+      notifications.map((notification) => ctx.db.delete(notification._id)),
     )
 
     await ctx.db.delete(threadId)
@@ -249,8 +248,7 @@ export const permanentlyDeleteThread = mutation({
 export const cleanupDuplicates = mutation({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const allThreads = await ctx.db.query('mailThreads').collect()
     let deletedMessages = 0

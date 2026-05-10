@@ -1,6 +1,7 @@
 import { internalMutation, internalQuery, mutation, query } from '../_generated/server'
 import { v } from 'convex/values'
 import { getMailConfig, getMailConfigSummary, hasMailConfig, type MailConfig } from './config'
+import { requireAdmin } from '../lib/adminAuth'
 
 export const save = mutation({
   args: {
@@ -13,8 +14,7 @@ export const save = mutation({
     portSmtp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
     void args
     throw new Error('Mail-kontoen er låst til serverkonfigurasjon og kan ikke redigeres i admin.')
   },
@@ -24,8 +24,7 @@ export const save = mutation({
 export const getCurrent = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return null
+    await requireAdmin(ctx)
 
     if (!hasMailConfig()) return null
 
@@ -56,6 +55,21 @@ export const getConfig = internalQuery({
     void ctx
     if (!hasMailConfig()) return null
     return getMailConfig()
+  },
+})
+
+export const getLastSyncAt = internalQuery({
+  args: {},
+  handler: async (ctx): Promise<number | null> => {
+    if (!hasMailConfig()) return null
+
+    const summary = getMailConfigSummary()
+    const account = await ctx.db
+      .query('mailAccounts')
+      .withIndex('by_emailAddress', (q) => q.eq('emailAddress', summary.emailAddress))
+      .first()
+
+    return account?.lastSyncAt ?? null
   },
 })
 

@@ -24,7 +24,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
     const files = data.referenceImages ? Array.from(data.referenceImages) : []
 
     try {
-      const inquiryId = await createInquiry({
+      const { inquiryId, uploadToken } = await createInquiry({
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -42,12 +42,12 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
       })
 
       if (files.length > 0) {
-        const uploaded: Array<{ storageId: string; url: string }> = []
+        const uploaded: Array<{ storageId: string }> = []
 
         for (let i = 0; i < files.length; i += 1) {
           setUploadProgress(`Laster opp bilde ${i + 1} av ${files.length}…`)
           try {
-            const uploadUrl = await generateUploadUrl()
+            const uploadUrl = await generateUploadUrl({ inquiryId, uploadToken })
             const response = await fetch(uploadUrl, {
               method: 'POST',
               headers: { 'Content-Type': files[i].type },
@@ -57,7 +57,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
             if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
             const { storageId } = await response.json()
-            uploaded.push({ storageId, url: uploadUrl.split('?')[0] })
+            uploaded.push({ storageId })
           } catch {
             toast.error(`Feil ved opplasting av ${files[i].name} — fortsetter uten dette bildet`)
           }
@@ -67,6 +67,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
           try {
             await addReferenceImages({
               inquiryId,
+              uploadToken,
               images: uploaded.map((image) => ({
                 ...image,
                 storageId: image.storageId as Id<'_storage'>,

@@ -5,6 +5,7 @@ import { internal } from '../_generated/api'
 import { v } from 'convex/values'
 import nodemailer from 'nodemailer'
 import { getMailConfig, type MailConfig } from './config'
+import { requireAdmin } from '../lib/adminAuth'
 
 function normalizeEmailAddress(value: string) {
   return value.trim().toLowerCase()
@@ -22,8 +23,7 @@ export const sendReply = action({
     inReplyTo: v.optional(v.string()),
   },
   handler: async (ctx, { threadId, to, subject, body, inReplyTo }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (subject.length > 500) throw new Error('Subject too long')
     if (body.length > 100_000) throw new Error('Body too long')

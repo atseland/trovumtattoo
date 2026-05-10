@@ -1,19 +1,18 @@
 import { internalQuery, query } from '../_generated/server'
 import { v } from 'convex/values'
+import { requireAdmin } from '../lib/adminAuth'
 
 export const listThreads = query({
   args: { unreadOnly: v.optional(v.boolean()), status: v.optional(v.string()) },
   handler: async (ctx, { unreadOnly, status }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
-    let threads = await ctx.db
+    const threads = await ctx.db
       .query('mailThreads')
-      .withIndex('by_lastMessageAt')
+      .withIndex('by_status_lastMessageAt', (q) => q.eq('status', status ?? 'active'))
       .order('desc')
       .collect()
 
-    threads = threads.filter((thread) => thread.status === (status ?? 'active'))
     if (unreadOnly) {
       return threads.filter((t) => t.unreadCount > 0)
     }
@@ -24,8 +23,7 @@ export const listThreads = query({
 export const getThread = query({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db.get(threadId)
   },
@@ -34,8 +32,7 @@ export const getThread = query({
 export const listMessages = query({
   args: { threadId: v.id('mailThreads') },
   handler: async (ctx, { threadId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db
       .query('mailMessages')
@@ -48,30 +45,28 @@ export const listMessages = query({
 export const listByClient = query({
   args: { clientId: v.id('clients') },
   handler: async (ctx, { clientId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const threads = await ctx.db
       .query('mailThreads')
-      .withIndex('by_client', (q) => q.eq('linkedClientId', clientId))
+      .withIndex('by_client_status', (q) => q.eq('linkedClientId', clientId).eq('status', 'active'))
       .order('desc')
       .collect()
-    return threads.filter((thread) => thread.status === 'active')
+    return threads
   },
 })
 
 export const listByProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const threads = await ctx.db
       .query('mailThreads')
-      .withIndex('by_project', (q) => q.eq('linkedProjectId', projectId))
+      .withIndex('by_project_status', (q) => q.eq('linkedProjectId', projectId).eq('status', 'active'))
       .order('desc')
       .collect()
-    return threads.filter((thread) => thread.status === 'active')
+    return threads
   },
 })
 

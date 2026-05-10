@@ -1,5 +1,6 @@
 import { query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireAdmin } from './lib/adminAuth'
 
 export const listByEntity = query({
   args: {
@@ -7,8 +8,7 @@ export const listByEntity = query({
     entityId: v.string(),
   },
   handler: async (ctx, { entityType, entityId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db
       .query('activityLog')

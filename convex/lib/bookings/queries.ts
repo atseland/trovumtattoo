@@ -1,9 +1,9 @@
 import type { Id } from '../../_generated/dataModel'
 import type { QueryCtx } from '../../_generated/server'
+import { requireAdmin } from '../adminAuth'
 
 async function requireIdentity(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity()
-  if (!identity) throw new Error('Unauthorized')
+  await requireAdmin(ctx)
 }
 
 async function listUpcomingBase(ctx: QueryCtx) {
@@ -42,11 +42,19 @@ export async function listUpcomingBookingsWithDetails(ctx: QueryCtx) {
 export async function listBookingsByProject(ctx: QueryCtx, projectId: Id<'projects'>, archived?: boolean) {
   await requireIdentity(ctx)
 
-  const bookings = await ctx.db
-    .query('bookings')
-    .withIndex('by_project', (query) => query.eq('projectId', projectId))
-    .order('asc')
-    .collect()
+  const bookings = archived
+    ? await ctx.db
+      .query('bookings')
+      .withIndex('by_project', (query) => query.eq('projectId', projectId))
+      .order('asc')
+      .collect()
+    : await ctx.db
+      .query('bookings')
+      .withIndex('by_project_archived', (query) =>
+        query.eq('projectId', projectId).eq('archivedAt', undefined)
+      )
+      .order('asc')
+      .collect()
 
   return bookings.filter((booking) =>
     archived ? booking.archivedAt !== undefined : booking.archivedAt === undefined,

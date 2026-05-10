@@ -19,6 +19,7 @@ Notater:
 - `npx convex dev` maa kjoere under utvikling slik at lokale Convex-funksjoner pushes til dev deployment og `convex/_generated/*` holdes i sync.
 - Appen kjoerer lokalt paa `http://localhost:3000`.
 - Clerk maa ha en JWT-template med navnet `convex`, og `CLERK_JWT_ISSUER_DOMAIN` maa peke til samme Clerk-instans. Uten dette vil admin-sider med Convex-data ikke laste.
+- Admin er i tillegg laast til `TROVUM_ADMIN_EMAILS=aleksander.seland@gmail.com,elkritrovum@gmail.com`. Listen maa settes baade for Next/Vercel og Convex, og appen eksponerer ikke egen signup.
 - Aktiv Clerk issuer i dette prosjektet er `https://united-piranha-14.clerk.accounts.dev`.
 - Tilsvarende JWKS er `https://united-piranha-14.clerk.accounts.dev/.well-known/jwks.json`.
 - Mail er laast til one.com-kontoen `kontakt@trovumtattoo.no` via server-side `MAIL_*`-variabler i Convex. Passord og endringer skal ikke lagres fra admin-UI.

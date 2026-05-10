@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '@convex/_generated/api'
@@ -21,15 +21,15 @@ export default function SearchPage() {
   const { isAuthenticated } = useConvexAuth()
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
-  const [, startTransition] = useTransition()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value
-    setQuery(val)
-    startTransition(() => {
-      setDebouncedQuery(val)
-    })
+    setQuery(e.target.value)
   }
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQuery(query), 250)
+    return () => window.clearTimeout(timeout)
+  }, [query])
 
   const hasQuery = debouncedQuery.trim().length >= 2
 
@@ -39,8 +39,8 @@ export default function SearchPage() {
   )
 
   const inquiries = useQuery(
-    api.inquiries.list,
-    isAuthenticated && hasQuery ? {} : 'skip',
+    api.inquiries.search,
+    isAuthenticated && hasQuery ? { searchQuery: debouncedQuery } : 'skip',
   )
 
   const projects = useQuery(
@@ -52,15 +52,6 @@ export default function SearchPage() {
     api.bookings.searchWithDetails,
     isAuthenticated && hasQuery ? { searchQuery: debouncedQuery } : 'skip',
   )
-
-  const filteredInquiries =
-    hasQuery && Array.isArray(inquiries)
-      ? inquiries.filter(
-          (i) =>
-            i.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-            i.email.toLowerCase().includes(debouncedQuery.toLowerCase()),
-        )
-      : []
 
   return (
     <div className='max-w-2xl'>
@@ -117,11 +108,11 @@ export default function SearchPage() {
                 <Skeleton className='h-[52px]' />
                 <Skeleton className='h-[52px]' />
               </div>
-            ) : filteredInquiries.length === 0 ? (
+            ) : inquiries.length === 0 ? (
               <p className='font-sans text-[13px] text-mast-left'>Ingen forespørsler funnet.</p>
             ) : (
               <div className='flex flex-col gap-2'>
-                {filteredInquiries.map((i) => (
+                {inquiries.map((i) => (
                   <Link
                     key={i._id}
                     href={`/admin/inquiries/${i._id}`}

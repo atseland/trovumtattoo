@@ -15,6 +15,7 @@ import type * as clients from "../clients.js";
 import type * as crons from "../crons.js";
 import type * as dashboard from "../dashboard.js";
 import type * as inquiries from "../inquiries.js";
+import type * as lib_adminAuth from "../lib/adminAuth.js";
 import type * as lib_bookings_archivePolicy from "../lib/bookings/archivePolicy.js";
 import type * as lib_bookings_mutations from "../lib/bookings/mutations.js";
 import type * as lib_bookings_queries from "../lib/bookings/queries.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   dashboard: typeof dashboard;
   inquiries: typeof inquiries;
+  "lib/adminAuth": typeof lib_adminAuth;
   "lib/bookings/archivePolicy": typeof lib_bookings_archivePolicy;
   "lib/bookings/mutations": typeof lib_bookings_mutations;
   "lib/bookings/queries": typeof lib_bookings_queries;

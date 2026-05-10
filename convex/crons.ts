@@ -1,5 +1,4 @@
 import { cronJobs } from 'convex/server'
-import { api } from './_generated/api'
 import { internal } from './_generated/api'
 
 const crons = cronJobs()
@@ -8,7 +7,7 @@ const crons = cronJobs()
 crons.interval(
   'sync-mail',
   { minutes: 5 },
-  api.mail.sync.syncMail
+  internal.mail.sync.syncMailInternal,
 )
 
 // Sjekk forfalt depositum daglig kl. 09:00 UTC

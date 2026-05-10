@@ -1,6 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { assertNonNegative, assertOptionalStringLength } from './lib/validate'
+import { requireAdmin } from './lib/adminAuth'
 
 export const create = mutation({
   args: {
@@ -9,8 +10,7 @@ export const create = mutation({
     status: v.optional(v.string()),
   },
   handler: async (ctx, { clientId, inquiryId, status }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const client = await ctx.db.get(clientId)
     if (!client) throw new Error('Client not found')
@@ -38,8 +38,7 @@ export const create = mutation({
 export const get = query({
   args: { id: v.id('projects') },
   handler: async (ctx, { id }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db.get(id)
   },
@@ -61,8 +60,7 @@ export const update = mutation({
     reviewRequestedAt: v.optional(v.number()),
   },
   handler: async (ctx, { id, status, ...fields }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (fields.estimatedPrice !== undefined) assertNonNegative(fields.estimatedPrice, 'estimatedPrice')
     if (fields.depositAmount !== undefined) assertNonNegative(fields.depositAmount, 'depositAmount')
@@ -97,8 +95,7 @@ export const update = mutation({
 export const listByClient = query({
   args: { clientId: v.id('clients') },
   handler: async (ctx, { clientId }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     return await ctx.db
       .query('projects')
@@ -111,13 +108,12 @@ export const listByClient = query({
 export const searchWithClient = query({
   args: { searchQuery: v.string() },
   handler: async (ctx, { searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const normalizedQuery = searchQuery.trim().toLowerCase()
     if (normalizedQuery.length < 2) return []
 
-    const projects = await ctx.db.query('projects').order('desc').collect()
+    const projects = await ctx.db.query('projects').withIndex('by_updatedAt').order('desc').take(250)
     const rows = await Promise.all(
       projects.map(async (project) => {
         const client = await ctx.db.get(project.clientId)

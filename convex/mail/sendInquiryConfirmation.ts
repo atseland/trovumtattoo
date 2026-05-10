@@ -16,6 +16,19 @@ export const sendInquiryConfirmation = action({
     const inquiry = await ctx.runQuery(internal.inquiries.getForConfirmation, { id: inquiryId })
     if (!inquiry) throw new Error('Inquiry not found')
 
+    const now = Date.now()
+    const attempt = await ctx.runMutation(internal.inquiries.beginConfirmationEmailAttempt, {
+      id: inquiryId,
+      now,
+    })
+
+    if (attempt.status === 'already_sent') {
+      return { sent: false, reason: 'already_sent' as const }
+    }
+    if (attempt.status === 'rate_limited') {
+      return { sent: false, reason: 'rate_limited' as const }
+    }
+
     let config: MailConfig
     try {
       const dbConfig = await ctx.runQuery(internal.mail.account.getConfig, {})
@@ -61,6 +74,10 @@ export const sendInquiryConfirmation = action({
         entityType: 'inquiry',
         entityId: inquiryId,
         action: 'confirmation_email_sent',
+      })
+      await ctx.runMutation(internal.inquiries.markConfirmationEmailSent, {
+        id: inquiryId,
+        now: Date.now(),
       })
       return { sent: true }
     } catch (error) {

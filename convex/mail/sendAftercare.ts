@@ -5,6 +5,7 @@ import { api, internal } from '../_generated/api'
 import { v } from 'convex/values'
 import nodemailer from 'nodemailer'
 import { getMailConfig, type MailConfig } from './config'
+import { requireAdmin } from '../lib/adminAuth'
 
 /**
  * sendAftercare — Convex action for å sende aftercare-melding via SMTP.
@@ -18,8 +19,7 @@ export const sendAftercare = action({
     body: v.string(),
   },
   handler: async (ctx, { projectId, threadId, to, subject, body }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     if (subject.length > 500) throw new Error('Subject too long')
     if (body.length > 100_000) throw new Error('Body too long')

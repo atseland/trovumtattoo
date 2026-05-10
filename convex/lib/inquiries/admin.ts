@@ -1,5 +1,6 @@
 import type { Id } from '../../_generated/dataModel'
 import type { MutationCtx, QueryCtx } from '../../_generated/server'
+import { requireAdmin } from '../adminAuth'
 
 interface InquiryListFilters {
   status?: string
@@ -15,8 +16,7 @@ export interface ReferenceImageInput {
 }
 
 async function requireIdentity(ctx: QueryCtx | MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity()
-  if (!identity) throw new Error('Unauthorized')
+  await requireAdmin(ctx)
 }
 
 export async function updateInquiryStatus(
@@ -47,18 +47,19 @@ export async function listInquiries(ctx: QueryCtx, { status, coverUp, touchUp }:
   if (status) {
     rows = await ctx.db
       .query('inquiries')
-      .withIndex('by_status', (query) => query.eq('status', status))
+      .withIndex('by_status_archived_createdAt', (query) =>
+        query.eq('status', status).eq('archivedAt', undefined)
+      )
       .order('desc')
       .collect()
   } else {
     rows = await ctx.db
       .query('inquiries')
-      .withIndex('by_createdAt')
+      .withIndex('by_archived_createdAt', (query) => query.eq('archivedAt', undefined))
       .order('desc')
       .collect()
   }
 
-  rows = rows.filter((row) => row.archivedAt === undefined)
   if (coverUp !== undefined) rows = rows.filter((row) => row.coverUp === coverUp)
   if (touchUp !== undefined) rows = rows.filter((row) => row.touchUp === touchUp)
 
@@ -116,8 +117,7 @@ export async function addInquiryReferenceImages(
 }
 
 export async function archiveInquiry(ctx: MutationCtx, id: Id<'inquiries'>, reason?: string) {
-  const identity = await ctx.auth.getUserIdentity()
-  if (!identity) throw new Error('Unauthorized')
+  const identity = await requireAdmin(ctx)
 
   const inquiry = await ctx.db.get(id)
   if (!inquiry) throw new Error('Inquiry not found')
@@ -163,7 +163,7 @@ export async function permanentlyDeleteInquiry(ctx: MutationCtx, id: Id<'inquiri
 
   const linkedProjects = await ctx.db
     .query('projects')
-    .filter((q) => q.eq(q.field('inquiryId'), id))
+    .withIndex('by_inquiry', (query) => query.eq('inquiryId', id))
     .first()
   if (linkedProjects) {
     throw new Error('Forespørselen er koblet til et prosjekt og kan ikke slettes permanent.')
@@ -184,11 +184,14 @@ export async function permanentlyDeleteInquiry(ctx: MutationCtx, id: Id<'inquiri
     .collect()
   await Promise.all(activityEntries.map((entry) => ctx.db.delete(entry._id)))
 
-  const notifications = await ctx.db.query('notifications').collect()
+  const notifications = await ctx.db
+    .query('notifications')
+    .withIndex('by_related_entity', (query) =>
+      query.eq('relatedEntityType', 'inquiry').eq('relatedEntityId', id)
+    )
+    .collect()
   await Promise.all(
-    notifications
-      .filter((notification) => notification.relatedEntityType === 'inquiry' && notification.relatedEntityId === id)
-      .map((notification) => ctx.db.delete(notification._id)),
+    notifications.map((notification) => ctx.db.delete(notification._id)),
   )
 
   await ctx.db.delete(id)

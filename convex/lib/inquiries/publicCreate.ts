@@ -28,8 +28,16 @@ export interface CreateInquiryArgs {
 
 export interface PublicReferenceImageInput {
   storageId: Id<'_storage'>
-  url: string
   altText?: string
+}
+
+const REFERENCE_UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000
+export const MAX_REFERENCE_IMAGES = 10
+export const MAX_REFERENCE_IMAGE_BYTES = 8 * 1024 * 1024
+export const ALLOWED_REFERENCE_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+
+export function createReferenceUploadToken() {
+  return crypto.randomUUID()
 }
 
 export function assertCreateInquiryArgs(args: CreateInquiryArgs) {
@@ -47,11 +55,19 @@ export function assertCreateInquiryArgs(args: CreateInquiryArgs) {
 }
 
 export function assertPublicReferenceImages(images: PublicReferenceImageInput[]) {
-  if (images.length > 10) throw new Error('Du kan maks laste opp 10 referansebilder')
+  if (images.length > MAX_REFERENCE_IMAGES) throw new Error('Du kan maks laste opp 10 referansebilder')
 
   for (const image of images) {
-    assertStringLength(image.url, 'referenceImageUrl', 1, 2_000)
     assertOptionalStringLength(image.altText, 'referenceImageAltText', 200)
+  }
+}
+
+export function assertPublicReferenceImageMetadata(metadata: { size: number; contentType: string | null }) {
+  if (!metadata.contentType || !ALLOWED_REFERENCE_IMAGE_TYPES.has(metadata.contentType)) {
+    throw new Error('Kun JPG, PNG eller WebP bilder er tillatt')
+  }
+  if (metadata.size > MAX_REFERENCE_IMAGE_BYTES) {
+    throw new Error('Referansebilder kan maks være 8 MB')
   }
 }
 
@@ -93,29 +109,58 @@ export async function createInquiryWithSideEffects(ctx: MutationCtx, args: Creat
   await enforceInquiryRateLimit(ctx, args.email)
 
   const createdAt = Date.now()
+  const referenceUploadToken = createReferenceUploadToken()
   const inquiryId = await ctx.db.insert('inquiries', {
     ...args,
     status: 'Ny',
+    referenceUploadToken,
+    referenceUploadTokenExpiresAt: createdAt + REFERENCE_UPLOAD_TOKEN_TTL_MS,
+    referenceUploadUrlIssuedCount: 0,
     createdAt,
   })
 
   await logInquiryCreated(ctx, inquiryId, args.name, createdAt)
-  return inquiryId
+  return { inquiryId, uploadToken: referenceUploadToken }
 }
 
 export async function addReferenceImagesToInquiry(
   ctx: MutationCtx,
   inquiryId: Id<'inquiries'>,
+  uploadToken: string,
   images: PublicReferenceImageInput[],
 ) {
   assertPublicReferenceImages(images)
 
   const inquiry = await ctx.db.get(inquiryId)
   if (!inquiry) throw new Error('Inquiry not found')
+  if (!inquiry.referenceUploadToken || inquiry.referenceUploadToken !== uploadToken) {
+    throw new Error('Invalid upload token')
+  }
+  if (!inquiry.referenceUploadTokenExpiresAt || inquiry.referenceUploadTokenExpiresAt < Date.now()) {
+    throw new Error('Upload token expired')
+  }
 
   const uploadedAt = Date.now()
+  const validatedImages: Array<PublicReferenceImageInput & { url: string }> = []
+
+  for (const image of images) {
+    const metadata = await ctx.storage.getMetadata(image.storageId)
+    if (!metadata) throw new Error('Reference image not found')
+
+    try {
+      assertPublicReferenceImageMetadata(metadata)
+    } catch (error) {
+      await ctx.storage.delete(image.storageId)
+      throw error
+    }
+
+    const url = await ctx.storage.getUrl(image.storageId)
+    if (!url) throw new Error('Reference image URL not found')
+    validatedImages.push({ ...image, url })
+  }
+
   await Promise.all(
-    images.map((image) =>
+    validatedImages.map((image) =>
       ctx.db.insert('referenceImages', {
         inquiryId,
         storageId: image.storageId,

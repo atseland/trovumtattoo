@@ -4,6 +4,7 @@ import { action } from '../_generated/server'
 import { internal } from '../_generated/api'
 import { v } from 'convex/values'
 import webpush from 'web-push'
+import { requireAdmin } from '../lib/adminAuth'
 
 export const sendPush = action({
   args: {
@@ -12,8 +13,7 @@ export const sendPush = action({
     url: v.optional(v.string()),
   },
   handler: async (ctx, { title, body, url }): Promise<{ sent: number }> => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const vapidPublicKey = process.env.VAPID_PUBLIC_KEY
     const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY

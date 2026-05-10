@@ -14,6 +14,7 @@ import {
   listUpcomingBookings,
   listUpcomingBookingsWithDetails,
 } from './lib/bookings/queries'
+import { requireAdmin } from './lib/adminAuth'
 
 export const create = mutation({
   args: {
@@ -74,13 +75,12 @@ export const listByProject = query({
 export const searchWithDetails = query({
   args: { searchQuery: v.string() },
   handler: async (ctx, { searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const normalizedQuery = searchQuery.trim().toLowerCase()
     if (normalizedQuery.length < 2) return []
 
-    const bookings = await ctx.db.query('bookings').withIndex('by_startAt').order('desc').collect()
+    const bookings = await ctx.db.query('bookings').withIndex('by_startAt').order('desc').take(250)
     const rows = await Promise.all(
       bookings.filter((booking) => booking.archivedAt === undefined).map(async (booking) => {
         const project = await ctx.db.get(booking.projectId)

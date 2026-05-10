@@ -7,6 +7,7 @@ import type { Id } from '../_generated/dataModel'
 import { v } from 'convex/values'
 import { getMailConfig, type MailConfig } from './config'
 import { createCustomerMailDraft } from './customerMailPolicy'
+import { requireAdmin } from '../lib/adminAuth'
 
 export const sendCustomerMessage = action({
   args: {
@@ -15,8 +16,7 @@ export const sendCustomerMessage = action({
     body: v.string(),
   },
   handler: async (ctx, { clientId, subject, body }): Promise<{ sent: true; threadId: Id<'mailThreads'> }> => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Unauthorized')
+    await requireAdmin(ctx)
 
     const client = await ctx.runQuery(internal.mail.queries.getCustomerMailRecipient, { clientId })
     const draft = createCustomerMailDraft({ client, subject, body })
