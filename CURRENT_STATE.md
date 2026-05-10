@@ -86,6 +86,7 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Instagram, Facebook og TikTok bruker faktiske brand-ikoner; telefonikonet beholdes.
 - Instagram-ikonet i hero peker til `https://instagram.com/trovumtattoo`, ikke Instagram DM.
 - TikTok-ikonet i hero peker til `https://www.tiktok.com/@ellenkristinetrovum`.
+- Telefonlenker på public UI peker til `sms:97090414`, ikke telefonsamtale.
 - Bookingforespørsel/Kontakt-knappene ligger i normal flow under SoMe-ikonene med kontrollert toppmargin.
 - `se arbeider`-lenken ligger fortsatt nederst i hero-viewporten.
 - Videre endringer i hero layout, copy, ikonvalg eller CTA-plassering krever eksplisitt brukerbeskjed om å åpne hero-scope igjen.

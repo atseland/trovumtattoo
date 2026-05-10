@@ -94,7 +94,7 @@ export function Layout11Home() {
           <SocialIconLink href={tiktokProfileUrl} label='Se Trovum Tattoo på TikTok' external>
             <FaTiktok size={14} aria-hidden='true' />
           </SocialIconLink>
-          <SocialIconLink href={businessPhoneHref} label='Ring Trovum Tattoo'>
+          <SocialIconLink href={businessPhoneHref} label='Send SMS til Trovum Tattoo'>
             <Phone size={15} strokeWidth={1.7} aria-hidden='true' />
           </SocialIconLink>
         </div>

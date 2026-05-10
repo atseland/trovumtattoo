@@ -18,7 +18,7 @@ function InlineLink({
   external?: boolean
 }) {
   const className = 'text-accent underline decoration-[rgba(160,148,136,0.34)] underline-offset-4 transition-colors hover:text-paper'
-  if (external || href.startsWith('tel:')) {
+  if (external || href.startsWith('sms:') || href.startsWith('tel:')) {
     return (
       <a href={href} className={className} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
         {children}

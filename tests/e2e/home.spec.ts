@@ -17,7 +17,7 @@ test('home page loads', async ({ page }) => {
     'href',
     'https://www.tiktok.com/@ellenkristinetrovum',
   )
-  await expect(page.getByRole('link', { name: 'Ring Trovum Tattoo' })).toHaveAttribute('href', 'tel:+4797090414')
+  await expect(page.getByRole('link', { name: 'Send SMS til Trovum Tattoo' })).toHaveAttribute('href', 'sms:97090414')
 })
 
 test('public SEO metadata and structured data render', async ({ page, request }) => {
@@ -186,7 +186,7 @@ test('contact and booking entrypoints render expected actions', async ({ page })
     'href',
     'https://www.facebook.com/profile.php?id=100090196337976',
   )
-  await expect(page.getByRole('link', { name: 'Ring' })).toHaveAttribute('href', 'tel:+4797090414')
+  await expect(page.getByRole('link', { name: 'Send SMS' })).toHaveAttribute('href', 'sms:97090414')
 
   await page.goto('/book')
   await expect(page.getByText('Fyll ut skjemaet, så tar jeg kontakt så fort jeg kan (innen 3 virkedager).')).toBeVisible()
@@ -213,7 +213,7 @@ test('faq and aftercare copy use updated contact wording', async ({ page }) => {
     'href',
     'https://www.facebook.com/profile.php?id=100090196337976',
   )
-  await expect(page.getByRole('link', { name: '+47 970 90 414' })).toHaveAttribute('href', 'tel:+4797090414')
+  await expect(page.getByRole('link', { name: '+47 970 90 414' })).toHaveAttribute('href', 'sms:97090414')
   await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
 
   await page.goto('/aftercare')

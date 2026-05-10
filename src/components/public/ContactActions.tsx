@@ -68,7 +68,7 @@ export function ContactActions() {
         Send melding på Facebook
       </Btn>
       <Btn href={businessPhoneHref} variant='action'>
-        Ring
+        Send SMS
       </Btn>
       <Btn href='/book' variant='action'>
         Bookingforespørsel
