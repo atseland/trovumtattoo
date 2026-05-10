@@ -30,11 +30,20 @@ just deploy-prod    # Convex produksjons-deploy
 
 ## Arbeidsmaate
 
+### Current state og låst scope
+
+`CURRENT_STATE.md` er styrende statuskilde for hva som er ferdig, låst og åpent.
+
+- Les `CURRENT_STATE.md` før alle nye implementeringsøkter.
+- Respekter låste backend/core-områder i `CURRENT_STATE.md`; ikke endre dem automatisk i UI/UX-arbeid.
+- Hvis videre arbeid krever endring i låst backend/core, stopp og få eksplisitt brukerbeskjed før implementering.
+- Når en UI/UX-del er ferdig gjennomgått og godkjent, oppdater `CURRENT_STATE.md` slik at den delen også låses.
+
 ### Spec-drevet utvikling
 
 For oppgaver storre enn en liten patch:
 
-1. Les relevant spec/task for det oppgaven handler om. Eksisterende produktkontekst ligger i `PRD.md`, `PRD_UI.md`, `PROSJEKTBESKRIVELSE.md` og aktive filer i `docs/tasks/`.
+1. Les `CURRENT_STATE.md` og relevant spec/task for det oppgaven handler om. Eksisterende produktkontekst ligger i `PRD.md`, `PRD_UI.md`, `PROSJEKTBESKRIVELSE.md` og aktive filer i `docs/tasks/`.
 2. Bryt arbeid ned i smaa, testbare steg. Skriv dem i `docs/tasks/`.
 3. Implementer ett steg om gangen. Kjor smalest nyttig verifikasjon etter hvert steg.
 4. Naar du stopper: skriv handoff-fil i `docs/handoffs/` med hva som er gjort, hva som gjenstaar, og viktige beslutninger.
