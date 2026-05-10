@@ -31,6 +31,7 @@ Følgende områder vurderes ferdig for nåværende scope og skal behandles som l
 
 - Public booking/inquiry-flow oppretter inquiry i Convex.
 - Public reference uploads er bundet til inquiry-token.
+- Public reference images optimaliseres i browseren før upload med mål om ca. 1.5 MB per bilde, 3 MB fallback-grense, JPEG-output og maks langside 2560 px.
 - Upload-token valideres server-side og konsumeres etter vellykket attach.
 - Serveren validerer filtype, størrelse og maks antall referansebilder.
 - Ugyldige nye uploads slettes der serveren kan validere og rydde opp.

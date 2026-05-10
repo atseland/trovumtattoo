@@ -6,6 +6,10 @@ import { toast } from 'sonner'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
 import type { InquiryFormValues } from '@/lib/validators/inquiry'
+import {
+  isReferenceImageWithinFallbackLimit,
+  optimizeReferenceImage,
+} from '@/components/public/booking/referenceImageOptimizer'
 
 interface UseInquirySubmissionOptions {
   onCompleted: () => void
@@ -45,13 +49,24 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
         const uploaded: Array<{ storageId: string }> = []
 
         for (let i = 0; i < files.length; i += 1) {
-          setUploadProgress(`Laster opp bilde ${i + 1} av ${files.length}…`)
+          const originalFile = files[i]
+          setUploadProgress(`Klargjør bilde ${i + 1} av ${files.length}…`)
           try {
+            let file = originalFile
+            try {
+              file = await optimizeReferenceImage(originalFile)
+            } catch {
+              if (!isReferenceImageWithinFallbackLimit(originalFile)) {
+                throw new Error('Image too large')
+              }
+            }
+
+            setUploadProgress(`Laster opp bilde ${i + 1} av ${files.length}…`)
             const uploadUrl = await generateUploadUrl({ inquiryId, uploadToken })
             const response = await fetch(uploadUrl, {
               method: 'POST',
-              headers: { 'Content-Type': files[i].type },
-              body: files[i],
+              headers: { 'Content-Type': file.type },
+              body: file,
             })
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`)
@@ -59,7 +74,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
             const { storageId } = await response.json()
             uploaded.push({ storageId })
           } catch {
-            toast.error(`Feil ved opplasting av ${files[i].name} — fortsetter uten dette bildet`)
+            toast.error(`Feil ved opplasting av ${originalFile.name} — fortsetter uten dette bildet`)
           }
         }
 
