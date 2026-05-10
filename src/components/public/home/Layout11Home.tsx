@@ -49,7 +49,7 @@ function SocialIconLink({
 export function Layout11Home() {
   return (
     <div className='min-h-screen bg-bg text-paper'>
-      <section className='relative flex min-h-[calc(100svh-56px)] flex-col items-center justify-center px-6 pb-24 pt-16 text-center md:min-h-[calc(100vh-64px)] md:px-12 md:py-20'>
+      <section className='relative flex min-h-[calc(100svh-56px)] flex-col items-center justify-center px-6 pb-48 pt-16 text-center md:min-h-[calc(100vh-64px)] md:px-12 md:py-20'>
         <span className='mb-8 font-mono text-[9px] uppercase tracking-[0.28em] text-index-num md:mb-12'>
           Tigr Tattoo &middot; Sandvika
         </span>
@@ -95,7 +95,7 @@ export function Layout11Home() {
           </SocialIconLink>
         </div>
 
-        <div className='flex flex-wrap justify-center gap-3'>
+        <div className='absolute inset-x-6 bottom-32 flex flex-wrap justify-center gap-3 md:bottom-[4.5rem]'>
           <Btn href='/book' variant='default' className='min-w-[148px]'>
             Bookingforespørsel
           </Btn>
@@ -106,7 +106,7 @@ export function Layout11Home() {
 
         <a
           href='#arbeider'
-          className='absolute inset-x-6 bottom-6 mx-auto flex w-auto max-w-xs flex-col items-center gap-2 transition-opacity duration-200 hover:opacity-60 md:static md:inset-auto md:mt-10 md:w-full'
+          className='absolute inset-x-6 bottom-6 mx-auto flex w-auto max-w-xs flex-col items-center gap-2 transition-opacity duration-200 hover:opacity-60'
         >
           <span className='flex w-full items-center gap-3'>
             <span className='block h-px flex-1 bg-rule-heavy' />
