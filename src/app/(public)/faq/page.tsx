@@ -33,11 +33,8 @@ export default function FaqPage() {
 
       <Eyebrow withLine className='mb-4'>FAQ</Eyebrow>
       <h1 className='font-serif italic text-[clamp(32px,5vw,48px)] text-paper leading-[1.1] tracking-[-0.02em] mb-2'>
-        Vanlige spørsmål
+        Spørsmål og svar
       </h1>
-      <p className='font-sans text-[14px] text-body mb-10 leading-[1.8]'>
-        Alt du lurer på om prosessen, priser og praktisk informasjon.
-      </p>
 
       <FaqAccordion />
     </div>

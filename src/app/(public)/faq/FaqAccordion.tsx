@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 import { Rule } from '@/components/ui/Rule'
 import { Btn } from '@/components/ui/Btn'
-import { businessPhoneDisplay, businessPhoneHref, facebookProfileUrl, instagramMessageUrl } from '@/lib/seo'
+import { facebookProfileUrl, instagramMessageUrl } from '@/lib/seo'
 
 function InlineLink({
   href,
@@ -38,37 +38,37 @@ const faqItems = [
     question: 'Hvordan booker jeg en tatovering?',
     answer: (
       <>
-        Send melding via <InlineLink href={instagramMessageUrl} external>Instagram</InlineLink>,{' '}
-        <InlineLink href={facebookProfileUrl} external>Facebook</InlineLink> eller{' '}
-        <InlineLink href={businessPhoneHref}>{businessPhoneDisplay}</InlineLink>. Beskriv ideen din,
-        cirka størrelse og ønsket plassering. Jeg tar kontakt innen 1-3 virkedager for å følge opp.
+        Standard vei er å sende inn en <InlineLink href='/book'>bookingforespørsel</InlineLink>.
+        Hvis du er usikker på noe før du sender inn, kan du sende melding via{' '}
+        <InlineLink href={instagramMessageUrl} external>Instagram</InlineLink> eller{' '}
+        <InlineLink href={facebookProfileUrl} external>Facebook</InlineLink>.
       </>
     ),
   },
   {
     question: 'Hva bør jeg sende inn?',
     answer:
-      'Send en kort beskrivelse av motivet, ønsket plassering på kroppen, cirka størrelse og gjerne referansebilder av stil eller stemning du liker. Det er ikke nødvendig å ha en ferdig idé.',
+      'Du blir guidet gjennom prosessen i bookingforespørselen. Der fyller du inn kontaktinfo, motividé, plassering, størrelse, ønsket tidsrom og referansebilder hvis du har det.',
   },
   {
     question: 'Tar du cover-up?',
     answer:
-      'Ja, jeg tar cover-up-jobber, men de krever ekstra planlegging. Send inn bilder av tatoveringen som skal dekkes, og beskriv hva du ønsker i stedet.',
+      'Ja, jeg tar cover-up-jobber, men de krever ekstra planlegging. Send inn bilder av tatoveringen som skal dekkes, og legg ved referansebilder eller en beskrivelse av det nye motivet.',
   },
   {
     question: 'Hva koster en tatovering?',
     answer:
-      'Prisen avhenger av størrelse, kompleksitet, plassering og tidsbruk. Send inn en bookingforespørsel med motiv, ønsket størrelse, plassering og referanser, så får du et konkret estimat før vi avtaler noe. Minstepris er 1000 kr.',
+      'Prisen avhenger av størrelse, kompleksitet, plassering og tidsbruk. Send inn en bookingforespørsel, så får du et konkret estimat før vi avtaler noe. Minstepris er 1000 kr.',
   },
   {
     question: 'Hvordan fungerer depositum?',
     answer:
-      'Prosessen er: bookingforespørsel -> oppfølging og avklaringer som klargjør for oppsetting av time og tegning. Tegning av tatovering starter ikke før depositum er betalt og timen er satt opp.',
+      'Etter at vi er blitt enige om prosjektet, pris og tidspunkt, betaler du et depositum. Innbetaling av depositum bekrefter booking og timebestilling. Depositumet trekkes fra totalprisen, er ikke et tillegg, og refunderes ikke ved avlysning.',
   },
   {
     question: 'Hvor lang tid tar det å få svar?',
     answer:
-      'Jeg svarer vanligvis innen 1-3 virkedager. I travle perioder kan det ta litt lengre tid.',
+      'Så raskt som mulig innen 3 virkedager.',
   },
   {
     question: 'Hvordan fungerer etterbehandling?',
@@ -118,11 +118,20 @@ export default function FaqAccordion() {
 
       <Rule className='my-10' />
 
-      <div className='flex flex-col gap-4'>
-        <p className='font-sans text-[14px] text-body'>Fant du ikke svar på det du lurte på?</p>
-        <Btn href='/kontakt' variant='action-primary' className='max-w-xs'>
-          Send melding
-        </Btn>
+      <div className='flex flex-col gap-8'>
+        <div className='flex flex-col gap-4'>
+          <p className='font-sans text-[14px] text-body'>Har du en ide du vil utforske?</p>
+          <Btn href='/book' variant='action-primary' className='max-w-xs'>
+            Send bookingforespørsel
+          </Btn>
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          <p className='font-sans text-[14px] text-body'>Fant du ikke det du lurte på?</p>
+          <Btn href='/kontakt' variant='action-primary' className='max-w-xs'>
+            Kontakt
+          </Btn>
+        </div>
       </div>
     </>
   )

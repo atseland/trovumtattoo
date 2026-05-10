@@ -237,18 +237,38 @@ test('booking info page points users to the booking form before price details', 
 
 test('faq and aftercare copy use updated contact wording', async ({ page }) => {
   await page.goto('/faq')
-  await page.getByRole('button', { name: 'Hvordan booker jeg en tatovering?' }).click()
-  await expect(page.getByText('1-3 virkedager')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
+  const main = page.getByRole('main')
+  await expect(main.getByRole('heading', { name: 'Spørsmål og svar' })).toBeVisible()
+  await expect(main.getByRole('heading', { name: 'Vanlige spørsmål' })).toHaveCount(0)
+  await expect(main.getByText('Alt du lurer på om prosessen, priser og praktisk informasjon.')).toHaveCount(0)
+
+  await main.getByRole('button', { name: 'Hvordan booker jeg en tatovering?' }).click()
+  await expect(main.getByText('Standard vei er å sende inn en')).toBeVisible()
+  await expect(main.getByRole('link', { name: 'bookingforespørsel', exact: true })).toHaveAttribute('href', '/book')
+  await expect(main.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
     'href',
     'https://www.instagram.com/m/trovumtattoo/',
   )
-  await expect(page.getByRole('link', { name: 'Facebook' })).toHaveAttribute(
+  await expect(main.getByRole('link', { name: 'Facebook' })).toHaveAttribute(
     'href',
     'https://www.facebook.com/profile.php?id=100090196337976',
   )
-  await expect(page.getByRole('link', { name: '+47 970 90 414' })).toHaveAttribute('href', 'sms:97090414')
-  await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
+
+  await main.getByRole('button', { name: 'Hva bør jeg sende inn?' }).click()
+  await expect(main.getByText('Du blir guidet gjennom prosessen i bookingforespørselen.')).toBeVisible()
+  await main.getByRole('button', { name: 'Tar du cover-up?' }).click()
+  await expect(main.getByText('referansebilder eller en beskrivelse av det nye motivet')).toBeVisible()
+  await main.getByRole('button', { name: 'Hva koster en tatovering?' }).click()
+  await expect(main.getByText('Send inn en bookingforespørsel, så får du et konkret estimat')).toBeVisible()
+  await main.getByRole('button', { name: 'Hvordan fungerer depositum?' }).click()
+  await expect(main.getByText('Depositumet trekkes fra totalprisen, er ikke et tillegg')).toBeVisible()
+  await main.getByRole('button', { name: 'Hvor lang tid tar det å få svar?' }).click()
+  await expect(main.getByText('Så raskt som mulig innen 3 virkedager.')).toBeVisible()
+  await expect(main.getByText('I travle perioder kan det ta litt lengre tid.')).toHaveCount(0)
+  await expect(main.getByText('Har du en ide du vil utforske?')).toBeVisible()
+  await expect(main.getByRole('link', { name: 'Send bookingforespørsel' })).toHaveAttribute('href', '/book')
+  await expect(main.getByText('Fant du ikke det du lurte på?')).toBeVisible()
+  await expect(main.getByRole('link', { name: 'Kontakt' })).toHaveAttribute('href', '/kontakt')
 
   await page.goto('/aftercare')
   await expect(page.getByRole('heading', { name: 'Etterbehandling' })).toBeVisible()
