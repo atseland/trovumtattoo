@@ -51,8 +51,15 @@ test('public SEO metadata and structured data render', async ({ page, request })
   expect(localBusiness.containedInPlace.hasMap).toContain('google.com/maps/place/Tigr+Tattoo')
   expect(localBusiness.makesOffer.length).toBeGreaterThanOrEqual(4)
 
+  await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute('href', '/icons/favicon.svg')
+
   const robots = await request.get('/robots.txt')
-  expect(await robots.text()).toContain('Sitemap: https://trovumtattoo.no/sitemap.xml')
+  expect(robots.status()).toBe(200)
+  const robotsText = await robots.text()
+  expect(robotsText).toContain('Sitemap: https://trovumtattoo.no/sitemap.xml')
+  expect(robotsText).toContain('Disallow: /admin')
+  expect(robotsText).toContain('Disallow: /sign-in')
+  expect(robotsText).toContain('Disallow: /sign-up')
 
   const rootManifest = await request.get('/manifest.json')
   expect(rootManifest.status()).toBe(404)

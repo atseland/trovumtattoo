@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: { url: '/logo.png', type: 'image/png' },
+    icon: { url: '/icons/favicon.svg', type: 'image/svg+xml' },
     apple: '/icons/icon-192.svg',
   },
   openGraph: {

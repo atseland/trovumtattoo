@@ -1,4 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
-  <rect width="192" height="192" fill="#0d0c0b"/>
-  <text x="96" y="120" font-family="Georgia, serif" font-size="80" font-style="italic" fill="#c9b99a" text-anchor="middle">T</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192" role="img" aria-label="Trovum Tattoo icon">
+  <rect width="192" height="192" rx="34" fill="#f4efe8"/>
+  <rect x="75" y="21" width="42" height="15" rx="2" fill="#151515"/>
+  <rect x="68" y="36" width="56" height="58" rx="6" fill="#151515"/>
+  <rect x="70" y="101" width="52" height="12" rx="5" fill="#151515"/>
+  <rect x="58" y="116" width="76" height="64" rx="12" fill="#151515"/>
+  <path d="M72 124v47M88 124v47M104 124v47M120 124v47" stroke="#f4efe8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M68 184h56l-12 42H80z" fill="#151515" transform="translate(0 -2)"/>
+  <path d="M84 167c0-10 24-10 24 0 0 13-5 19-12 19s-12-6-12-19Z" fill="#f4efe8"/>
+  <path d="M91 181h10l-5 28z" fill="#151515"/>
 </svg>
