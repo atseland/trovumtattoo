@@ -73,6 +73,19 @@ Følgende områder vurderes ferdig for nåværende scope og skal behandles som l
 - Booking `datetime-local` bruker lokal formattering.
 - Project detail form reset skjer ikke lenger som render-time state mutation.
 
+## Låst Public UI
+
+Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som låst:
+
+### Public Home Hero
+
+- Public home hero i `src/components/public/home/Layout11Home.tsx` er ferdig justert og låst.
+- Hero har ikke lenger subtitle-tekst under profilbildet.
+- Instagram og Facebook bruker faktiske brand-ikoner; telefonikonet beholdes.
+- Bookingforespørsel/Kontakt-knappene ligger i normal flow under SoMe-ikonene med kontrollert toppmargin.
+- `se arbeider`-lenken ligger fortsatt nederst i hero-viewporten.
+- Videre endringer i hero layout, copy, ikonvalg eller CTA-plassering krever eksplisitt brukerbeskjed om å åpne hero-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
@@ -100,7 +113,7 @@ Videre arbeid skal behandles som siste UI/UX- og innholdsfasen.
 ### UI/UX Og Owner Review
 
 - Public copy approval, spesielt aftercare og helserelatert tekst.
-- Visuell gjennomgang av public homepage, booking, kontakt, FAQ, aftercare og privacy.
+- Visuell gjennomgang av public homepage utenom låst hero, booking, kontakt, FAQ, aftercare og privacy.
 - Portfolio carousel/fullscreen preview owner review.
 - Mobile/desktop polish etter faktisk gjennomgang.
 - Admin UX polish der det ikke krever backend-kontraktendring.
@@ -123,6 +136,7 @@ Ikke gjør disse automatisk i videre UI/UX-økter:
 - Endre PWA scope fra admin-only.
 - Gjøre admin-søk til all-history/global search.
 - Legge til ny public backend API-overflate.
+- Endre låst public home hero uten eksplisitt beskjed om å åpne hero-scope igjen.
 - Deploye til production hvis oppgaven bare var lokal UI-iterasjon, med mindre bruker ber om live.
 
 ## Tillatt Videre Arbeid Uten Ny Backend-Avklaring
