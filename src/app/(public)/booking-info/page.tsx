@@ -68,11 +68,11 @@ function BodyText({ children }: { children: ReactNode }) {
 
 const sections = [
   {
-    title: 'Booking skjer via skjemaet',
+    title: 'Booking skjer via bookingforespørsel',
     content: (
       <div className='flex flex-col gap-4'>
         <BodyText>
-          For nye prosjekter bruker jeg bookingskjemaet. Der sender du inn kontaktinfo,
+          For nye prosjekter bruker jeg bookingforespørselen. Der sender du inn kontaktinfo,
           motividé, plassering, størrelse, ønsket tidsrom og eventuelle referansebilder.
         </BodyText>
         <BodyText>
@@ -80,7 +80,7 @@ const sections = [
         </BodyText>
         <div>
           <Btn href='/book' variant='action-primary' className='sm:max-w-xs'>
-            Gå til bookingskjema
+            Send bookingforespørsel
           </Btn>
         </div>
       </div>
@@ -96,7 +96,7 @@ const sections = [
             'Størrelse og kompleksitet.',
             'Estimert tidsbruk i studio.',
             'Plasseringens tilgjengelighet.',
-            'Om det er et cover-up-prosjekt.',
+            'Type prosjekt: ny tatovering, cover-up eller touch-up.',
           ]}
         />
         <BodyText>
@@ -114,13 +114,13 @@ const sections = [
       <div className='flex flex-col gap-4'>
         <BodyText>
           Etter at vi er blitt enige om prosjektet, pris og tidspunkt, betaler du et depositum.
-          Beløpet avklares sammen med prisestimatet for prosjektet.
+          Innbetaling av depositum bekrefter booking og timebestilling.
         </BodyText>
         <BulletList
           items={[
-            'Bekrefter bookingen og sikrer at dato holdes for deg.',
-            'Trekkes av den totale sluttprisen.',
-            'Er ikke refunderbart ved avlysning uten minst 48 timers varsel.',
+            'Depositumet trekkes fra totalprisen og er ikke et tillegg.',
+            'Depositum refunderes ikke ved avlysning.',
+            'Hvis du må flytte timen, må du gi beskjed minst 48 timer før avtalt tid for å beholde depositumet.',
           ]}
         />
         <BodyText>Resten av beløpet betales i studio på dagen. Vi aksepterer Vipps og kortbetaling.</BodyText>
