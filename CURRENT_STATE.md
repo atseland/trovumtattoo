@@ -115,6 +115,15 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Referansebilder optimaliseres i browseren før upload uten ekstra forklaring i UI.
 - Videre endringer i booking form copy, feltstruktur, telefonpolicy eller reference-image upload UX krever eksplisitt brukerbeskjed om å åpne booking-scope igjen.
 
+### Public Booking Info
+
+- Public booking info-siden i `src/app/(public)/booking-info/page.tsx` er ferdig justert og låst.
+- Introen før prisestimering er kortet ned til at booking skjer via bookingforespørsel, med CTA til `/book`.
+- Prisestimering beholder faktorer for størrelse, tidsbruk, plassering og prosjekttype: ny tatovering, cover-up eller touch-up.
+- Depositum-copy er owner-godkjent: innbetaling bekrefter booking/time, depositum trekkes fra totalprisen, er ikke et tillegg, refunderes ikke ved avlysning, og flytting krever minst 48 timers varsel for å beholde depositumet.
+- Prosesslisten avsluttes med at etter timen får kunden med et etterbehandlingsskjema som hjelper gjennom helningsprosessen.
+- Videre endringer i booking info layout, CTA-er, pris-, depositum- eller prosesscopy krever eksplisitt brukerbeskjed om å åpne booking info-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
