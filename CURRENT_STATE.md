@@ -133,6 +133,15 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Hamburgermenyens CTA-er er like brede og står i rekkefølgen `Kontakt` før `Bookingforespørsel`.
 - Videre endringer i public navigation, hamburgermeny, nav-labels eller CTA-rekkefølge krever eksplisitt brukerbeskjed om å åpne navigation-scope igjen.
 
+### Public FAQ
+
+- Public FAQ-siden i `src/app/(public)/faq/page.tsx` og `src/app/(public)/faq/FaqAccordion.tsx` er ferdig justert og låst.
+- Hovedtittel er `Spørsmål og svar`, uten intro-tekst under tittelen.
+- Første svar gjør bookingforespørsel til standard vei, med Instagram/Facebook som meldingkanaler hvis kunden er usikker på noe før innsending.
+- Svarene om hva kunden bør sende inn, cover-up, pris, depositum og svartid er owner-godkjent.
+- FAQ-bunnen har CTA-en `Har du en ide du vil utforske?` med `Send bookingforespørsel`, etterfulgt av `Fant du ikke det du lurte på?` med `Kontakt`.
+- Videre endringer i FAQ layout, spørsmål, svar eller CTA-er krever eksplisitt brukerbeskjed om å åpne FAQ-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
