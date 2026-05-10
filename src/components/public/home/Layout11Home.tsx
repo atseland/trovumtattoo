@@ -9,7 +9,7 @@ import {
   businessPhoneHref,
   coreServiceLabels,
   facebookProfileUrl,
-  instagramMessageUrl,
+  instagramProfileUrl,
 } from '@/lib/seo'
 
 function Ornament({ className = '' }: { className?: string }) {
@@ -84,7 +84,7 @@ export function Layout11Home() {
         </div>
 
         <div className='flex items-center justify-center gap-3'>
-          <SocialIconLink href={instagramMessageUrl} label='Send melding på Instagram' external>
+          <SocialIconLink href={instagramProfileUrl} label='Se Trovum Tattoo på Instagram' external>
             <FaInstagram size={16} aria-hidden='true' />
           </SocialIconLink>
           <SocialIconLink href={facebookProfileUrl} label='Send melding på Facebook' external>

@@ -82,6 +82,7 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Public home hero i `src/components/public/home/Layout11Home.tsx` er ferdig justert og låst.
 - Hero har ikke lenger subtitle-tekst under profilbildet.
 - Instagram og Facebook bruker faktiske brand-ikoner; telefonikonet beholdes.
+- Instagram-ikonet i hero peker til `https://instagram.com/trovumtattoo`, ikke Instagram DM.
 - Bookingforespørsel/Kontakt-knappene ligger i normal flow under SoMe-ikonene med kontrollert toppmargin.
 - `se arbeider`-lenken ligger fortsatt nederst i hero-viewporten.
 - Videre endringer i hero layout, copy, ikonvalg eller CTA-plassering krever eksplisitt brukerbeskjed om å åpne hero-scope igjen.

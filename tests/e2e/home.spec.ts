@@ -5,9 +5,9 @@ test('home page loads', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Bookingforespørsel' }).first()).toHaveAttribute('href', '/book')
   await expect(page.getByRole('link', { name: 'Kontakt' }).first()).toHaveAttribute('href', '/kontakt')
-  await expect(page.getByRole('link', { name: 'Send melding på Instagram' }).first()).toHaveAttribute(
+  await expect(page.getByRole('link', { name: 'Se Trovum Tattoo på Instagram' })).toHaveAttribute(
     'href',
-    'https://www.instagram.com/m/trovumtattoo/',
+    'https://instagram.com/trovumtattoo',
   )
   await expect(page.getByRole('link', { name: 'Send melding på Facebook' }).first()).toHaveAttribute(
     'href',
