@@ -68,37 +68,21 @@ function BodyText({ children }: { children: ReactNode }) {
 
 const sections = [
   {
-    title: 'Hva slags prosjekter passer?',
+    title: 'Booking skjer via skjemaet',
     content: (
       <div className='flex flex-col gap-4'>
         <BodyText>
-          Jeg jobber primært med dark art, blackwork, realism og custom design.
+          For nye prosjekter bruker jeg bookingskjemaet. Der sender du inn kontaktinfo,
+          motividé, plassering, størrelse, ønsket tidsrom og eventuelle referansebilder.
         </BodyText>
         <BodyText>
-          Prosjekter som passer godt: naturmotiver, botanikk, portretter, geometri og abstrakt ornamentikk.
+          Når forespørselen er sendt inn, tar jeg kontakt så fort jeg kan, innen 3 virkedager.
         </BodyText>
-        <BodyText>
-          Er du usikker, send gjerne en forespørsel. Hvis vi ikke er riktig match for hverandre,
-          kan jeg gjerne anbefale en kollega.
-        </BodyText>
-      </div>
-    ),
-  },
-  {
-    title: 'Hva kunden bør sende inn',
-    content: (
-      <div className='flex flex-col gap-4'>
-        <BodyText>For å gi et godt estimat og en realistisk vurdering trenger jeg:</BodyText>
-        <BulletList
-          items={[
-            'Referansebilder: stiler du liker eller motiver som inspirerer.',
-            'Beskrivelse av ønsket plassering på kroppen.',
-            'Beskrivelse av motivet. Jo mer konkret, jo bedre.',
-            'Ønsket størrelse og om du er fleksibel på dette.',
-            'Eventuelle spesielle krav, som cover-up eller eksisterende tatoveringer i nærheten.',
-          ]}
-        />
-        <BodyText>Du trenger ikke ha alt klart. En kort beskrivelse holder for å starte.</BodyText>
+        <div>
+          <Btn href='/book' variant='action-primary' className='sm:max-w-xs'>
+            Gå til bookingskjema
+          </Btn>
+        </div>
       </div>
     ),
   },

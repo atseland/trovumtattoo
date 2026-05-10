@@ -201,6 +201,18 @@ test('contact and booking entrypoints render expected actions', async ({ page })
   await expect(page.getByText('Last opp bilder her hvis du har referanser.')).toBeVisible()
 })
 
+test('booking info page points users to the booking form before price details', async ({ page }) => {
+  await page.goto('/booking-info')
+
+  await expect(page.getByRole('heading', { name: 'Slik fungerer bookingen' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Booking skjer via skjemaet' })).toBeVisible()
+  await expect(page.getByText('For nye prosjekter bruker jeg bookingskjemaet.')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Gå til bookingskjema' })).toHaveAttribute('href', '/book')
+  await expect(page.getByRole('heading', { name: 'Slik estimeres prisen' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Hva slags prosjekter passer?' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Hva kunden bør sende inn' })).toHaveCount(0)
+})
+
 test('faq and aftercare copy use updated contact wording', async ({ page }) => {
   await page.goto('/faq')
   await page.getByRole('button', { name: 'Hvordan booker jeg en tatovering?' }).click()
