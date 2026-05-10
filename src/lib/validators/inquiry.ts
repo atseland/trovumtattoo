@@ -1,9 +1,20 @@
 import { z } from 'zod'
 
+export function normalizeNorwegianPhoneNumber(value: string) {
+  return value
+    .trim()
+    .replace(/^(?:\+47|0047)\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 export const inquirySchema = z.object({
   name: z.string().min(2, 'Navn er påkrevd'),
   email: z.string().email('Ugyldig e-postadresse'),
-  phone: z.string().min(8, 'Telefonnummer er påkrevd'),
+  phone: z
+    .string()
+    .transform(normalizeNorwegianPhoneNumber)
+    .refine((phone) => phone.replace(/\D/g, '').length >= 8, 'Telefonnummer er påkrevd'),
   instagramHandle: z.string().optional(),
   description: z.string().min(10, 'Beskriv tattoo-ideen din (min 10 tegn)'),
   bodyPlacement: z.string().min(2, 'Plassering er påkrevd'),

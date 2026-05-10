@@ -23,7 +23,7 @@ export function BookingContactSection({ register, errors }: BookingFormSectionPr
         label='Telefonnummer *'
         type='tel'
         error={errors.phone?.message}
-        placeholder='+47 000 00 000'
+        placeholder='000 00 000'
         {...register('phone')}
       />
 

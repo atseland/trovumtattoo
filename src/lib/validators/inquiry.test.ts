@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { inquirySchema } from './inquiry'
+import { inquirySchema, normalizeNorwegianPhoneNumber } from './inquiry'
 
 const validInquiry = {
   name: 'Ola Nordmann',
@@ -48,6 +48,18 @@ describe('inquirySchema', () => {
     })
 
     expect(result.success).toBe(false)
+  })
+
+  it('normalizes Norwegian phone numbers before submission', () => {
+    expect(normalizeNorwegianPhoneNumber('+47 999 99 999')).toBe('999 99 999')
+    expect(normalizeNorwegianPhoneNumber('0047 999 99 999')).toBe('999 99 999')
+
+    const result = inquirySchema.parse({
+      ...validInquiry,
+      phone: '+47 999 99 999',
+    })
+
+    expect(result.phone).toBe('999 99 999')
   })
 
   it('accepts missing optional fields', () => {

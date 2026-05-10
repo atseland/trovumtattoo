@@ -5,7 +5,7 @@ import { useAction, useMutation } from 'convex/react'
 import { toast } from 'sonner'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
-import type { InquiryFormValues } from '@/lib/validators/inquiry'
+import { normalizeNorwegianPhoneNumber, type InquiryFormValues } from '@/lib/validators/inquiry'
 import {
   isReferenceImageWithinFallbackLimit,
   optimizeReferenceImage,
@@ -31,7 +31,7 @@ export function useInquirySubmission({ onCompleted }: UseInquirySubmissionOption
       const { inquiryId, uploadToken } = await createInquiry({
         name: data.name,
         email: data.email,
-        phone: data.phone,
+        phone: normalizeNorwegianPhoneNumber(data.phone),
         instagramHandle: data.instagramHandle || undefined,
         description: data.description,
         bodyPlacement: data.bodyPlacement,
