@@ -2,16 +2,25 @@ import type { Metadata } from 'next'
 import { ContactActions } from '@/components/public/ContactActions'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Rule } from '@/components/ui/Rule'
+import { absoluteUrl, businessAddress, businessEmail, getPublicRoute, instagramMessageUrl } from '@/lib/seo'
+
+const route = getPublicRoute('/kontakt')!
 
 export const metadata: Metadata = {
-  title: 'Send melding | Trovum Tattoo',
-  description: 'Kontakt Trovum Tattoo på e-post eller Instagram.',
-  alternates: { canonical: 'https://trovumtattoo.no/kontakt' },
+  title: route.title,
+  description: route.description,
+  alternates: { canonical: absoluteUrl(route.path) },
   openGraph: {
-    title: 'Send melding | Trovum Tattoo',
-    description: 'Kontakt Trovum Tattoo på e-post eller Instagram.',
-    url: 'https://trovumtattoo.no/kontakt',
+    title: route.title,
+    description: route.description,
+    url: absoluteUrl(route.path),
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: route.title,
+    description: route.description,
+    images: [absoluteUrl('/og-image.jpg')],
   },
 }
 
@@ -26,8 +35,12 @@ export default function ContactPage() {
         Velg kanalen som passer best. For nye tatoveringsprosjekter bør du sende en bookingforespørsel.
       </p>
       <div className='mb-8 border border-rule bg-panel px-5 py-5'>
-        <p className='font-sans text-[10px] uppercase tracking-[0.14em] text-nav'>E-post</p>
-        <p className='mt-2 font-sans text-[15px] text-paper'>kontakt@trovumtattoo.no</p>
+        <p className='font-sans text-[10px] uppercase tracking-[0.14em] text-nav'>E-post og studio</p>
+        <p className='mt-2 font-sans text-[15px] text-paper'>{businessEmail}</p>
+        <p className='mt-2 font-sans text-[13px] leading-[1.6] text-body'>
+          Tigr Tattoo, {businessAddress.streetAddress}, {businessAddress.postalCode} {businessAddress.addressLocality}.
+          Instagram DM: {instagramMessageUrl}
+        </p>
       </div>
       <Rule className='mb-8' />
       <ContactActions />

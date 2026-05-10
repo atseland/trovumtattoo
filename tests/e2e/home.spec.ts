@@ -7,6 +7,40 @@ test('home page loads', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
 })
 
+test('public SEO metadata and structured data render', async ({ page, request }) => {
+  await page.goto('/')
+
+  await expect(page).toHaveTitle('Trovum Tattoo | Dark art, blackwork og black and grey i Sandvika')
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    /custom dark art, blackwork, black and grey og semi realistic tatoveringer/i,
+  )
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://trovumtattoo.no')
+
+  const localBusinessJson = await page.locator('script[type="application/ld+json"]').first().textContent()
+  expect(localBusinessJson).toBeTruthy()
+  const localBusiness = JSON.parse(localBusinessJson ?? '{}') as {
+    '@type': string[]
+    name: string
+    address: { addressLocality: string }
+    makesOffer: unknown[]
+  }
+  expect(localBusiness['@type']).toContain('LocalBusiness')
+  expect(localBusiness['@type']).toContain('TattooParlor')
+  expect(localBusiness.name).toBe('Trovum Tattoo')
+  expect(localBusiness.address.addressLocality).toBe('Sandvika')
+  expect(localBusiness.makesOffer.length).toBeGreaterThanOrEqual(4)
+
+  const robots = await request.get('/robots.txt')
+  expect(await robots.text()).toContain('Sitemap: https://trovumtattoo.no/sitemap.xml')
+
+  const sitemap = await request.get('/sitemap.xml')
+  const sitemapXml = await sitemap.text()
+  expect(sitemapXml).toContain('<loc>https://trovumtattoo.no</loc>')
+  expect(sitemapXml).toContain('<loc>https://trovumtattoo.no/book</loc>')
+  expect(sitemapXml).toContain('<loc>https://trovumtattoo.no/kontakt</loc>')
+})
+
 test('home page keeps images and layout intact on desktop and mobile', async ({ page }) => {
   for (const viewport of [
     { width: 1280, height: 900 },
@@ -41,7 +75,7 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await trigger.click()
   const dialog = page.getByRole('dialog', { name: 'Blomster' })
   await expect(dialog).toBeVisible()
-  await expect(dialog.getByText('Realistisk black and grey blomster innrammet med dekor.')).toBeVisible()
+  await expect(dialog.getByText('Black and grey blomster-tatovering med myke skygger')).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Lukk fullscreen' })).toBeFocused()
 
   await page.keyboard.press('Shift+Tab')

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Btn } from '@/components/ui/Btn'
 import { PortfolioCarousel } from '@/components/public/home/PortfolioCarousel'
+import { businessAddress, coreServiceLabels } from '@/lib/seo'
 
 function Ornament({ className = '' }: { className?: string }) {
   return (
@@ -35,7 +36,7 @@ export function Layout11Home() {
         <div className='mb-8 md:mb-10'>
           <Image
             src='/profilbilde_v2.jpeg'
-            alt='Trovum Tattoo'
+            alt='Portrett av Trovum Tattoo, tatovør hos Tigr Tattoo i Sandvika'
             width={144}
             height={144}
             className='rounded-full object-cover'
@@ -53,7 +54,7 @@ export function Layout11Home() {
           className='mb-8 max-w-[36ch] font-serif text-[16px] italic leading-[1.6] md:mb-12 md:text-[19px]'
           style={{ color: 'rgba(237,233,230,0.45)' }}
         >
-          Dark art, blackwork og black and grey
+          Custom dark art, blackwork og black and grey-tatoveringer i Sandvika
         </p>
 
         <div className='flex gap-3'>
@@ -106,7 +107,7 @@ export function Layout11Home() {
           <div className='mb-8 aspect-[4/3] overflow-hidden md:mb-10'>
             <Image
               src='/Bilde2_less.png'
-              alt='Tatovering i arbeid'
+              alt='Tatovering i arbeid hos Trovum Tattoo'
               width={800}
               height={600}
               className='h-full w-full object-cover object-center'
@@ -124,10 +125,15 @@ export function Layout11Home() {
               og mørkere fantasy-, film- og bandreferanser. Mye av det jeg lager ligger et sted
               mellom det makabre og det pene.
             </p>
+            <p className='mb-6 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]'>
+              Tjenestene er custom tatoveringer innen dark art, blackwork, black and grey og semi realism.
+              Studioet ligger hos Tigr Tattoo i {businessAddress.addressLocality}, med kort reisevei fra
+              Bærum, Oslo og Asker.
+            </p>
 
             <Ornament className='mb-5' />
             <p className='font-mono text-[9px] uppercase tracking-[0.22em] text-index-num'>
-              Black and grey &middot; Blackwork &middot; Dark art &middot; Semi realism
+              {coreServiceLabels.join(' · ')}
             </p>
           </div>
         </div>
@@ -144,7 +150,7 @@ export function Layout11Home() {
           </p>
 
           <p className='mb-10 font-mono text-[10px] uppercase tracking-[0.16em] text-accent'>
-            Tigr Tattoo &middot; Elias Smithsvei 27, 1337 Sandvika
+            Tigr Tattoo &middot; {businessAddress.streetAddress}, {businessAddress.postalCode} {businessAddress.addressLocality}
           </p>
 
           <div className='mx-auto max-w-xs space-y-3'>

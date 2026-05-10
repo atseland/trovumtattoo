@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { ClerkProvider, UserButton } from '@clerk/nextjs'
@@ -5,6 +6,14 @@ import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import { AdminNotificationButton } from '@/components/admin/AdminNotificationButton'
 import { AuthenticatedConvexClientProvider } from '@/components/ConvexClientProvider'
+
+export const metadata: Metadata = {
+  title: 'Admin | Trovum Tattoo',
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth()

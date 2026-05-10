@@ -2,21 +2,25 @@ import type { Metadata } from 'next'
 import { LinkI } from '@/components/ui/LinkI'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Rule } from '@/components/ui/Rule'
+import { absoluteUrl, getPublicRoute } from '@/lib/seo'
+
+const route = getPublicRoute('/aftercare')!
 
 export const metadata: Metadata = {
-  title: 'Etterbehandling | Trovum Tattoo',
-  description:
-    'Komplett guide til etterbehandling av ny tatovering — dag-for-dag instruksjoner for riktig stell og heling.',
-  alternates: { canonical: 'https://trovumtattoo.no/aftercare' },
+  title: route.title,
+  description: route.description,
+  alternates: { canonical: absoluteUrl(route.path) },
   openGraph: {
-    title: 'Etterbehandling | Trovum Tattoo',
-    description: 'Dag-for-dag guide til etterbehandling av tatovering.',
-    url: 'https://trovumtattoo.no/aftercare',
+    title: route.title,
+    description: route.description,
+    url: absoluteUrl(route.path),
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['https://trovumtattoo.no/og-image.jpg'],
+    title: route.title,
+    description: route.description,
+    images: [absoluteUrl('/og-image.jpg')],
   },
 }
 

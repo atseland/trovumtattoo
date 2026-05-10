@@ -4,21 +4,25 @@ import { LinkI } from '@/components/ui/LinkI'
 import { Eyebrow } from '@/components/ui/Eyebrow'
 import { Rule } from '@/components/ui/Rule'
 import { Btn } from '@/components/ui/Btn'
+import { absoluteUrl, businessAddress, getPublicRoute } from '@/lib/seo'
+
+const route = getPublicRoute('/booking-info')!
 
 export const metadata: Metadata = {
-  title: 'Slik fungerer bookingen | Trovum Tattoo',
-  description:
-    'Alt du trenger å vite om bookingprosessen hos Trovum Tattoo — fra idé til ferdig tatovering, priser, depositum og hva du bør sende inn.',
-  alternates: { canonical: 'https://trovumtattoo.no/booking-info' },
+  title: route.title,
+  description: route.description,
+  alternates: { canonical: absoluteUrl(route.path) },
   openGraph: {
-    title: 'Slik fungerer bookingen | Trovum Tattoo',
-    description: 'Komplett guide til bookingprosessen hos Trovum Tattoo.',
-    url: 'https://trovumtattoo.no/booking-info',
+    title: route.title,
+    description: route.description,
+    url: absoluteUrl(route.path),
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['https://trovumtattoo.no/og-image.jpg'],
+    title: route.title,
+    description: route.description,
+    images: [absoluteUrl('/og-image.jpg')],
   },
 }
 
@@ -169,7 +173,8 @@ export default function BookingInfoPage() {
         Slik fungerer bookingen
       </h1>
       <p className='font-sans text-[14px] text-body mb-10 leading-[1.8]'>
-        Alt du trenger å vite om prosessen — fra idé til ferdig tatovering.
+        Alt du trenger å vite om prosessen hos Trovum Tattoo i {businessAddress.addressLocality}
+        {' '}— fra idé til ferdig tatovering innen dark art, blackwork, black and grey og semi realism.
       </p>
 
       <div className='flex flex-col gap-10'>

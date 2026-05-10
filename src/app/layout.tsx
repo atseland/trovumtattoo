@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
+import { absoluteUrl, siteName, siteUrl } from '@/lib/seo'
 
 const ebGaramond = EB_Garamond({
   variable: '--font-garamond',
@@ -25,9 +26,19 @@ const jost = Jost({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://trovumtattoo.no'),
-  title: 'Trovum Tattoo',
-  description: 'Book din tatovering hos Trovum',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${siteName} | Dark art tattoo i Sandvika`,
+    template: `%s`,
+  },
+  description:
+    'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika.',
+  applicationName: siteName,
+  alternates: { canonical: siteUrl },
+  robots: {
+    index: true,
+    follow: true,
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -39,11 +50,21 @@ export const metadata: Metadata = {
     apple: '/icons/icon-192.svg',
   },
   openGraph: {
+    title: `${siteName} | Dark art tattoo i Sandvika`,
+    description:
+      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika.',
+    url: siteUrl,
+    siteName,
+    locale: 'nb_NO',
+    type: 'website',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/og-image.jpg'],
+    title: `${siteName} | Dark art tattoo i Sandvika`,
+    description:
+      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika.',
+    images: [absoluteUrl('/og-image.jpg')],
   },
 }
 

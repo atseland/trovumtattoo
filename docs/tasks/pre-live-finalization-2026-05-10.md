@@ -94,7 +94,7 @@ Verification:
 
 ### 5. SEO/GEO Readiness
 
-Status: open, dedicated round.
+Status: implemented locally 2026-05-10; pending owner review and next deploy batch.
 
 Current metadata baseline is not enough for final SEO/GEO readiness.
 
@@ -107,10 +107,13 @@ Expected additions to review:
 - GEO/LLM-readable business/service content without adding spammy copy.
 
 Verification:
-- Build passes.
-- Metadata renders for key public pages.
-- Structured data validates.
-- Production smoke confirms indexable public pages.
+- Robots and sitemap metadata routes added for public pages, with admin/auth surfaces excluded.
+- Shared SEO constants now ground public route titles/descriptions, canonical URLs, OG/Twitter metadata, and JSON-LD.
+- LocalBusiness/TattooParlor JSON-LD renders on the public layout with Sandvika/Tigr Tattoo service context.
+- Homepage, contact, booking info and portfolio copy now include clearer local/service signals and stronger portfolio alt/captions.
+- Local Playwright coverage checks homepage metadata, JSON-LD, robots.txt and sitemap.xml.
+- Build passes locally.
+- Production smoke confirms indexable public pages after the next approved deploy.
 
 ### 6. Portfolio Carousel Optimization And Fullscreen Preview
 

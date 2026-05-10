@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check } from 'lucide-react'
 import { Btn } from '@/components/ui/Btn'
+import { businessEmail, instagramMessageUrl } from '@/lib/seo'
 
-const contactEmail = 'kontakt@trovumtattoo.no'
-const instagramDirectMessageUrl = 'https://www.instagram.com/m/trovumtattoo/'
+const contactEmail = businessEmail
 
 export function ContactActions() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
@@ -52,7 +52,7 @@ export function ContactActions() {
             : 'Kopier e-postadresse'}
       </button>
       <Btn
-        href={instagramDirectMessageUrl}
+        href={instagramMessageUrl}
         variant='action'
         target='_blank'
         rel='noopener noreferrer'
