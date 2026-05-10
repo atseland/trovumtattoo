@@ -1,5 +1,6 @@
 import type { Id } from '../../_generated/dataModel'
 import type { MutationCtx } from '../../_generated/server'
+import { assertBookingCanBeArchived } from './archivePolicy'
 
 interface CreateBookingArgs {
   projectId: Id<'projects'>
@@ -18,6 +19,7 @@ interface UpdateBookingArgs {
 async function requireIdentity(ctx: MutationCtx) {
   const identity = await ctx.auth.getUserIdentity()
   if (!identity) throw new Error('Unauthorized')
+  return identity
 }
 
 function assertBookingRange(startAt: number, endAt: number) {
@@ -99,4 +101,72 @@ export async function cancelBooking(ctx: MutationCtx, id: Id<'bookings'>) {
     payload: { to: 'cancelled' },
     createdAt: Date.now(),
   })
+}
+
+export async function archiveBooking(ctx: MutationCtx, id: Id<'bookings'>, reason?: string) {
+  const identity = await requireIdentity(ctx)
+
+  const booking = await ctx.db.get(id)
+  if (!booking) throw new Error('Booking not found')
+
+  assertBookingCanBeArchived(booking)
+
+  const now = Date.now()
+  await ctx.db.patch(id, {
+    archivedAt: now,
+    archivedBy: identity.subject,
+    archiveReason: reason,
+    updatedAt: now,
+  })
+  await ctx.db.insert('activityLog', {
+    entityType: 'booking',
+    entityId: id,
+    action: 'archived',
+    payload: reason ? { reason } : undefined,
+    createdAt: now,
+  })
+}
+
+export async function restoreBooking(ctx: MutationCtx, id: Id<'bookings'>) {
+  await requireIdentity(ctx)
+
+  const booking = await ctx.db.get(id)
+  if (!booking) throw new Error('Booking not found')
+
+  const now = Date.now()
+  await ctx.db.patch(id, {
+    archivedAt: undefined,
+    archivedBy: undefined,
+    archiveReason: undefined,
+    updatedAt: now,
+  })
+  await ctx.db.insert('activityLog', {
+    entityType: 'booking',
+    entityId: id,
+    action: 'restored',
+    createdAt: now,
+  })
+}
+
+export async function permanentlyDeleteArchivedBooking(ctx: MutationCtx, id: Id<'bookings'>) {
+  await requireIdentity(ctx)
+
+  const booking = await ctx.db.get(id)
+  if (!booking) throw new Error('Booking not found')
+  if (!booking.archivedAt) throw new Error('Booking must be archived before permanent delete')
+
+  const activityEntries = await ctx.db
+    .query('activityLog')
+    .withIndex('by_entity', (query) => query.eq('entityType', 'booking').eq('entityId', id))
+    .collect()
+  await Promise.all(activityEntries.map((entry) => ctx.db.delete(entry._id)))
+
+  const notifications = await ctx.db.query('notifications').collect()
+  await Promise.all(
+    notifications
+      .filter((notification) => notification.relatedEntityType === 'booking' && notification.relatedEntityId === id)
+      .map((notification) => ctx.db.delete(notification._id)),
+  )
+
+  await ctx.db.delete(id)
 }

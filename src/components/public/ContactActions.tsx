@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Btn } from '@/components/ui/Btn'
 
 const contactEmail = 'kontakt@trovumtattoo.no'
+const instagramDirectMessageUrl = 'https://www.instagram.com/m/trovumtattoo/'
 
 export function ContactActions() {
   const [copyMessage, setCopyMessage] = useState<string | null>(null)
@@ -35,7 +36,7 @@ export function ContactActions() {
         </p>
       )}
       <Btn
-        href='https://instagram.com/trovumtattoo'
+        href={instagramDirectMessageUrl}
         variant='action'
         target='_blank'
         rel='noopener noreferrer'

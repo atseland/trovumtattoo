@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import { useQuery, useConvexAuth } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
+import { CustomerMailSheet } from '@/components/admin/CustomerMailSheet'
 import {
   ClientHeader,
   ClientInfoSection,
@@ -17,6 +19,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { isAuthenticated } = useConvexAuth()
+  const [mailSheetOpen, setMailSheetOpen] = useState(false)
 
   const client = useQuery(api.clients.get, isAuthenticated ? { id: id as Id<"clients"> } : 'skip')
   const projects = useQuery(api.projects.listByClient, isAuthenticated && client ? { clientId: id as Id<"clients"> } : 'skip')
@@ -47,7 +50,7 @@ export default function ClientDetailPage() {
 
   return (
     <div className='max-w-2xl'>
-      <ClientHeader name={client.name} />
+      <ClientHeader name={client.name} onComposeMail={() => setMailSheetOpen(true)} />
       <ClientInfoSection
         client={client}
         notes={clientNotes.notes}
@@ -57,6 +60,13 @@ export default function ClientDetailPage() {
       />
       <ClientMailThreadsSection mailThreads={mailThreads} />
       <ClientProjectsSection projects={projects} />
+      <CustomerMailSheet
+        open={mailSheetOpen}
+        onOpenChange={setMailSheetOpen}
+        clientId={id as Id<'clients'>}
+        clientName={client.name}
+        clientEmail={client.email}
+      />
     </div>
   )
 }

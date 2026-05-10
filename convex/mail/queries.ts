@@ -1,4 +1,4 @@
-import { query } from '../_generated/server'
+import { internalQuery, query } from '../_generated/server'
 import { v } from 'convex/values'
 
 export const listThreads = query({
@@ -72,5 +72,12 @@ export const listByProject = query({
       .order('desc')
       .collect()
     return threads.filter((thread) => thread.status === 'active')
+  },
+})
+
+export const getCustomerMailRecipient = internalQuery({
+  args: { clientId: v.id('clients') },
+  handler: async (ctx, { clientId }) => {
+    return await ctx.db.get(clientId)
   },
 })

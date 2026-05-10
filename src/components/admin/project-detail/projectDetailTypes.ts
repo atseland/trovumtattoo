@@ -11,6 +11,7 @@ export interface ProjectBookingSummary {
   endAt: number
   status: string
   notes?: string | null
+  archivedAt?: number | null
 }
 
 export type ProjectActivityEntries = ComponentProps<typeof ActivityLogTimeline>['entries']

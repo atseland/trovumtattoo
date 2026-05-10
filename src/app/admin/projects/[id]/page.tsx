@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import { useQuery, useConvexAuth } from 'convex/react'
+import { useMutation, useQuery, useConvexAuth } from 'convex/react'
+import { toast } from 'sonner'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
 import { ProjectActivitySection } from '@/components/admin/project-detail/ProjectActivitySection'
@@ -37,13 +38,22 @@ export default function ProjectDetailPage() {
     api.activityLog.listByEntity,
     isAuthenticated ? { entityType: 'project', entityId: id as Id<"projects"> } : 'skip'
   )
-  const bookings = useQuery(api.bookings.listByProject, isAuthenticated ? { projectId: id as Id<"projects"> } : 'skip')
+  const [showArchivedBookings, setShowArchivedBookings] = useState(false)
+  const bookings = useQuery(
+    api.bookings.listByProject,
+    isAuthenticated ? { projectId: id as Id<"projects">, archived: showArchivedBookings } : 'skip'
+  )
 
   const [bookingSheetOpen, setBookingSheetOpen] = useState(false)
   const [bookingSheetMode, setBookingSheetMode] = useState<BookingSheetMode>('create')
   const [activeBooking, setActiveBooking] = useState<ProjectBookingSummary | null>(null)
   const [aftercareSheetOpen, setAftercareSheetOpen] = useState(false)
   const [reviewSheetOpen, setReviewSheetOpen] = useState(false)
+  const [pendingDeleteBookingId, setPendingDeleteBookingId] = useState<string | null>(null)
+  const updateBooking = useMutation(api.bookings.update)
+  const archiveBooking = useMutation(api.bookings.archive)
+  const restoreBooking = useMutation(api.bookings.restore)
+  const permanentlyDeleteBooking = useMutation(api.bookings.permanentlyDelete)
 
   const form = useProjectDetailForm(project)
 
@@ -70,6 +80,51 @@ export default function ProjectDetailPage() {
     if (!open) {
       setBookingSheetMode('create')
       setActiveBooking(null)
+    }
+  }
+
+  async function completeBooking(booking: ProjectBookingSummary) {
+    try {
+      await updateBooking({ id: booking._id as Id<'bookings'>, status: 'completed' })
+      toast.success('Booking fullført')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Kunne ikke fullføre booking'
+      toast.error(message)
+    }
+  }
+
+  async function archiveProjectBooking(booking: ProjectBookingSummary) {
+    try {
+      await archiveBooking({ id: booking._id as Id<'bookings'> })
+      toast.success('Booking arkivert')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Kunne ikke arkivere booking'
+      toast.error(message)
+    }
+  }
+
+  async function restoreProjectBooking(booking: ProjectBookingSummary) {
+    try {
+      await restoreBooking({ id: booking._id as Id<'bookings'> })
+      toast.success('Booking gjenopprettet')
+    } catch {
+      toast.error('Kunne ikke gjenopprette booking')
+    }
+  }
+
+  async function permanentlyDeleteProjectBooking(booking: ProjectBookingSummary) {
+    if (pendingDeleteBookingId !== booking._id) {
+      setPendingDeleteBookingId(booking._id)
+      return
+    }
+
+    try {
+      await permanentlyDeleteBooking({ id: booking._id as Id<'bookings'> })
+      toast.success('Booking slettet permanent')
+      setPendingDeleteBookingId(null)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Kunne ikke slette booking permanent'
+      toast.error(message)
     }
   }
 
@@ -149,8 +204,18 @@ export default function ProjectDetailPage() {
 
       <ProjectBookingsSection
         bookings={bookings}
+        archived={showArchivedBookings}
+        onArchivedChange={(archived) => {
+          setShowArchivedBookings(archived)
+          setPendingDeleteBookingId(null)
+        }}
         onEditBooking={openEditBookingSheet}
         onRebookBooking={openRebookBookingSheet}
+        onCompleteBooking={completeBooking}
+        onArchiveBooking={archiveProjectBooking}
+        onRestoreBooking={restoreProjectBooking}
+        onPermanentDeleteBooking={permanentlyDeleteProjectBooking}
+        pendingDeleteBookingId={pendingDeleteBookingId}
       />
       <ProjectActivitySection entries={activityLog} />
 

@@ -11,7 +11,12 @@ async function listUpcomingBase(ctx: QueryCtx) {
   return await ctx.db
     .query('bookings')
     .withIndex('by_startAt', (query) => query.gte('startAt', now))
-    .filter((query) => query.neq(query.field('status'), 'cancelled'))
+    .filter((query) =>
+      query.and(
+        query.neq(query.field('status'), 'cancelled'),
+        query.eq(query.field('archivedAt'), undefined),
+      ),
+    )
     .order('asc')
     .collect()
 }
@@ -34,14 +39,18 @@ export async function listUpcomingBookingsWithDetails(ctx: QueryCtx) {
   )
 }
 
-export async function listBookingsByProject(ctx: QueryCtx, projectId: Id<'projects'>) {
+export async function listBookingsByProject(ctx: QueryCtx, projectId: Id<'projects'>, archived?: boolean) {
   await requireIdentity(ctx)
 
-  return await ctx.db
+  const bookings = await ctx.db
     .query('bookings')
     .withIndex('by_project', (query) => query.eq('projectId', projectId))
     .order('asc')
     .collect()
+
+  return bookings.filter((booking) =>
+    archived ? booking.archivedAt !== undefined : booking.archivedAt === undefined,
+  )
 }
 
 export async function getBooking(ctx: QueryCtx, id: Id<'bookings'>) {

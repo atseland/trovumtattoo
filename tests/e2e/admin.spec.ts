@@ -145,6 +145,17 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(page.getByRole('heading', { name: inquiry.name })).toBeVisible()
   await expect(page.getByText(inquiry.email)).toBeVisible()
 
+  await page.getByRole('button', { name: 'Send e-post' }).click()
+  const customerMailDialog = page.getByRole('dialog', { name: 'Ny e-post' })
+  await expect(customerMailDialog.getByText('Mottaker')).toBeVisible()
+  await expect(customerMailDialog.getByText(inquiry.name)).toBeVisible()
+  await expect(customerMailDialog.getByText(inquiry.email)).toBeVisible()
+  await expect(customerMailDialog.getByLabel('Emne')).toBeVisible()
+  await expect(customerMailDialog.getByLabel('Melding')).toBeVisible()
+  await expect(customerMailDialog.getByRole('button', { name: 'Send e-post' })).toBeDisabled()
+  await page.keyboard.press('Escape')
+  await expect(customerMailDialog).not.toBeVisible()
+
   const projectLink = page.locator('a[href*="/admin/projects/"]').first()
   await expect(projectLink).toBeVisible()
   await projectLink.click()
@@ -167,6 +178,18 @@ test('admin can create client and project from a public inquiry', async ({ page 
   await expect(bookingDialog).not.toBeVisible()
   await expect(page.getByText('Ingen bookinger ennå.')).not.toBeVisible()
   await expect(page.getByText('scheduled')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Arkiver' })).not.toBeVisible()
+
+  await page.getByRole('button', { name: 'Fullfør' }).click()
+  await expect(page.getByText('Booking fullført')).toBeVisible()
+  await expect(page.getByText('completed')).toBeVisible()
+  await page.getByRole('button', { name: 'Arkiver' }).click()
+  await expect(page.getByText('Booking arkivert')).toBeVisible()
+  await expect(page.getByText('Ingen bookinger ennå.')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Arkiv' }).click()
+  await expect(page.getByText('completed')).toBeVisible()
+  await expect(page.getByText('Playwright opprettet booking fra prosjektflyt')).toBeVisible()
 
   await page.goto('/admin/mail')
   await expect(page.getByRole('heading', { name: 'Innboks' })).toBeVisible()

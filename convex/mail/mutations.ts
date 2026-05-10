@@ -1,5 +1,6 @@
 import { mutation, internalMutation } from '../_generated/server'
 import { v } from 'convex/values'
+import type { Id } from '../_generated/dataModel'
 
 function normalizeAddress(value: string) {
   return value.trim().toLowerCase()
@@ -132,6 +133,42 @@ export const upsertMessage = internalMutation({
 
     void externalId
     return await ctx.db.insert('mailMessages', args)
+  },
+})
+
+export const createCustomerOutboundThread = internalMutation({
+  args: {
+    clientId: v.id('clients'),
+    from: v.string(),
+    to: v.array(v.string()),
+    subject: v.string(),
+    body: v.string(),
+    sentAt: v.number(),
+  },
+  handler: async (ctx, { clientId, from, to, subject, body, sentAt }): Promise<Id<'mailThreads'>> => {
+    const threadId = await ctx.db.insert('mailThreads', {
+      externalThreadId: `customer-${clientId}-${sentAt}`,
+      subject,
+      participants: [from, ...to],
+      linkedClientId: clientId,
+      lastMessageAt: sentAt,
+      unreadCount: 0,
+      status: 'active',
+    })
+
+    await ctx.db.insert('mailMessages', {
+      threadId,
+      direction: 'outbound',
+      from,
+      to,
+      subject,
+      bodyText: body,
+      sentAt,
+      isRead: true,
+      linkedClientId: clientId,
+    })
+
+    return threadId
   },
 })
 

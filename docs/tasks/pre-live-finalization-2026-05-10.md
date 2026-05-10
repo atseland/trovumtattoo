@@ -21,7 +21,7 @@ This file tracks launch-readiness gaps discovered after the repo cleanup and pos
 
 ### 1. Booking Archive For Actual Bookings
 
-Status: open.
+Status: implemented 2026-05-10; pending authenticated admin smoke in configured Clerk/Convex test env.
 
 Implement archive support for actual `bookings` rows.
 
@@ -33,13 +33,14 @@ Expected behavior:
 - Admin should be able to delete from archive if that is still intended after reviewing data retention needs.
 
 Verification:
-- Unit/backend tests for allowed and disallowed archive states.
-- Admin UI smoke for complete/cancel -> archive action becomes available.
-- Regression check that upcoming/calendar views do not show archived bookings.
+- Unit/backend policy tests added for allowed and disallowed archive states.
+- Admin UI smoke added to Playwright for complete -> archive action becomes available, archive hides the booking from active project list, and archive filter shows it.
+- Upcoming/calendar/dashboard/notification booking queries now filter archived bookings out.
+- Local `tests/e2e/admin.spec.ts` skipped because Clerk/Convex e2e preconditions were not present; run again in configured admin e2e env before final deploy.
 
 ### 2. Customer-Scoped New Mail
 
-Status: open.
+Status: implemented 2026-05-10; pending SMTP smoke in configured mail env.
 
 Implement a way to compose a new outbound email from the app only for established customers.
 
@@ -50,13 +51,16 @@ Expected behavior:
 - Reuse existing SMTP config and send path patterns.
 
 Verification:
-- Admin cannot send arbitrary new mail without selecting an established customer.
-- Sent mail appears in the customer's mail history.
-- SMTP failure is surfaced clearly and does not create misleading success state.
+- Admin entry point is on the customer detail page; no global free-form composer was added.
+- Convex action accepts `clientId` only, resolves the existing client, and uses the stored client email as the only recipient.
+- Sent mail is stored as a linked `mailThreads` + `mailMessages` outbound record after SMTP succeeds.
+- SMTP errors are rethrown and surfaced in the sheet without writing a success thread/message.
+- Policy tests added for required customer context, valid customer email, and required subject/body.
+- Local admin e2e has a UI smoke for fixed recipient/disabled empty send, but skipped because Clerk/Convex e2e preconditions were not present.
 
 ### 3. Instagram Contact Target
 
-Status: open.
+Status: completed 2026-05-10.
 
 Change public Instagram contact buttons from the profile URL to:
 
@@ -66,7 +70,8 @@ https://www.instagram.com/m/trovumtattoo/
 
 Verification:
 - `/kontakt` Instagram action uses the direct message URL.
-- Homepage/footer Instagram contact actions are reviewed and intentionally either use direct message or profile URL.
+- Homepage "Se mer på Instagram" and footer `@trovumtattoo` remain profile links intentionally because they are browse/profile links, not direct-message contact actions.
+- `tests/e2e/home.spec.ts` updated for the direct-message contact URL.
 
 ### 4. PWA Push Notifications
 

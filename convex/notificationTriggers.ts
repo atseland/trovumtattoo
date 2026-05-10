@@ -45,6 +45,7 @@ export const checkBookingTomorrow = internalMutation({
           q.gt(q.field('startAt'), now),
           q.lt(q.field('startAt'), in24h),
           q.eq(q.field('status'), 'scheduled'),
+          q.eq(q.field('archivedAt'), undefined),
         ),
       )
       .collect()
@@ -83,6 +84,7 @@ export const checkBookingToday = internalMutation({
           q.gt(q.field('startAt'), now),
           q.lt(q.field('startAt'), in4h),
           q.eq(q.field('status'), 'scheduled'),
+          q.eq(q.field('archivedAt'), undefined),
         ),
       )
       .collect()

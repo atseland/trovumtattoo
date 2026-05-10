@@ -5,26 +5,68 @@ import type { ProjectBookingSummary } from '@/components/admin/project-detail/pr
 
 interface ProjectBookingsSectionProps {
   bookings: ProjectBookingSummary[] | null | undefined
+  archived: boolean
+  onArchivedChange: (archived: boolean) => void
   onEditBooking: (booking: ProjectBookingSummary) => void
   onRebookBooking: (booking: ProjectBookingSummary) => void
+  onCompleteBooking: (booking: ProjectBookingSummary) => void
+  onArchiveBooking: (booking: ProjectBookingSummary) => void
+  onRestoreBooking: (booking: ProjectBookingSummary) => void
+  onPermanentDeleteBooking: (booking: ProjectBookingSummary) => void
+  pendingDeleteBookingId: string | null
 }
 
 export function ProjectBookingsSection({
   bookings,
+  archived,
+  onArchivedChange,
   onEditBooking,
   onRebookBooking,
+  onCompleteBooking,
+  onArchiveBooking,
+  onRestoreBooking,
+  onPermanentDeleteBooking,
+  pendingDeleteBookingId,
 }: ProjectBookingsSectionProps) {
   const bookingItems = bookings ?? []
 
   return (
     <div className='mb-6'>
-      <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav mb-3'>Bookinger</h2>
+      <div className='mb-3 flex flex-wrap items-center justify-between gap-2'>
+        <h2 className='font-sans text-[10px] tracking-[0.14em] uppercase text-nav'>Bookinger</h2>
+        <div className='flex flex-wrap gap-2'>
+          <button
+            type='button'
+            onClick={() => onArchivedChange(false)}
+            className='min-h-[36px] border bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em] transition-colors duration-[200ms]'
+            style={{
+              borderColor: archived ? 'var(--rule)' : 'var(--accent)',
+              color: archived ? 'var(--nav)' : 'var(--paper)',
+            }}
+          >
+            Aktive
+          </button>
+          <button
+            type='button'
+            onClick={() => onArchivedChange(true)}
+            className='min-h-[36px] border bg-transparent px-3 font-sans text-[8.5px] uppercase tracking-[0.12em] transition-colors duration-[200ms]'
+            style={{
+              borderColor: archived ? 'var(--accent)' : 'var(--rule)',
+              color: archived ? 'var(--paper)' : 'var(--nav)',
+            }}
+          >
+            Arkiv
+          </button>
+        </div>
+      </div>
       {bookings === undefined ? (
         <div className='flex flex-col gap-2'>
           {[1, 2].map((i) => <Skeleton key={i} className='h-[52px]' />)}
         </div>
       ) : bookingItems.length === 0 ? (
-        <p className='font-sans text-[13px] text-mast-left'>Ingen bookinger ennå.</p>
+        <p className='font-sans text-[13px] text-mast-left'>
+          {archived ? 'Ingen arkiverte bookinger.' : 'Ingen bookinger ennå.'}
+        </p>
       ) : (
         <div className='flex flex-col gap-2'>
           {bookingItems.map((booking) => (
@@ -59,22 +101,65 @@ export function ProjectBookingsSection({
                     {booking.status}
                   </span>
                   <div className='flex gap-2'>
-                    <button
-                      type='button'
-                      onClick={() => onEditBooking(booking)}
-                      className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
-                      style={{ background: 'transparent' }}
-                    >
-                      Rediger
-                    </button>
-                    <button
-                      type='button'
-                      onClick={() => onRebookBooking(booking)}
-                      className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
-                      style={{ background: 'transparent' }}
-                    >
-                      Ombook
-                    </button>
+                    {archived ? (
+                      <>
+                        <button
+                          type='button'
+                          onClick={() => onRestoreBooking(booking)}
+                          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                          style={{ background: 'transparent' }}
+                        >
+                          Gjenopprett
+                        </button>
+                        <button
+                          type='button'
+                          onClick={() => onPermanentDeleteBooking(booking)}
+                          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border cursor-pointer transition-colors duration-[200ms]'
+                          style={{ background: 'transparent', borderColor: 'rgba(175,140,135,0.3)', color: '#af8c87' }}
+                        >
+                          {pendingDeleteBookingId === booking._id ? 'Bekreft slett' : 'Slett permanent'}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type='button'
+                          onClick={() => onEditBooking(booking)}
+                          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                          style={{ background: 'transparent' }}
+                        >
+                          Rediger
+                        </button>
+                        <button
+                          type='button'
+                          onClick={() => onRebookBooking(booking)}
+                          className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                          style={{ background: 'transparent' }}
+                        >
+                          Ombook
+                        </button>
+                        {booking.status !== 'completed' && booking.status !== 'cancelled' && (
+                          <button
+                            type='button'
+                            onClick={() => onCompleteBooking(booking)}
+                            className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                            style={{ background: 'transparent' }}
+                          >
+                            Fullfør
+                          </button>
+                        )}
+                        {(booking.status === 'completed' || booking.status === 'cancelled') && (
+                          <button
+                            type='button'
+                            onClick={() => onArchiveBooking(booking)}
+                            className='font-sans text-[8.5px] tracking-[0.12em] uppercase min-h-[40px] px-3 border border-rule text-nav cursor-pointer transition-colors duration-[200ms] hover:text-paper hover:border-[rgba(237,233,230,0.22)]'
+                            style={{ background: 'transparent' }}
+                          >
+                            Arkiver
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

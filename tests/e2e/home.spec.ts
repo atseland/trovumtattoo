@@ -38,7 +38,7 @@ test('contact and booking entrypoints render expected actions', async ({ page })
   await expect(page.getByText('kontakt@trovumtattoo.no')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Send e-post' })).toHaveAttribute('href', 'mailto:kontakt@trovumtattoo.no')
   await expect(page.getByRole('button', { name: 'Kopier e-postadresse' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Send melding på Instagram' })).toHaveAttribute('href', 'https://instagram.com/trovumtattoo')
+  await expect(page.getByRole('link', { name: 'Send melding på Instagram' })).toHaveAttribute('href', 'https://www.instagram.com/m/trovumtattoo/')
 
   await page.goto('/book')
   await expect(page.getByText('Dette er en ny tatovering')).toBeVisible()

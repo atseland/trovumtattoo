@@ -36,7 +36,13 @@ export const getSummary = query({
     const upcomingBookings = await ctx.db
       .query('bookings')
       .withIndex('by_startAt', (q) => q.gte('startAt', now))
-      .filter((q) => q.lte(q.field('startAt'), weekEnd))
+      .filter((q) =>
+        q.and(
+          q.lte(q.field('startAt'), weekEnd),
+          q.neq(q.field('status'), 'cancelled'),
+          q.eq(q.field('archivedAt'), undefined),
+        ),
+      )
       .collect()
 
     return {

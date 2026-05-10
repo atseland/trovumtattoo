@@ -78,11 +78,15 @@ export default defineSchema({
     endAt: v.number(),
     status: v.string(), // 'scheduled' | 'completed' | 'cancelled' | 'rescheduled'
     notes: v.optional(v.string()),
+    archivedAt: v.optional(v.number()),
+    archivedBy: v.optional(v.string()),
+    archiveReason: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index('by_project', ['projectId'])
-    .index('by_startAt', ['startAt']),
+    .index('by_startAt', ['startAt'])
+    .index('by_archivedAt', ['archivedAt']),
 
   messageTemplates: defineTable({
     type: v.string(), // 'received' | 'needs-info' | 'estimate' | 'timeslot' | 'deposit' | 'confirmation' | 'reminder' | 'aftercare' | 'thank-you' | 'review-request'

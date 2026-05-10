@@ -17,9 +17,10 @@ function formatDate(timestamp: number) {
 
 interface ClientHeaderProps {
   name: string
+  onComposeMail: () => void
 }
 
-export function ClientHeader({ name }: ClientHeaderProps) {
+export function ClientHeader({ name, onComposeMail }: ClientHeaderProps) {
   return (
     <>
       <Link
@@ -29,9 +30,14 @@ export function ClientHeader({ name }: ClientHeaderProps) {
         ← Tilbake
       </Link>
 
-      <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em] mb-6'>
-        {name}
-      </h1>
+      <div className='mb-6 flex flex-wrap items-start justify-between gap-3'>
+        <h1 className='font-serif italic text-[clamp(22px,3vw,30px)] text-paper leading-[1.1] tracking-[-0.02em]'>
+          {name}
+        </h1>
+        <Btn variant='sm' onClick={onComposeMail}>
+          Send e-post
+        </Btn>
+      </div>
 
       <Rule className='mb-6' />
     </>
