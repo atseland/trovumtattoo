@@ -24,6 +24,8 @@ const navLinks = [
   },
 ]
 
+const mobileNavLinks = navLinks.filter((link) => link.href !== '/kontakt')
+
 export function PublicHeader() {
   const [open, setOpen] = useState(false)
 
@@ -89,7 +91,7 @@ export function PublicHeader() {
           aria-label='Mobilmeny'
           className='flex flex-col border-t border-rule bg-bg px-pad py-5 md:hidden'
         >
-          {navLinks.map((link) => (
+          {mobileNavLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
