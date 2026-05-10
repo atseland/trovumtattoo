@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Image from 'next/image'
-import { AtSign, MessageCircle, Phone } from 'lucide-react'
+import { Phone } from 'lucide-react'
+import { FaFacebookF, FaInstagram } from 'react-icons/fa6'
 import { Btn } from '@/components/ui/Btn'
 import { PortfolioCarousel } from '@/components/public/home/PortfolioCarousel'
 import {
@@ -84,10 +85,10 @@ export function Layout11Home() {
 
         <div className='mb-4 flex items-center justify-center gap-3'>
           <SocialIconLink href={instagramMessageUrl} label='Send melding på Instagram' external>
-            <AtSign size={16} strokeWidth={1.6} aria-hidden='true' />
+            <FaInstagram size={16} aria-hidden='true' />
           </SocialIconLink>
           <SocialIconLink href={facebookProfileUrl} label='Send melding på Facebook' external>
-            <MessageCircle size={16} strokeWidth={1.6} aria-hidden='true' />
+            <FaFacebookF size={14} aria-hidden='true' />
           </SocialIconLink>
           <SocialIconLink href={businessPhoneHref} label='Ring Trovum Tattoo'>
             <Phone size={15} strokeWidth={1.7} aria-hidden='true' />
