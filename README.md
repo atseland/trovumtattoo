@@ -1,6 +1,8 @@
 # Trovum Tattoo OS v1
 
-Next.js App Router-app for `trovumtattoo.no` med public bookingflyt, adminflate, Convex-backend, Clerk-auth, mail, varsler og PWA-stotte.
+Next.js App Router-app for `trovumtattoo.no` med public bookingflyt, adminflate, Convex-backend, Clerk-auth, one.com-mail, PWA/offline-shell og varslingsgrunnlag.
+
+Status etter cleanup: appens hovedflate er ryddet, men prosjektet har fortsatt en aktiv pre-live sjekkliste i `docs/tasks/pre-live-finalization-2026-05-10.md`. Ikke bruk README som eneste launch-status.
 
 ## Oppstart
 
@@ -20,6 +22,7 @@ Notater:
 - Aktiv Clerk issuer i dette prosjektet er `https://united-piranha-14.clerk.accounts.dev`.
 - Tilsvarende JWKS er `https://united-piranha-14.clerk.accounts.dev/.well-known/jwks.json`.
 - Mail er laast til one.com-kontoen `kontakt@trovumtattoo.no` via server-side `MAIL_*`-variabler i Convex. Passord og endringer skal ikke lagres fra admin-UI.
+- PWA/offline-shell finnes, men push notifications er fortsatt et pre-live must-fix.
 
 ## Verifikasjon
 
@@ -87,7 +90,9 @@ scripts/devlog.sh            # session-logging til ekstern DevLogs-mappe
 ## Gjeldende docs
 
 - `PRD.md`, `PRD_UI.md` og `PROSJEKTBESKRIVELSE.md` gir produkt- og designkontekst.
-- `docs/tasks/admin-ux-remediation.md` er eneste åpne task-spor etter cleanupen.
+- `docs/tasks/pre-live-finalization-2026-05-10.md` er aktiv sjekkliste før sluttføring og ny live-push.
+- `docs/handoffs/2026-05-10-pre-live-blockers.md` er anbefalt inngang for siste implementeringssesjon.
+- `docs/tasks/admin-ux-remediation.md` er fortsatt relevant for admin-UX historikk og eventuelle gjenstående UX-punkter.
 - `docs/tasks/repo-cleanup-2026-05-08.md` og `docs/handoffs/2026-05-08-repo-cleanup.md` dokumenterer oppryddingen.
 
 ## AI tooling

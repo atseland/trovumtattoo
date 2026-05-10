@@ -39,6 +39,8 @@ For oppgaver storre enn en liten patch:
 3. Implementer ett steg om gangen. Kjor smalest nyttig verifikasjon etter hvert steg.
 4. Naar du stopper: skriv handoff-fil i `docs/handoffs/` med hva som er gjort, hva som gjenstaar, og viktige beslutninger.
 
+Foer live/deploy-arbeid eller prosjekt-sluttfoering skal `docs/tasks/pre-live-finalization-2026-05-10.md` leses foerst. Den er gjeldende statuskilde for live-blockere etter cleanupen.
+
 ### Session-logging
 
 For hver arbeidsokt i prosjektet:
@@ -72,6 +74,7 @@ Se `docs/RULES.md` for prosjektregler om preview, deploy og launch.
 
 - Public-home er nå portet inn i appen som `src/components/public/home/Layout11Home.tsx`; den gamle previewflaten er ikke lenger del av repoet.
 - Ikke erstatt produksjonsforsiden med uferdig public UI.
+- Public Instagram contact-lenker skal vurderes mot pre-live tasken; direct message URL er `https://www.instagram.com/m/trovumtattoo/`.
 - Verifiser public UI med browser/Playwright paa baade mobil og desktop foer deploy.
 
 ## Repo-skills
