@@ -98,6 +98,21 @@ Følgende public UI-områder vurderes ferdig gjennomgått og skal behandles som 
 - Modalens `Se på instagram`-lenke bruker samme post/reel-URL som kortet.
 - Videre endringer i portfolio layout, captions, rekkefølge, modal eller Instagram-lenker krever eksplisitt brukerbeskjed om å åpne portfolio-scope igjen.
 
+### Resterende Public Home
+
+- Resterende public home-innhold i `src/components/public/home/Layout11Home.tsx` er ferdig justert og låst.
+- Om meg-, service- og kontaktseksjonene på forsiden skal ikke endres automatisk i videre UI/UX-arbeid.
+- Videre endringer i public home utenom allerede låst hero/portfolio krever eksplisitt brukerbeskjed om å åpne home-scope igjen.
+
+### Public Booking Form
+
+- Public booking form i `src/app/(public)/book/BookPageClient.tsx` og `src/components/public/booking/*` er ferdig justert og låst.
+- Booking-copy bruker 3 virkedager og personlig førsteperson.
+- Størrelse, budsjett, ønsket tidsrom og referansebilder har owner-godkjente hjelpetekster/placeholders.
+- Telefonfeltet antar norske numre og lagrer ikke `+47`/`0047`.
+- Referansebilder optimaliseres i browseren før upload uten ekstra forklaring i UI.
+- Videre endringer i booking form copy, feltstruktur, telefonpolicy eller reference-image upload UX krever eksplisitt brukerbeskjed om å åpne booking-scope igjen.
+
 ## Live-State
 
 Siste låste backend/core-versjon er deployet live.
@@ -125,7 +140,7 @@ Videre arbeid skal behandles som siste UI/UX- og innholdsfasen.
 ### UI/UX Og Owner Review
 
 - Public copy approval, spesielt aftercare og helserelatert tekst.
-- Visuell gjennomgang av public homepage utenom låst hero og låst portfolio, booking, kontakt, FAQ, aftercare og privacy.
+- Visuell gjennomgang av kontakt, FAQ, aftercare og privacy.
 - Mobile/desktop polish etter faktisk gjennomgang.
 - Admin UX polish der det ikke krever backend-kontraktendring.
 
@@ -149,6 +164,8 @@ Ikke gjør disse automatisk i videre UI/UX-økter:
 - Legge til ny public backend API-overflate.
 - Endre låst public home hero uten eksplisitt beskjed om å åpne hero-scope igjen.
 - Endre låst public home portfolio uten eksplisitt beskjed om å åpne portfolio-scope igjen.
+- Endre låst resterende public home uten eksplisitt beskjed om å åpne home-scope igjen.
+- Endre låst public booking form uten eksplisitt beskjed om å åpne booking-scope igjen.
 - Deploye til production hvis oppgaven bare var lokal UI-iterasjon, med mindre bruker ber om live.
 
 ## Tillatt Videre Arbeid Uten Ny Backend-Avklaring
