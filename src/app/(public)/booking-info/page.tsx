@@ -191,7 +191,7 @@ export default function BookingInfoPage() {
 
       <div className='flex flex-col sm:flex-row gap-4'>
         <Btn href='/book' variant='action-primary' className='sm:max-w-xs'>
-          Send forespørsel
+          Send bookingforespørsel
         </Btn>
         <Btn href='/faq' variant='sm'>
           Vanlige spørsmål
