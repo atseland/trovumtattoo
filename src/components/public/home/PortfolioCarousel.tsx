@@ -18,37 +18,44 @@ const works: PortfolioWork[] = [
     src: '/portfolio/Blomster.png',
     title: 'Blomster',
     caption: 'Realistisk black and grey blomster innrammet med dekor.',
+    instagramUrl: 'https://www.instagram.com/reel/DWTdi71jF0x/?igsh=MTZseGpha3B5ZWx4MQ==',
   },
   {
     src: '/portfolio/Semi realistic skull.png',
     title: 'Semi realistic skull',
     caption: 'Detaljert black and grey-hodeskalle med engel/djevel-kontrast.',
+    instagramUrl: 'https://www.instagram.com/p/DRb3JCEjJ61/?img_index=1&igsh=bGhxb2hnNTZuYzhw',
   },
   {
     src: '/portfolio/Traditional bat.png',
     title: 'Traditional bat',
     caption: 'Traditional blackwork flaggermus med roser.',
+    instagramUrl: 'https://www.instagram.com/p/DFFxarVInQG/?igsh=dG1zZW5ydGR6ZTBi',
   },
   {
     src: '/portfolio/Ghost.png',
     title: 'Ghost',
     caption: 'Half ’n’ half black and grey portett av Papa Emeritus IV og V fra bandet Ghost.',
+    instagramUrl: 'https://www.instagram.com/p/DLW4jpgI8TM/?igsh=MXhsNDYzMTZoYjAzaQ==',
   },
   {
     src: '/portfolio/Ladybug_cathedral mashup.png',
     title: 'Ladybug/cathedral mashup',
     caption:
       'En kreativ mashup som kombinerer en marihøne med gotiske katedral-elementer i et feminint dark-art design.',
+    instagramUrl: 'https://www.instagram.com/p/DPvsGMLjIKq/?igsh=MWFzYnRjb3B5czFvaA==',
   },
   {
     src: '/portfolio/Flaggermuser.png',
     title: 'Flaggermus',
     caption: 'Clean blackwork-flaggermusdesign.',
+    instagramUrl: 'https://www.instagram.com/p/DByI9Q0oFCJ/?img_index=1&igsh=MXdybjMyNXQzczNxYQ==',
   },
   {
     src: '/portfolio/Rygg skalle.png',
     title: 'Backpiece',
     caption: 'Starten på en større backpiece med dyrekranium og blomster.',
+    instagramUrl: 'https://www.instagram.com/p/DU2p7I5DF35/?igsh=YnVicTRrYnQxZTJr',
   },
 ]
 

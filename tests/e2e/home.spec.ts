@@ -214,10 +214,22 @@ test('faq and aftercare copy use updated contact wording', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Send melding' })).toHaveAttribute('href', '/kontakt')
 })
 
-test('portfolio cards include Instagram profile links', async ({ page }) => {
+test('portfolio cards include exact Instagram post links', async ({ page }) => {
   await page.goto('/')
 
+  const expectedUrls = [
+    'https://www.instagram.com/reel/DWTdi71jF0x/?igsh=MTZseGpha3B5ZWx4MQ==',
+    'https://www.instagram.com/p/DRb3JCEjJ61/?img_index=1&igsh=bGhxb2hnNTZuYzhw',
+    'https://www.instagram.com/p/DFFxarVInQG/?igsh=dG1zZW5ydGR6ZTBi',
+    'https://www.instagram.com/p/DLW4jpgI8TM/?igsh=MXhsNDYzMTZoYjAzaQ==',
+    'https://www.instagram.com/p/DPvsGMLjIKq/?igsh=MWFzYnRjb3B5czFvaA==',
+    'https://www.instagram.com/p/DByI9Q0oFCJ/?img_index=1&igsh=MXdybjMyNXQzczNxYQ==',
+    'https://www.instagram.com/p/DU2p7I5DF35/?igsh=YnVicTRrYnQxZTJr',
+  ]
+
   const portfolioLinks = page.getByRole('link', { name: '-> se på instagram' })
-  await expect(portfolioLinks.first()).toHaveAttribute('href', 'https://instagram.com/trovumtattoo')
   await expect(portfolioLinks).toHaveCount(7)
+  for (const [index, expectedUrl] of expectedUrls.entries()) {
+    await expect(portfolioLinks.nth(index)).toHaveAttribute('href', expectedUrl)
+  }
 })
