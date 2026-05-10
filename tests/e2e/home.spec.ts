@@ -120,6 +120,31 @@ test('home page portfolio opens fullscreen preview with keyboard close', async (
   await expect(trigger).toBeFocused()
 })
 
+test('mobile portfolio preview opens as a body-level fullscreen modal', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  await page.locator('#arbeider').scrollIntoViewIfNeeded()
+  const trigger = page.getByRole('button', { name: 'Åpne Blomster i fullscreen' })
+  await trigger.click()
+
+  const dialog = page.getByRole('dialog', { name: 'Blomster' })
+  await expect(dialog).toBeVisible()
+
+  await expect
+    .poll(async () => {
+      return dialog.evaluate((node) => node.parentElement === document.body)
+    })
+    .toBe(true)
+
+  const box = await dialog.boundingBox()
+  expect(box).toBeTruthy()
+  expect(box!.x).toBe(0)
+  expect(box!.y).toBe(0)
+  expect(box!.width).toBe(390)
+  expect(box!.height).toBeGreaterThanOrEqual(844)
+})
+
 test('home page mobile menu exposes informational copy for review', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')

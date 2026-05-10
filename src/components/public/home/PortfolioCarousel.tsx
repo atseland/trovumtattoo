@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react'
 import { instagramProfileUrl } from '@/lib/seo'
 
@@ -64,6 +65,7 @@ export function PortfolioCarousel() {
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([])
   const activeWork = activeIndex === null ? null : works[activeIndex]
   const activePosition = activeIndex ?? 0
+  const canRenderDialog = activeWork && typeof document !== 'undefined'
 
   const closePreview = useCallback(() => {
     const returnIndex = activeIndex
@@ -164,13 +166,13 @@ export function PortfolioCarousel() {
         </div>
       </div>
 
-      {activeWork && (
+      {canRenderDialog && createPortal(
         <div
           ref={dialogRef}
           role='dialog'
           aria-modal='true'
           aria-label={activeWork.title}
-          className='fixed inset-0 z-50 flex flex-col bg-[rgba(13,11,9,0.96)] text-paper'
+          className='fixed inset-0 z-[100] flex h-[100dvh] min-h-[100svh] w-screen flex-col bg-[rgba(13,11,9,0.96)] text-paper'
         >
           <div className='flex min-h-14 shrink-0 items-center justify-between border-b border-rule px-4 md:min-h-16 md:px-6'>
             <div className='min-w-0'>
@@ -238,7 +240,8 @@ export function PortfolioCarousel() {
               </a>
             </aside>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   )
