@@ -156,8 +156,10 @@ test('home page mobile menu exposes informational copy for review', async ({ pag
   await page.getByRole('button', { name: 'Åpne meny' }).click()
   const menu = page.getByRole('navigation', { name: 'Mobilmeny' })
   await expect(menu).toBeVisible()
-  await expect(menu.getByText('Informasjon til gjennomgang')).toBeVisible()
-  await expect(menu.getByText('Kort oversikt over booking, FAQ og etterbehandling før publisering.')).toBeVisible()
+  await expect(menu.getByText('Informasjon til gjennomgang')).toHaveCount(0)
+  await expect(menu.getByText('Kort oversikt over booking, FAQ og etterbehandling før publisering.')).toHaveCount(0)
+  await expect(menu.getByText('Svar på vanlige spørsmål om motiv, alder, pris og forberedelser.')).toHaveCount(0)
+  await expect(menu.getByRole('link', { name: 'Spørsmål og svar' })).toHaveAttribute('href', '/faq')
   await expect(menu.getByRole('link', { name: /Etterbehandling/ })).toBeVisible()
 })
 

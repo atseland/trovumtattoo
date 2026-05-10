@@ -9,22 +9,18 @@ const navLinks = [
   {
     href: '/booking-info',
     label: 'Booking info',
-    description: 'Hvordan bookingforespørsel, depositum og timeavtale fungerer.',
   },
   {
     href: '/faq',
-    label: 'FAQ',
-    description: 'Svar på vanlige spørsmål om motiv, alder, pris og forberedelser.',
+    label: 'Spørsmål og svar',
   },
   {
     href: '/aftercare',
     label: 'Etterbehandling',
-    description: 'Informasjon om skjemaet du får etter timen.',
   },
   {
     href: '/kontakt',
     label: 'Kontakt',
-    description: 'E-post, Instagram-melding og riktig kanal for nye prosjekter.',
   },
 ]
 
@@ -93,14 +89,6 @@ export function PublicHeader() {
           aria-label='Mobilmeny'
           className='flex flex-col border-t border-rule bg-bg px-pad py-5 md:hidden'
         >
-          <div className='mb-4 border border-rule bg-panel px-4 py-4'>
-            <p className='font-mono text-[9px] uppercase tracking-[0.22em] text-index-num'>
-              Informasjon til gjennomgang
-            </p>
-            <p className='mt-2 font-sans text-[13px] leading-[1.65] text-body'>
-              Kort oversikt over booking, FAQ og etterbehandling før publisering.
-            </p>
-          </div>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -110,9 +98,6 @@ export function PublicHeader() {
             >
               <span className='block font-sans text-[12px] uppercase tracking-[0.12em]'>
                 {link.label}
-              </span>
-              <span className='mt-1 block font-sans text-[12px] normal-case leading-[1.55] tracking-normal text-body'>
-                {link.description}
               </span>
             </Link>
           ))}
