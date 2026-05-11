@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: `%s`,
   },
   description:
-    'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Booking skjer via bookingforespørsel.',
+    'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Enkel bookingprosess.',
   applicationName: siteName,
   alternates: { canonical: siteUrl },
   robots: {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${siteName} | Dark art tattoo i Sandvika`,
     description:
-      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Booking skjer via bookingforespørsel.',
+      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Enkel bookingprosess.',
     url: siteUrl,
     siteName,
     locale: 'nb_NO',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `${siteName} | Dark art tattoo i Sandvika`,
     description:
-      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Booking skjer via bookingforespørsel.',
+      'Custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Trovum Tattoo ved Tigr Tattoo i Sandvika. Enkel bookingprosess.',
     images: [absoluteUrl('/og-image.jpg')],
   },
 }

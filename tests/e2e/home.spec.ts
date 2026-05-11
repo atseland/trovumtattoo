@@ -27,7 +27,7 @@ test('public SEO metadata and structured data render', async ({ page, request })
   await expect(page.locator('link[rel="manifest"]')).toHaveCount(0)
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    /booking skjer via bookingforespørsel/i,
+    /enkel bookingprosess/i,
   )
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://trovumtattoo.no')
 
