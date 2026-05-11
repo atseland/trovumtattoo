@@ -47,7 +47,7 @@ export const publicRoutes = [
     path: '/',
     title: 'Trovum Tattoo | Dark art, blackwork og black and grey i Sandvika',
     description:
-      'Trovum Tattoo lager custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Tigr Tattoo i Sandvika.',
+      'Trovum Tattoo lager custom dark art, blackwork, black and grey og semi realistic tatoveringer hos Tigr Tattoo i Sandvika. Booking skjer via bookingforespørsel.',
     priority: 1,
   },
   {
@@ -162,6 +162,6 @@ export function createLocalBusinessJsonLd() {
     })),
     priceRange: '$$',
     description:
-      'Trovum Tattoo lager custom tatoveringer innen dark art, blackwork, black and grey og semi realism hos Tigr Tattoo i Sandvika.',
+      'Trovum Tattoo lager custom tatoveringer innen dark art, blackwork, black and grey og semi realism hos Tigr Tattoo i Sandvika. Booking skjer via bookingforespørsel.',
   }
 }

@@ -27,7 +27,7 @@ test('public SEO metadata and structured data render', async ({ page, request })
   await expect(page.locator('link[rel="manifest"]')).toHaveCount(0)
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    /custom dark art, blackwork, black and grey og semi realistic tatoveringer/i,
+    /booking skjer via bookingforespørsel/i,
   )
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://trovumtattoo.no')
 
