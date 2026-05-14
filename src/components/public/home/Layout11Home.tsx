@@ -163,17 +163,19 @@ export function Layout11Home() {
           <div className='text-center'>
             <p className='mb-4 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]'>
               Jeg tatoverer hos Tigr Tattoo i Sandvika og har holdt på siden starten av 2023.
-              Jeg jobber hovedsakelig i black and grey, blackwork, dark art og semi realism.
+              Jeg spesialiserer meg innen black and grey, blackwork og semi realism, men tar
+              på meg de fleste stiler utenfor dette.
             </p>
             <p className='mb-6 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]'>
-              Jeg liker motiver med tyngde og kontrast - skaller, katedraler, flaggermus, blomster
-              og mørkere fantasy-, film- og bandreferanser. Mye av det jeg lager ligger et sted
-              mellom det makabre og det pene.
+              Jeg liker motiver som kombinerer det mørke og det vakre. Skaller, katedraler,
+              flaggermus, blomster og referanser fra fantasy, film, spill og musikk går ofte
+              igjen i arbeidet mitt. Mye av det jeg lager ligger et sted mellom det makabre og
+              det pene.
             </p>
             <p className='mb-6 font-sans text-[14px] leading-[1.8] text-body md:text-[15px]'>
-              Tjenestene er custom tatoveringer innen dark art, blackwork, black and grey og semi realism.
-              Studioet ligger hos Tigr Tattoo i {businessAddress.addressLocality}, med kort reisevei fra
-              Bærum, Oslo og Asker.
+              Utenfor tatovering jobber jeg også med andre kunstformer, særlig maleri på lerret
+              i ulike størrelser. Noen ferdige verk er utstilt og til salgs i studioet, og jeg
+              tar også imot bestillinger.
             </p>
 
             <Ornament className='mb-5' />
