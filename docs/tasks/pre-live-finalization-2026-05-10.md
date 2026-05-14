@@ -79,7 +79,7 @@ Verification:
 
 ### 4. PWA Push Notifications
 
-Status: implemented locally 2026-05-10; pending production HTTPS/VAPID smoke after next deploy.
+Status: implemented and production-smoked 2026-05-14.
 
 Push notifications are a must before final project closeout. PWA scope is admin-only.
 
@@ -101,6 +101,8 @@ Implementation notes:
 - Push subscription now uses the admin service worker registration explicitly.
 - Admin settings now includes a test-push action.
 - Push send action now requires authentication and throws on missing server VAPID config instead of silently returning a false success.
+- Production VAPID keys are configured in both Vercel and Convex production.
+- `/admin/manifest.webmanifest` and `/admin/service-worker.js` are intentionally readable without an admin session so the browser can install/read PWA assets; the admin UI itself remains auth-protected.
 
 Verification:
 - Public routes do not register a service worker and do not advertise a PWA manifest.
@@ -111,7 +113,8 @@ Verification:
 - Missing Convex/server VAPID config throws from the test-push action and is surfaced in admin as an error toast.
 - Local verification: `pnpm typecheck`, `pnpm lint`, `pnpm test:run`, `pnpm build`, `tests/e2e/home.spec.ts`, and Playwright CLI public-home smoke passed.
 - Admin e2e was invoked locally but skipped by the existing Clerk/Convex skip condition in this environment.
-- Pending production verification: admin can subscribe over HTTPS, test push displays a native notification, and clicking it opens the intended admin route.
+- Production HTTPS smoke passed with the audit admin user in a persistent Chromium profile: admin login worked, notification permission was granted, `/admin` service worker registered with scope `/admin`, browser push subscription was created, and the admin test-push send path returned the success UI.
+- Physical OS notification-click was not machine-clicked in automation; the click target path remains covered by the service-worker implementation and unit test, defaulting to `/admin/notifications`.
 
 ### 5. SEO/GEO Readiness
 

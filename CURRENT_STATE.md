@@ -160,6 +160,8 @@ Siste live-verifikasjon:
 - `/sign-up` returnerte HTTP 404.
 - `/admin` redirectet signed-out bruker til `/sign-in`.
 - Public `/manifest.json` og `/sw.js` returnerte HTTP 404.
+- Admin `/admin/manifest.webmanifest` og `/admin/service-worker.js` returnerte HTTP 200 uten sign-in redirect.
+- Admin push subscription og test-push send path ble production-smoket med godkjent audit-admin i persistent Chromium-profil.
 - Vercel error logs for siste sjekk viste ingen error logs.
 
 ## Gjenstående Arbeid
@@ -175,9 +177,7 @@ Videre arbeid skal behandles som siste UI/UX- og innholdsfasen.
 
 ### Live Smoke Og Akseptanse
 
-- Admin push notification HTTPS-smoke med godkjent adminbruker.
-- Test push skal vise native notification.
-- Notification click skal åpne riktig admin-route eller `/admin/notifications`.
+- Fysisk OS notification-click kan eventuelt bekreftes manuelt fra en faktisk admin-enhet.
 - Owner/artist må godkjenne public copy før endelig prosjekt-closeout.
 
 ## Endringer Som Krever Eksplisitt Godkjenning
